@@ -45,6 +45,17 @@ $announcement = [
         'image_url' => 'img/lot-6.jpg',
     ]
 ];
+
+function formatPrice($number_rate)
+{
+    $number_rate = ceil($number_rate);
+
+    if ($number_rate >= 1000) {
+        $number_rate = number_format($number_rate, 0, ".", " ");
+    }
+
+    return $number_rate . ' ₽';
+}
 ?>
 <!DOCTYPE html>
 <html lang="ru">
@@ -125,7 +136,7 @@ $announcement = [
                                 <div class="lot__state">
                                     <div class="lot__rate">
                                         <span class="lot__amount">Стартовая цена</span>
-                                        <span class="lot__cost"><?= $value['price']; ?><b class="rub">р</b></span>
+                                        <span class="lot__cost"><?= formatPrice($value['price']); ?></span>
                                     </div>
                                     <div class="lot__timer timer">
                                         12:23
