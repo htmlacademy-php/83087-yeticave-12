@@ -1,5 +1,6 @@
 <?php
 require_once('helpers.php');
+require_once('functions.php');
 
 $layout_content = include_template(
     'layout.php',
@@ -46,6 +47,8 @@ $layout_content = include_template(
                 'image_url' => 'img/lot-6.jpg',
             ],
         ],
+
+        'is_auth' => rand(0, 1),
 
         'user_name' => 'Павел',
 

@@ -1,19 +1,3 @@
-<?php
-$is_auth = rand(0, 1);
-
-$user_name = 'Павел'; // укажите здесь ваше имя
-
-function formatPrice($number_rate)
-{
-    $number_rate = ceil($number_rate);
-
-    if ($number_rate >= 1000) {
-        $number_rate = number_format($number_rate, 0, ".", " ");
-    }
-
-    return $number_rate . ' ₽';
-}
-?>
 <!DOCTYPE html>
 <html lang="ru">
 
@@ -61,7 +45,7 @@ function formatPrice($number_rate)
             </div>
         </header>
 
-        <?= $content = require('main.php'); ?>
+        <?php $content = require('main.php'); ?>
     </div>
 
     <footer class="main-footer">
