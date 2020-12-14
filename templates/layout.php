@@ -45,7 +45,7 @@
             </div>
         </header>
 
-        <?php $content = require('main.php'); ?>
+        <?php $content; ?>
     </div>
 
     <footer class="main-footer">
