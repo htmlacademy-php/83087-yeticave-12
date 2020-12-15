@@ -2,12 +2,12 @@
 require_once('helpers.php');
 require_once('functions.php');
 
-$layout_content = include_template(
-    'layout.php',
+$categories = ["Доски и лыжи", "Крепления", "Ботинки", "Одежда", "Инструменты", "Разное"];
+
+$page_content = include_template(
+    'main.php',
     [
-        'categories' => [
-            "Доски и лыжи", "Крепления", "Ботинки", "Одежда", "Инструменты", "Разное"
-        ],
+        'categories' => $categories,
 
         'announcement' => [
             [
@@ -47,12 +47,21 @@ $layout_content = include_template(
                 'image_url' => 'img/lot-6.jpg',
             ],
         ],
+    ]
+);
+
+$layout_content = include_template(
+    'layout.php',
+    [
+        'categories' => $categories,
+
+        'content' => $page_content,
+
+        'title' => 'Главная',
 
         'is_auth' => rand(0, 1),
 
         'user_name' => 'Павел',
-
-        'title' => 'Главная',
     ]
 );
 

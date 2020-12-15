@@ -45,7 +45,7 @@
             </div>
         </header>
 
-        <?php $content; ?>
+        <?= $content; ?>
     </div>
 
     <footer class="main-footer">
