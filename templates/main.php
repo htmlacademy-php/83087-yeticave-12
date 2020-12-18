@@ -32,8 +32,13 @@
                                 <span class="lot__amount">Стартовая цена</span>
                                 <span class="lot__cost"><?= formatPrice(strip_tags($value['price'])); ?></span>
                             </div>
-                            <div class="lot__timer timer">
-                                12:23
+                            <?php
+                            $data = getDifferenceTime($value['lot_date']);
+                            ?>
+                            <div class="lot__timer timer <?php echo ($data[0] <= 0) ? 'timer--finishing' : ''; ?>">
+                                <?php
+                                echo $data[0] . ':' . $data[1];
+                                ?>
                             </div>
                         </div>
                     </div>
