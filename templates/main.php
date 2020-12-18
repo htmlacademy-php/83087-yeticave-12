@@ -33,11 +33,11 @@
                                 <span class="lot__cost"><?= formatPrice(strip_tags($value['price'])); ?></span>
                             </div>
                             <?php
-                            $data = get_dt_range($value['lot_date']);
+                            $data = getDifferenceTime($value['lot_date']);
                             ?>
-                            <div class="lot__timer timer <?php echo ($data['hours'] <= 0) ? 'timer--finishing' : ''; ?>">
+                            <div class="lot__timer timer <?php echo ($data[0] <= 0) ? 'timer--finishing' : ''; ?>">
                                 <?php
-                                echo $data['hours'] . ':' . $data['minute'];
+                                echo $data[0] . ':' . $data[1];
                                 ?>
                             </div>
                         </div>
