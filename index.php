@@ -4,7 +4,7 @@ require_once('functions.php');
 
 $categories = ["Доски и лыжи", "Крепления", "Ботинки", "Одежда", "Инструменты", "Разное"];
 
-$page_content = include_template(
+$pageСontent = include_template(
     'main.php',
     [
         'categories' => $categories,
@@ -56,19 +56,19 @@ $page_content = include_template(
     ]
 );
 
-$layout_content = include_template(
+$layoutСontent = include_template(
     'layout.php',
     [
         'categories' => $categories,
 
-        'content' => $page_content,
+        'content' => $pageСontent,
 
         'title' => 'Главная',
 
-        'is_auth' => rand(0, 1),
+        'isAuth' => rand(0, 1),
 
-        'user_name' => 'Павел',
+        'userName' => 'Павел',
     ]
 );
 
-print($layout_content);
+print($layoutСontent);

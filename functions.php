@@ -2,33 +2,33 @@
 
 /**
  * Функция для форматирования суммы и добавления к ней знака рубля
- * @param int $number_rate сумма лота
+ * @param int $numberRate сумма лота
  * @return string Отформатированная сумма вместе со знаком рубля
  */
-function formatPrice($number_rate)
+function formatPrice($numberRate)
 {
-    $number_rate = ceil($number_rate);
+    $numberRate = ceil($numberRate);
 
-    if ($number_rate >= 1000) {
-        $number_rate = number_format($number_rate, 0, ".", " ");
+    if ($numberRate >= 1000) {
+        $numberRate = number_format($numberRate, 0, ".", " ");
     }
 
-    return $number_rate . ' ₽';
+    return $numberRate . ' ₽';
 }
 
 /**
  * Функция возврата оставшегося времени лота в формате ЧЧ:ММ
- * @param string $lot_date дата вида - ГГГГ-ММ-ДД
+ * @param string $lotDate дата вида - ГГГГ-ММ-ДД
  */
-function getDifferenceTime($lot_date)
+function getDifferenceTime($lotDate)
 {
-    $current_date = time();
-    $lot_date_unix = strtotime($lot_date);
+    $currentDate = time();
+    $lotDateUnix = strtotime($lotDate);
 
-    $date_diff = $lot_date_unix - $current_date;
-    $all_minutes = floor($date_diff / 60);
-    $hours = floor($all_minutes / 60);
-    $minute = $all_minutes - $hours * 60;
+    $dateDiff = $lotDateUnix - $currentDate;
+    $allMinutes = floor($dateDiff / 60);
+    $hours = floor($allMinutes / 60);
+    $minute = $allMinutes - $hours * 60;
 
     $res = [
         $hours, $minute

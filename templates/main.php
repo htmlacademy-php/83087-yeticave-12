@@ -4,13 +4,13 @@
         <p class="promo__text">На нашем интернет-аукционе ты найдёшь самое эксклюзивное сноубордическое и горнолыжное снаряжение.</p>
         <ul class="promo__list">
             <?php
-            $index_categories = 0;
-            $num_categories = count($categories);
-            while ($index_categories < $num_categories) : ?>
+            $indexСategories = 0;
+            $numСategories = count($categories);
+            while ($indexСategories < $numСategories) : ?>
                 <li class="promo__item promo__item--boards">
-                    <a class="promo__link" href="pages/all-lots.html"><?= strip_tags($categories[$index_categories]); ?></a>
+                    <a class="promo__link" href="pages/all-lots.html"><?= strip_tags($categories[$indexСategories]); ?></a>
                 </li>
-                <?php $index_categories++; ?>
+                <?php $indexСategories++; ?>
             <?php endwhile; ?>
         </ul>
     </section>
