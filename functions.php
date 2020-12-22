@@ -16,6 +16,13 @@ function formatPrice($numberRate)
     return $numberRate . ' ₽';
 }
 
+function stripTags($str)
+{
+    $text = strip_tags($str);
+
+    return $text;
+}
+
 /**
  * Функция возврата оставшегося времени лота в формате ЧЧ:ММ
  * @param string $lotDate дата вида - ГГГГ-ММ-ДД
