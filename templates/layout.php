@@ -25,9 +25,9 @@
 
                 <nav class="user-menu">
 
-                    <?php if ($is_auth === 1) : ?>
+                    <?php if ($isAuth === 1) : ?>
                         <div class="user-menu__logged">
-                            <p><?= $user_name; ?></p>
+                            <p><?= $userName; ?></p>
                             <a class="user-menu__bets" href="pages/my-bets.html">Мои ставки</a>
                             <a class="user-menu__logout" href="#">Выход</a>
                         </div>
@@ -52,13 +52,13 @@
         <nav class="nav">
             <ul class="nav__list container">
                 <?php
-                $index_categories = 0;
-                $num_categories = count($categories);
-                while ($index_categories < $num_categories) : ?>
+                $indexСategories = 0;
+                $numСategories = count($categories);
+                while ($indexСategories < $numСategories) : ?>
                     <li class="nav__item">
-                        <a href="pages/all-lots.html"><?= $categories[$index_categories]; ?></a>
+                        <a href="pages/all-lots.html"><?= $categories[$indexСategories]; ?></a>
                     </li>
-                    <?php $index_categories++; ?>
+                    <?php $indexСategories++; ?>
                 <?php endwhile; ?>
             </ul>
         </nav>
