@@ -6,17 +6,17 @@ USE yeticave;
 
 CREATE TABLE categories (
   id INT AUTO_INCREMENT PRIMARY KEY,
-  name VARCHAR
+  name VARCHAR(128)
 );
 
 CREATE TABLE lots (
   id INT AUTO_INCREMENT PRIMARY KEY,
   create_date DATETIME,
   user_id INT,
-  name VARCHAR,
+  name VARCHAR(128),
   description TEXT,
   category_id INT,
-  image_url VARCHAR,
+  image_url VARCHAR(128),
   price DECIMAL,
   end_date DATE,
   price_step INT,
@@ -34,8 +34,8 @@ CREATE TABLE rates (
 CREATE TABLE users (
   id INT AUTO_INCREMENT PRIMARY KEY,
   reg_date DATETIME,
-  email  VARCHAR,
-  name VARCHAR,
-  password VARCHAR,
+  email  VARCHAR(128),
+  name VARCHAR(128),
+  password VARCHAR(128),
   contact TEXT
 );
