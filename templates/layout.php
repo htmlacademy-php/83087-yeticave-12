@@ -1,14 +1,3 @@
-<?php
-$config = require 'config.php';
-
-$con = mysqli_connect($config['db']['host'], $config['db']['user'], $config['db']['password'], $config['db']['database']);
-mysqli_set_charset($con, "utf8");
-
-$sqlCategories = "SELECT name, code FROM categories";
-$resultCategories = mysqli_query($con, $sqlCategories);
-$categories = mysqli_fetch_all($resultCategories, MYSQLI_ASSOC);
-
-?>
 <!DOCTYPE html>
 <html lang="ru">
 
