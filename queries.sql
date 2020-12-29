@@ -1,10 +1,11 @@
 -- добавление существующего списка категорий
-INSERT INTO categories SET id = 1, name = 'Доски и лыжи';
-INSERT INTO categories SET id = 2, name = 'Крепления';
-INSERT INTO categories SET id = 3, name = 'Ботинки';
-INSERT INTO categories SET id = 4, name = 'Одежда';
-INSERT INTO categories SET id = 5, name = 'Инструменты';
-INSERT INTO categories SET id = 6, name = 'Разное';
+INSERT INTO categories SET id = 1, name = 'Доски и лыжи', code = 'boards';
+INSERT INTO categories SET id = 2, name = 'Крепления', code = 'attachment';
+INSERT INTO categories SET id = 3, name = 'Ботинки', code = 'boots';
+INSERT INTO categories SET id = 4, name = 'Одежда', code = 'clothing';
+INSERT INTO categories SET id = 5, name = 'Инструменты', code = 'tools';
+INSERT INTO categories SET id = 6, name = 'Разное', code = 'other';
+INSERT INTO categories SET id = 7, name = 'Аксессуары', code = 'accessories';
 
 -- добавление пары пользователей
 INSERT INTO users SET id = 1, reg_date = '2020-12-19', email = 'papan41k@gmail.com', name = 'Павел', password = 'Ms\,6Baq]:z4Cw7U';

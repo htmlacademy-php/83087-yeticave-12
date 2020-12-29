@@ -2,57 +2,34 @@
 require_once('helpers.php');
 require_once('functions.php');
 
-$categories = ["Доски и лыжи", "Крепления", "Ботинки", "Одежда", "Инструменты", "Разное"];
+$config = require 'config.php';
+
+$con = mysqli_connect($config['db']['host'], $config['db']['user'], $config['db']['password'], $config['db']['database']);
+mysqli_set_charset($con, "utf8");
+
+if ($con == false) {
+    print("Ошибка подключения: " . mysqli_connect_error());
+}
+
+$sqlCategories = "SELECT name, code FROM categories";
+$resultCategories = mysqli_query($con, $sqlCategories);
+$categories = mysqli_fetch_all($resultCategories, MYSQLI_ASSOC);
+
+$sqlLot = "SELECT lots.name, categories.name as category, image_url, price, end_date FROM lots JOIN categories WHERE lots.category_id = categories.id ORDER BY create_date DESC";
+$resultLot = mysqli_query($con, $sqlLot);
+$lots = mysqli_fetch_all($resultLot, MYSQLI_ASSOC);
+
+if (!$resultLot || !$resultCategories) {
+    $error = mysqli_error($con);
+    print("Ошибка MySQL: " . $error);
+}
 
 $pageСontent = include_template(
     'main.php',
     [
         'categories' => $categories,
 
-        'announcement' => [
-            [
-                'name' => '2014 Rossignol District Snowboard',
-                'category' => 'Доски и лыжи',
-                'price' => 10999,
-                'image_url' => 'img/lot-1.jpg',
-                'lot_date' => '2020-12-19',
-            ],
-            [
-                'name' => 'DC Ply Mens 2016/2017 Snowboard',
-                'category' => 'Доски и лыжи',
-                'price' => 159999,
-                'image_url' => 'img/lot-2.jpg',
-                'lot_date' => '2021-01-14',
-            ],
-            [
-                'name' => 'Крепления Union Contact Pro 2015 года размер L/XL',
-                'category' => 'Крепления',
-                'price' => 8000,
-                'image_url' => 'img/lot-3.jpg',
-                'lot_date' => '2021-01-15',
-            ],
-            [
-                'name' => 'Ботинки для сноуборда DC Mutiny Charocal',
-                'category' => 'Ботинки',
-                'price' => 10999,
-                'image_url' => 'img/lot-4.jpg',
-                'lot_date' => '2021-01-16',
-            ],
-            [
-                'name' => 'Куртка для сноуборда DC Mutiny Charocal',
-                'category' => 'Одежда',
-                'price' => 7500,
-                'image_url' => 'img/lot-5.jpg',
-                'lot_date' => '2021-01-17',
-            ],
-            [
-                'name' => 'Маска Oakley Canopy',
-                'category' => 'Разное',
-                'price' => 5400,
-                'image_url' => 'img/lot-6.jpg',
-                'lot_date' => '2021-01-18',
-            ],
-        ],
+        'lots' => $lots,
     ]
 );
 

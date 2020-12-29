@@ -52,14 +52,12 @@
         <nav class="nav">
             <ul class="nav__list container">
                 <?php
-                $indexСategories = 0;
                 $numСategories = count($categories);
-                while ($indexСategories < $numСategories) : ?>
+                foreach ($categories as $category) : ?>
                     <li class="nav__item">
-                        <a href="pages/all-lots.html"><?= $categories[$indexСategories]; ?></a>
+                        <a href="pages/all-lots.html"><?= stripTags($category['name']); ?></a>
                     </li>
-                    <?php $indexСategories++; ?>
-                <?php endwhile; ?>
+                <?php endforeach; ?>
             </ul>
         </nav>
         <div class="main-footer__bottom container">
