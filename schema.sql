@@ -6,7 +6,8 @@ USE yeticave;
 
 CREATE TABLE categories (
   id INT AUTO_INCREMENT PRIMARY KEY,
-  name VARCHAR(128)
+  name VARCHAR(128),
+  code VARCHAR(128)
 );
 
 CREATE TABLE lots (

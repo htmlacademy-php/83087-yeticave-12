@@ -1,3 +1,14 @@
+<?php
+$config = require 'config.php';
+
+$con = mysqli_connect($config['db']['host'], $config['db']['user'], $config['db']['password'], $config['db']['database']);
+mysqli_set_charset($con, "utf8");
+
+$sqlCategories = "SELECT name, code FROM categories";
+$resultCategories = mysqli_query($con, $sqlCategories);
+$categories = mysqli_fetch_all($resultCategories, MYSQLI_ASSOC);
+
+?>
 <!DOCTYPE html>
 <html lang="ru">
 
@@ -52,14 +63,12 @@
         <nav class="nav">
             <ul class="nav__list container">
                 <?php
-                $indexСategories = 0;
                 $numСategories = count($categories);
-                while ($indexСategories < $numСategories) : ?>
+                foreach ($categories as $category) : ?>
                     <li class="nav__item">
-                        <a href="pages/all-lots.html"><?= $categories[$indexСategories]; ?></a>
+                        <a href="pages/all-lots.html"><?= stripTags($category['name']); ?></a>
                     </li>
-                    <?php $indexСategories++; ?>
-                <?php endwhile; ?>
+                <?php endforeach; ?>
             </ul>
         </nav>
         <div class="main-footer__bottom container">
