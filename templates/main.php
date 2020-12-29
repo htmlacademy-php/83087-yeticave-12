@@ -4,7 +4,7 @@ $con = mysqli_connect($config['db']['host'], $config['db']['user'], $config['db'
 
 mysqli_set_charset($con, "utf8");
 
-$sqlLot = "SELECT lots.name, categories.name as category, image_url, price, end_date FROM lots JOIN categories WHERE lots.category_id = categories.id";
+$sqlLot = "SELECT lots.name, categories.name as category, image_url, price, end_date FROM lots JOIN categories WHERE lots.category_id = categories.id ORDER BY create_date DESC";
 $resultLot = mysqli_query($con, $sqlLot);
 
 $sqlCategories = "SELECT name, code FROM categories";
