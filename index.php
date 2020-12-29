@@ -7,8 +7,6 @@ $pageСontent = include_template('main.php');
 $layoutСontent = include_template(
     'layout.php',
     [
-        // 'categories' => $categories,
-
         'content' => $pageСontent,
 
         'title' => 'Главная',
