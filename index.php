@@ -15,7 +15,7 @@ $sqlCategories = "SELECT name, code FROM categories";
 $resultCategories = mysqli_query($con, $sqlCategories);
 $categories = mysqli_fetch_all($resultCategories, MYSQLI_ASSOC);
 
-$sqlLot = "SELECT lots.name, categories.name as category, image_url, price, end_date FROM lots JOIN categories WHERE lots.category_id = categories.id ORDER BY create_date DESC";
+$sqlLot = "SELECT lots.name, lots.id, categories.name as category, image_url, price, end_date FROM lots JOIN categories WHERE lots.category_id = categories.id ORDER BY create_date DESC";
 $resultLot = mysqli_query($con, $sqlLot);
 $lots = mysqli_fetch_all($resultLot, MYSQLI_ASSOC);
 

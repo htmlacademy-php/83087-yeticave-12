@@ -5,7 +5,6 @@ INSERT INTO categories SET id = 3, name = 'Ботинки', code = 'boots';
 INSERT INTO categories SET id = 4, name = 'Одежда', code = 'clothing';
 INSERT INTO categories SET id = 5, name = 'Инструменты', code = 'tools';
 INSERT INTO categories SET id = 6, name = 'Разное', code = 'other';
-INSERT INTO categories SET id = 7, name = 'Аксессуары', code = 'accessories';
 
 -- добавление пары пользователей
 INSERT INTO users SET id = 1, reg_date = '2020-12-19', email = 'papan41k@gmail.com', name = 'Павел', password = 'Ms\,6Baq]:z4Cw7U';
@@ -45,6 +44,8 @@ ON lots.category_id = categories.id;
 
 -- обновляем название лота по его идентификатору
 UPDATE lots SET name = 'Куртка для сноуборда Rip Curl' WHERE id = 5;
+
+UPDATE lots SET description = 'Легкий маневренный сноуборд, готовый дать жару в любом парке, растопив снег мощным щелчкоми четкими дугами. Стекловолокно Bi-Ax, уложенное в двух направлениях, наделяет этот снаряд отличной гибкостью и отзывчивостью, а симметричная геометрия в сочетании с классическим прогибом кэмбер позволит уверенно держать высокие скорости. А если к концу катального дня сил совсем не останется, просто посмотрите на Вашу доску и улыбнитесь, крутая графика от Шона Кливера еще никого не оставляла равнодушным.' WHERE id = 2;
 
 -- получаем список ставок для лота по его идентификатору с сортировкой по дате.
 SELECT * FROM rates r
