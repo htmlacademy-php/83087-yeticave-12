@@ -28,7 +28,7 @@ if (!$resultLot || !$resultCategories) {
     print("Ошибка MySQL: " . $error);
 }
 
-if ($trid) {
+if (!empty($lots) && isset($lots)) {
     $pageСontent = include_template(
         'lot.php',
         [
@@ -54,8 +54,6 @@ if ($trid) {
             'userName' => 'Павел',
         ]
     );
-
-    print($layoutСontent);
 } else {
     http_response_code(404);
 
@@ -80,6 +78,6 @@ if ($trid) {
             'userName' => 'Павел',
         ]
     );
-
-    print($layoutСontent);
 }
+
+print($layoutСontent);
