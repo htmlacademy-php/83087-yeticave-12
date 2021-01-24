@@ -51,7 +51,12 @@
     <footer class="main-footer">
         <nav class="nav">
             <ul class="nav__list container">
-                <?php getCategoryMenu($categories); ?>
+                <?php
+                foreach ($categories as $category) : ?>
+                    <li class="nav__item">
+                        <a href="/pages/all-lots.html"><?= stripTags($category['name']); ?></a>
+                    </li>
+                <?php endforeach; ?>
             </ul>
         </nav>
         <div class="main-footer__bottom container">
