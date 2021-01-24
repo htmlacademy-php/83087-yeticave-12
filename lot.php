@@ -11,6 +11,11 @@ $dbConnection = getConnection($config);
 
 $lots = getLot($dbConnection, $currentLot);
 
+// echo '<pre>';
+// print_r($lots);
+// echo '</pre>';
+// echo $lots[0]['name'];
+
 if (!empty($lots)) {
     $pageСontent = include_template(
         'lot.php',
@@ -23,20 +28,7 @@ if (!empty($lots)) {
         ]
     );
 
-    $layoutСontent = include_template(
-        'layout.php',
-        [
-            'categories' => getCategories($dbConnection),
-
-            'content' => $pageСontent,
-
-            'title' => $lots[$currentLot]['name'],
-
-            'isAuth' => rand(0, 1),
-
-            'userName' => 'Павел',
-        ]
-    );
+    $title = $lots[0]['name'];
 } else {
     http_response_code(404);
 
@@ -47,20 +39,22 @@ if (!empty($lots)) {
         ]
     );
 
-    $layoutСontent = include_template(
-        'layout.php',
-        [
-            'categories' => getCategories($dbConnection),
-
-            'content' => $pageСontent,
-
-            'title' => 'Ошибка',
-
-            'isAuth' => rand(0, 1),
-
-            'userName' => 'Павел',
-        ]
-    );
+    $title = 'Ошибка';
 }
+
+$layoutСontent = include_template(
+    'layout.php',
+    [
+        'categories' => getCategories($dbConnection),
+
+        'content' => $pageСontent,
+
+        'title' => $title,
+
+        'isAuth' => rand(0, 1),
+
+        'userName' => 'Павел',
+    ]
+);
 
 print($layoutСontent);
