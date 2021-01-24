@@ -7,10 +7,9 @@ $currentLot = $_GET['id'];
 
 $trid = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
 
-$lots = getLots(getConnection($config), "SELECT lots.name, description, lots.id, categories.name as category, image_url, price, end_date
-            FROM lots JOIN categories
-            WHERE lots.category_id = categories.id AND lots.id = $currentLot
-            ORDER BY create_date DESC");
+$dbConnection = getConnection($config);
+
+$lots = getLot($dbConnection, $currentLot);
 
 if (!empty($lots)) {
     $pageСontent = include_template(
@@ -18,7 +17,7 @@ if (!empty($lots)) {
         [
             'id' => $currentLot,
 
-            'categories' => getCategories(getConnection($config)),
+            'categories' => getCategories($dbConnection),
 
             'lots' => $lots,
         ]
@@ -27,7 +26,7 @@ if (!empty($lots)) {
     $layoutСontent = include_template(
         'layout.php',
         [
-            'categories' => getCategories(getConnection($config)),
+            'categories' => getCategories($dbConnection),
 
             'content' => $pageСontent,
 
@@ -44,14 +43,14 @@ if (!empty($lots)) {
     $pageСontent = include_template(
         '404.php',
         [
-            'categories' => getCategories(getConnection($config)),
+            'categories' => getCategories($dbConnection),
         ]
     );
 
     $layoutСontent = include_template(
         'layout.php',
         [
-            'categories' => getCategories(getConnection($config)),
+            'categories' => getCategories($dbConnection),
 
             'content' => $pageСontent,
 

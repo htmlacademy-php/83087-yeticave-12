@@ -72,9 +72,32 @@ function getCategories($connection)
     return $categories;
 }
 
-function getLots($connection, $requestLots)
+function getLots($connection)
 {
+    $requestLots = "SELECT lots.name, lots.id, categories.name as category, image_url, price, end_date
+    FROM lots JOIN categories
+    WHERE lots.category_id = categories.id
+    ORDER BY create_date DESC";
+
     $resultLot = mysqli_query($connection, $requestLots);
+
+    if (!$resultLot) {
+        $error = mysqli_error($connection);
+        print("Ошибка MySQL: " . $error);
+    }
+
+    $lots = mysqli_fetch_all($resultLot, MYSQLI_ASSOC);
+
+    return $lots;
+}
+
+function getLot($connection, $lotId)
+{
+    $requestLot = "SELECT lots.name, description, lots.id, categories.name as category, image_url, price, end_date
+    FROM lots JOIN categories
+    WHERE lots.category_id = categories.id AND lots.id = $lotId
+    ORDER BY create_date DESC";
+    $resultLot = mysqli_query($connection, $requestLot);
 
     if (!$resultLot) {
         $error = mysqli_error($connection);
