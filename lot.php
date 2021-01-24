@@ -9,20 +9,17 @@ $trid = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
 
 $dbConnection = getConnection($config);
 
-$lots = getLot($dbConnection, $currentLot);
+$allCategories = getCategories($dbConnection);
 
-// echo '<pre>';
-// print_r($lots);
-// echo '</pre>';
-// echo $lots[0]['name'];
+$lots = getLot($dbConnection, $trid);
 
 if (!empty($lots)) {
     $pageСontent = include_template(
         'lot.php',
         [
-            'id' => $currentLot,
+            'id' => $trid,
 
-            'categories' => getCategories($dbConnection),
+            'categories' => $allCategories,
 
             'lots' => $lots,
         ]
@@ -35,7 +32,7 @@ if (!empty($lots)) {
     $pageСontent = include_template(
         '404.php',
         [
-            'categories' => getCategories($dbConnection),
+            'categories' => $allCategories,
         ]
     );
 
@@ -45,7 +42,7 @@ if (!empty($lots)) {
 $layoutСontent = include_template(
     'layout.php',
     [
-        'categories' => getCategories($dbConnection),
+        'categories' => $allCategories,
 
         'content' => $pageСontent,
 

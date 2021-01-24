@@ -5,11 +5,12 @@ require_once('functions.php');
 $config = require 'config.php';
 
 $dbConnection = getConnection($config);
+$allCategories = getCategories($dbConnection);
 
 $pageСontent = include_template(
     'main.php',
     [
-        'categories' => getCategories($dbConnection),
+        'categories' => $allCategories,
 
         'lots' => getLots($dbConnection),
     ]
@@ -18,7 +19,7 @@ $pageСontent = include_template(
 $layoutСontent = include_template(
     'layout.php',
     [
-        'categories' => getCategories($dbConnection),
+        'categories' => $allCategories,
 
         'content' => $pageСontent,
 
