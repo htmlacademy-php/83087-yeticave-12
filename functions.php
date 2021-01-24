@@ -43,3 +43,68 @@ function getDifferenceTime($lotDate)
 
     return $res;
 }
+
+function getConnection($config)
+{
+    $connection = mysqli_connect($config['db']['host'], $config['db']['user'], $config['db']['password'], $config['db']['database']);
+    mysqli_set_charset($connection, "utf8");
+
+    if ($connection == false) {
+        print("Ошибка подключения: " . mysqli_connect_error());
+    }
+
+    return $connection;
+}
+
+function getCategories($connection)
+{
+    $requestCategories = "SELECT name, code FROM categories";
+
+    $resultCategories = mysqli_query($connection, $requestCategories);
+
+    if (!$resultCategories) {
+        $error = mysqli_error($connection);
+        print("Ошибка MySQL: " . $error);
+    }
+
+    $categories = mysqli_fetch_all($resultCategories, MYSQLI_ASSOC);
+
+    return $categories;
+}
+
+function getLots($connection)
+{
+    $requestLots = "SELECT lots.name, lots.id, categories.name as category, image_url, price, end_date
+    FROM lots JOIN categories
+    WHERE lots.category_id = categories.id
+    ORDER BY create_date DESC";
+
+    $resultLot = mysqli_query($connection, $requestLots);
+
+    if (!$resultLot) {
+        $error = mysqli_error($connection);
+        print("Ошибка MySQL: " . $error);
+    }
+
+    $lots = mysqli_fetch_all($resultLot, MYSQLI_ASSOC);
+
+    return $lots;
+}
+
+function getLot($connection, $lotId)
+{
+    $requestLot = "SELECT lots.name, description, lots.id, categories.name as category, image_url, price, end_date
+    FROM lots JOIN categories
+    WHERE lots.category_id = categories.id AND lots.id = $lotId
+    ORDER BY create_date DESC";
+    $resultLot = mysqli_query($connection, $requestLot);
+
+    if (!$resultLot) {
+        $error = mysqli_error($connection);
+        print("Ошибка MySQL: " . $error);
+    }
+
+    $lots = mysqli_fetch_all($resultLot, MYSQLI_ASSOC);
+
+    return $lots;
+}
