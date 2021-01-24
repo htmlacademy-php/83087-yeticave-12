@@ -28,7 +28,7 @@ if (!$resultLot || !$resultCategories) {
     print("Ошибка MySQL: " . $error);
 }
 
-if (!empty($lots) && isset($lots)) {
+if (!empty($lots)) {
     $pageСontent = include_template(
         'lot.php',
         [

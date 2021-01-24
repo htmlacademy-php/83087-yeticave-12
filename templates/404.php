@@ -2,12 +2,8 @@
     <nav class="nav">
         <ul class="nav__list container">
             <?php
-            $numСategories = count($categories);
-            foreach ($categories as $category) : ?>
-                <li class="nav__item">
-                    <a href="all-lots.html"><?= stripTags($category['name']); ?></a>
-                </li>
-            <?php endforeach; ?>
+            getCategoryMenu();
+            ?>
         </ul>
     </nav>
     <section class="lot-item container">
