@@ -108,3 +108,24 @@ function getLot($connection, $lotId)
 
     return $lots;
 }
+
+function getPostVal($name)
+{
+    return $_POST[$name] ?? "";
+}
+
+function validateCategory($id, $allowed_list)
+{
+    if (!in_array($id, $allowed_list)) {
+        return "Указана несуществующая категория";
+    }
+
+    return null;
+}
+
+function validateFilled($name)
+{
+    if (empty($_POST[$name])) {
+        return "Это поле должно быть заполнено";
+    }
+}
