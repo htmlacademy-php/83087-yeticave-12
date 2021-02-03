@@ -72,16 +72,26 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $errors = array_filter($errors);
 
     if (!empty($_FILES['file']['name'])) {
-        $tmpName = $_FILES['file']['tmp_name'];
+        $tmp_name = $_FILES['file']['tmp_name'];
         $path = $_FILES['file']['name'];
+        $filename = uniqid() . '.gif';
 
-        $finfo = mime_content_type($path);
-        $fileType = finfo_file($finfo, $tmpName);
-        if ($finfo !== "image/jpeg") {
-            $errors['file'] = 'Загрузите картинку в формате GIF';
+        echo $tmp_name . '<br>';
+
+        echo mime_content_type($tmp_name) . "<br>";
+
+        echo $path . '<br>';
+        echo $file123;
+        echo $filename;
+
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+
+        $file_type = finfo_file($finfo, $tmp_name);
+        if ($file_type !== "image/png" || $file_type !== "image/jpeg") {
+            $errors['file'] = 'Загрузите картинку в формате png/jpg/jpeg';
         } else {
-            move_uploaded_file($tmpName, 'uploads/' . $path);
-            $lotFields['path'] = $path;
+            move_uploaded_file($tmp_name, 'uploads/' . $filename);
+            $lotFields['path'] = $filename;
         }
     } else {
         $errors['file'] = 'Вы не загрузили файл';

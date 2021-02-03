@@ -64,7 +64,7 @@
                 </label>
             </div>
             <?php if (isset($errors['file'])) : ?>
-                <span class="form__error">Добавьте изображение лота</span>
+                <span class="form__error"><?= $errors['file']; ?>Добавьте изображение лота</span>
             <?php endif; ?>
         </div>
         <div class="form__container-three">
