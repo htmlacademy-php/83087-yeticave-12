@@ -114,18 +114,28 @@ function getPostVal($name)
     return $_POST[$name] ?? "";
 }
 
-function validateCategory($id, $allowed_list)
-{
-    if (!in_array($id, $allowed_list)) {
-        return "Указана несуществующая категория";
-    }
-
-    return null;
-}
-
 function validateFilled($name)
 {
     if (empty($_POST[$name])) {
         return "Это поле должно быть заполнено";
     }
+}
+
+function validateNumber($name)
+{
+    if (!filter_input(INPUT_POST, $name, FILTER_VALIDATE_INT)) {
+        return "Введите корректное число";
+    }
+}
+
+function validateDate($date)
+{
+    $currentDate = date_create("now");
+    $minDate = date_modify($currentDate, '+1 day');
+
+    if ($date > $minDate) {
+        return "fuck off";
+    }
+
+    return $date;
 }

@@ -7,11 +7,6 @@ $config = require 'config.php';
 $dbConnection = getConnection($config);
 
 $allCategories = getCategories($dbConnection);
-$categoriesId = array_column($allCategories, 'name', 'id');
-
-echo '<pre>';
-var_dump($categoriesId);
-echo '</pre>';
 
 $userCheck = $_GET['user'];
 
@@ -28,20 +23,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         'lot-name' => function () {
             return validateFilled('lot-name');
         },
-        'category' => function () use ($categoriesId) {
-            return validateCategory('category', $categoriesId);
+        'category' => function () {
+            return validateFilled('category');
         },
         'message' => function () {
             return validateFilled('message');
         },
         'lot-rate' => function () {
-            return validateFilled('lot-rate');
+            return validateNumber('lot-rate');
         },
         'lot-step' => function () {
-            return validateFilled('lot-step');
+            return validateNumber('lot-step');
         },
         'lot-date' => function () {
-            return validateFilled('lot-date');
+            return validateDate('lot-date');
         },
     ];
 
@@ -63,38 +58,35 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $rule = $rules[$key];
             $errors[$key] = $rule($value);
         }
-
-        if (in_array($key, $required) && empty($value)) {
-            $errors[$key] = "Поле $key надо заполнить";
-        }
     }
 
     $errors = array_filter($errors);
 
     if (!empty($_FILES['file']['name'])) {
-        $tmp_name = $_FILES['file']['tmp_name'];
-        $path = $_FILES['file']['name'];
-        $filename = uniqid() . '.gif';
+        $fileNameOriginal = $_FILES['file']['name'];
+        $fileType = $_FILES['file']['type'];
+        $fileTemporaryName = $_FILES['file']['tmp_name'];
+        $filePath = __DIR__ . '/uploads/';
+        $fileUrl = '/uploads/' . $fileNameOriginal;
 
-        echo $tmp_name . '<br>';
+        $mimetype = mime_content_type($fileTemporaryName);
 
-        echo mime_content_type($tmp_name) . "<br>";
-
-        echo $path . '<br>';
-        echo $file123;
-        echo $filename;
-
-        $finfo = finfo_open(FILEINFO_MIME_TYPE);
-
-        $file_type = finfo_file($finfo, $tmp_name);
-        if ($file_type !== "image/png" || $file_type !== "image/jpeg") {
-            $errors['file'] = 'Загрузите картинку в формате png/jpg/jpeg';
+        if (in_array($mimetype, array('image/jpeg', 'image/png'))) {
+            move_uploaded_file($fileTemporaryName, $filePath . $fileNameOriginal);
         } else {
-            move_uploaded_file($tmp_name, 'uploads/' . $filename);
-            $lotFields['path'] = $filename;
+            $errors['file'] = 'Загрузите изображение в формате png/jpg/jpeg';
         }
+
+        echo '<pre>';
+        print_r($fileNameOriginal . ' - это fileNameOriginal <br>');
+        print_r($fileType . ' - это fileType <br>');
+        print_r($fileTemporaryName . ' - это fileTemporaryName <br>');
+        print_r($filePath . ' - это filePath <br>');
+        print_r($fileUrl . ' - это fileUrl <br>');
+        print_r($mimetype . ' - это mimetype <br>');
+        echo '</pre>';
     } else {
-        $errors['file'] = 'Вы не загрузили файл';
+        $errors['file'] = 'Добавьте изображение лота';
     }
 
     echo '<pre>';

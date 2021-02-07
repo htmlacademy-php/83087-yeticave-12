@@ -31,7 +31,7 @@
             <div class="form__item <?= $classname; ?>">
                 <label for="category">Категория <sup>*</sup></label>
                 <select id="category" name="category">
-                    <option>Выберите категорию</option>
+                    <option value="">Выберите категорию</option>
                     <?php foreach ($categories as $category) : ?>
                         <option value="<?= $category['name']; ?>" <?php if ($category['name'] == getPostVal('category')) : ?>selected<?php endif; ?>><?= stripTags($category['name']); ?></option>
                         </li>
@@ -64,7 +64,10 @@
                 </label>
             </div>
             <?php if (isset($errors['file'])) : ?>
-                <span class="form__error"><?= $errors['file']; ?>Добавьте изображение лота</span>
+                <span class="form__error"><?= $errors['file']; ?></span>
+                <?php // elseif (isset($errors['file'])) :
+                ?>
+                <!-- <span class="form__error"><?= $errors['file']; ?>1</span> -->
             <?php endif; ?>
         </div>
         <div class="form__container-three">
