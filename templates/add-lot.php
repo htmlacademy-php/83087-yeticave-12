@@ -22,7 +22,7 @@
                 <label for="lot-name">Наименование <sup>*</sup></label>
                 <input id="lot-name" type="text" name="lot-name" placeholder="Введите наименование лота" value="<?= getPostVal('lot-name'); ?>">
                 <?php if (isset($errors['lot-name'])) : ?>
-                    <span class="form__error">Введите наименование лота</span>
+                    <span class="form__error"><?= $errors['lot-name']; ?></span>
                 <?php endif; ?>
             </div>
             <?php
@@ -38,7 +38,7 @@
                     <?php endforeach; ?>
                 </select>
                 <?php if (isset($errors['category'])) : ?>
-                    <span class="form__error">Выберите категорию</span>
+                    <span class="form__error"><?= $errors['category']; ?></span>
                 <?php endif; ?>
             </div>
         </div>
@@ -49,7 +49,7 @@
             <label for="message">Описание <sup>*</sup></label>
             <textarea id="message" name="message" placeholder="Напишите описание лота"><?= getPostVal('message'); ?></textarea>
             <?php if (isset($errors['message'])) : ?>
-                <span class="form__error">Напишите описание лота</span>
+                <span class="form__error"><?= $errors['message']; ?></span>
             <?php endif; ?>
         </div>
         <?php
@@ -65,9 +65,6 @@
             </div>
             <?php if (isset($errors['file'])) : ?>
                 <span class="form__error"><?= $errors['file']; ?></span>
-                <?php // elseif (isset($errors['file'])) :
-                ?>
-                <!-- <span class="form__error"><?= $errors['file']; ?>1</span> -->
             <?php endif; ?>
         </div>
         <div class="form__container-three">
@@ -78,7 +75,7 @@
                 <label for="lot-rate">Начальная цена <sup>*</sup></label>
                 <input id="lot-rate" type="text" name="lot-rate" placeholder="0" value="<?= getPostVal('lot-rate'); ?>">
                 <?php if (isset($errors['lot-rate'])) : ?>
-                    <span class="form__error">Введите начальную цену</span>
+                    <span class="form__error"><?= $errors['lot-rate']; ?></span>
                 <?php endif; ?>
             </div>
             <?php
@@ -88,7 +85,7 @@
                 <label for="lot-step">Шаг ставки <sup>*</sup></label>
                 <input id="lot-step" type="text" name="lot-step" placeholder="0" value="<?= getPostVal('lot-step'); ?>">
                 <?php if (isset($errors['lot-step'])) : ?>
-                    <span class="form__error">Введите шаг ставки</span>
+                    <span class="form__error"><?= $errors['lot-step']; ?></span>
                 <?php endif; ?>
             </div>
             <?php
@@ -98,7 +95,7 @@
                 <label for="lot-date">Дата окончания торгов <sup>*</sup></label>
                 <input class="form__input-date" id="lot-date" type="text" name="lot-date" placeholder="Введите дату в формате ГГГГ-ММ-ДД" value="<?= getPostVal('lot-date'); ?>">
                 <?php if (isset($errors['lot-date'])) : ?>
-                    <span class="form__error">Введите дату завершения торгов</span>
+                    <span class="form__error"><?= $errors['lot-date']; ?></span>
                 <?php endif; ?>
             </div>
         </div>

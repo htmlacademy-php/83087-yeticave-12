@@ -109,6 +109,10 @@ function getLot($connection, $lotId)
     return $lots;
 }
 
+/**
+ * Функция сохранения значения полей формы после валидации
+ * @param $name - поле ввода
+ */
 function getPostVal($name)
 {
     return $_POST[$name] ?? "";
@@ -124,7 +128,7 @@ function validateFilled($name)
 function validateNumber($name)
 {
     if (!filter_input(INPUT_POST, $name, FILTER_VALIDATE_INT)) {
-        return "Введите корректное число";
+        return "Введите число";
     }
 }
 
@@ -138,4 +142,13 @@ function validateDate($date)
     }
 
     return $date;
+}
+
+function validate($field, &$errors, $errorText)
+{
+    if (empty($_POST[$field])) {
+        $errors[$field] = $errorText;
+    }
+
+    return $field;
 }
