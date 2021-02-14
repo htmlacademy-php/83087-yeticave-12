@@ -26,12 +26,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $lotStep        = validate('lot-step', $errors, 'Введите шаг ставки');
     $lotDate        = validate('lot-date', $errors, 'Введите дату завершения торгов');
 
+    $rateOptions = [
+        'min_range' => 1,
+    ];
+    validateDate($lotDate);
     $lotNameValue = filter_input(INPUT_POST, $lotName, true);
     $lotCategoryValue = filter_input(INPUT_POST, $lotCategory, true);
     $lotDescriptionValue = filter_input(INPUT_POST, $lotDescription, true);
-    $lotRateValue = filter_input(INPUT_POST, $lotRate, true);
-    $lotStepValue = filter_input(INPUT_POST, $lotStep, true);
-    $lotDateValue = filter_input(INPUT_POST, $lotDate, true);
+    $lotRateValue = filter_input(INPUT_POST, $lotRate, FILTER_VALIDATE_INT, $rateOptions);
+    $lotStepValue = filter_input(INPUT_POST, $lotStep, FILTER_VALIDATE_INT, $rateOptions);
+    $lotDateValue = filter_input(INPUT_POST, $lotDate, FILTER_DEFAULT);
 
     // $errors = [
     //     $lotName => 'Введите наименование лота',

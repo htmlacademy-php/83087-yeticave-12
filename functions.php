@@ -137,11 +137,11 @@ function validateDate($date)
     $currentDate = date_create("now");
     $minDate = date_modify($currentDate, '+1 day');
 
-    if ($date > $minDate) {
-        return "fuck off";
+    if ($date < $minDate) {
+        echo "fuck off";
     }
 
-    return $date;
+    echo $date;
 }
 
 function validate($field, &$errors, $errorText)
