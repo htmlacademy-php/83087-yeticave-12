@@ -58,7 +58,7 @@ function getConnection($config)
 
 function getCategories($connection)
 {
-    $requestCategories = "SELECT name, code FROM categories";
+    $requestCategories = "SELECT id, name, code FROM categories";
 
     $resultCategories = mysqli_query($connection, $requestCategories);
 
@@ -107,4 +107,86 @@ function getLot($connection, $lotId)
     $lots = mysqli_fetch_all($resultLot, MYSQLI_ASSOC);
 
     return $lots;
+}
+
+/**
+ * Функция сохранения значения полей формы после валидации
+ * @param $name - поле ввода
+ */
+function getPostVal($name)
+{
+    return $_POST[$name] ?? "";
+}
+
+function validate($field, &$errors, $errorText, $filter)
+{
+    if (empty($_POST[$field])) {
+        $errors[$field] = $errorText;
+
+        return false;
+    }
+
+    $fieldValue = filter_input(INPUT_POST, $field, $filter);
+    return $fieldValue;
+}
+
+function validateFloatNumber($field, &$errors, $errorText, $errorValidateText)
+{
+    if (!isset($_POST[$field]) || $_POST[$field] === "") {
+        $errors[$field] = $errorText;
+
+        return false;
+    }
+
+    $fieldValue = filter_input(INPUT_POST, $field, FILTER_VALIDATE_FLOAT);
+
+    if ($fieldValue < 1) {
+        $errors[$field] = $errorValidateText;
+
+        return false;
+    }
+
+    return $fieldValue;
+}
+
+function validateIntNumber($field, &$errors, $errorText, $errorValidateText)
+{
+    if (!isset($_POST[$field]) || $_POST[$field] === "") {
+        $errors[$field] = $errorText;
+        return false;
+    }
+
+    $fieldValue = filter_input(INPUT_POST, $field, FILTER_VALIDATE_INT);
+
+    if ($fieldValue <= 0) {
+        $errors[$field] = $errorValidateText;
+
+        return false;
+    }
+
+    return $fieldValue;
+}
+
+function validateDate($date, &$errors, $errorText, $errorValidateText)
+{
+    $dateField = $_POST[$date];
+
+    if (empty($dateField)) {
+        $errors[$date] = $errorText;
+
+        return false;
+    }
+
+    $currentDate = time();
+    $lotDateUnix = strtotime("$dateField +1 day");
+
+    $dateDiff = $lotDateUnix - $currentDate;
+
+    if ($dateDiff <= 86400) {
+        $errors[$date] = $errorValidateText;
+
+        return false;
+    }
+
+    return $dateField;
 }
