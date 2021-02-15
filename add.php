@@ -19,77 +19,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     $errors = [];
 
-    $lotName        = validate('lot-name', $errors, 'Введите наименование лота');
-    $lotCategory    = validate('category', $errors, 'Выберите категорию');
-    $lotDescription = validate('message', $errors, 'Напишите описание лота');
-    $lotRate        = validate('lot-rate', $errors, 'Введите начальную цену');
-    $lotStep        = validate('lot-step', $errors, 'Введите шаг ставки');
-    $lotDate        = validate('lot-date', $errors, 'Введите дату завершения торгов');
-
-    $rateOptions = [
-        'min_range' => 1,
-    ];
-    validateDate($lotDate);
-    $lotNameValue = filter_input(INPUT_POST, $lotName, true);
-    $lotCategoryValue = filter_input(INPUT_POST, $lotCategory, true);
-    $lotDescriptionValue = filter_input(INPUT_POST, $lotDescription, true);
-    $lotRateValue = filter_input(INPUT_POST, $lotRate, FILTER_VALIDATE_INT, $rateOptions);
-    $lotStepValue = filter_input(INPUT_POST, $lotStep, FILTER_VALIDATE_INT, $rateOptions);
-    $lotDateValue = filter_input(INPUT_POST, $lotDate, FILTER_DEFAULT);
-
-    // $errors = [
-    //     $lotName => 'Введите наименование лота',
-    //     $lotCategory => 'Выберите категорию',
-    //     $lotDescription => 'Напишите описание лота',
-    //     $lotRate => 'Введите начальную цену',
-    //     $lotStep => 'Введите шаг ставки',
-    //     $lotDate => 'Введите дату завершения торгов',
-    // ];
-
-    // var_dump($errors);
-
-    // $rules = [
-    //     'lot-name' => function () {
-    //         return validate('lot-name', $errors);
-    //     },
-    //     'category' => function () {
-    //         return validate('category', $errors);
-    //     },
-    //     'message' => function () {
-    //         return validateFilled('message');
-    //     },
-    //     'lot-rate' => function () {
-    //         return validateNumber('lot-rate');
-    //     },
-    //     'lot-step' => function () {
-    //         return validateNumber('lot-step');
-    //     },
-    //     'lot-date' => function () {
-    //         return validateDate('lot-date');
-    //     },
-    // ];
-
-    // $lotFields = filter_input_array(
-    //     INPUT_POST,
-    //     [
-    //         'lot-name' => FILTER_DEFAULT,
-    //         'category' => FILTER_DEFAULT,
-    //         'message' => FILTER_DEFAULT,
-    //         'lot-rate' => FILTER_DEFAULT,
-    //         'lot-step' => FILTER_DEFAULT,
-    //         'lot-date' => FILTER_DEFAULT,
-    //     ],
-    //     true
-    // );
-
-    // foreach ($lotFields as $key => $value) {
-    //     if (isset($rules[$key])) {
-    //         $rule = $rules[$key];
-    //         $errors[$key] = $rule($value);
-    //     }
-    // }
-
-    // $errors = array_filter($errors);
+    $lotName        = validate('lot-name', $errors, 'Введите наименование лота', FILTER_SANITIZE_SPECIAL_CHARS);
+    $lotCategory    = validate('category', $errors, 'Выберите категорию', FILTER_DEFAULT);
+    $lotDescription = validate('message', $errors, 'Напишите описание лота', FILTER_SANITIZE_SPECIAL_CHARS);
+    $lotRate        = validateFloatNumber('lot-rate', $errors, 'Введите начальную цену', 'Число должно быть больше 0');
+    $lotStep        = validateIntNumber('lot-step', $errors, 'Введите шаг ставки', 'Число должно быть больше 0');
+    $lotDate        = validateDate('lot-date', $errors, 'Введите дату завершения торгов', 'Дата должна быть больше текущей даты, хотя бы на один день');
 
     if (!empty($_FILES['file']['name'])) {
         $fileNameOriginal = $_FILES['file']['name'];
@@ -105,24 +40,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         } else {
             $errors['file'] = 'Загрузите изображение в формате png/jpg/jpeg';
         }
-
-        // echo '<pre>';
-        // print_r($fileNameOriginal . ' - это fileNameOriginal <br>');
-        // print_r($fileType . ' - это fileType <br>');
-        // print_r($fileTemporaryName . ' - это fileTemporaryName <br>');
-        // print_r($filePath . ' - это filePath <br>');
-        // print_r($fileUrl . ' - это fileUrl <br>');
-        // print_r($mimetype . ' - это mimetype <br>');
-        // echo '</pre>';
     } else {
         $errors['file'] = 'Добавьте изображение лота';
     }
-
-    echo '<pre>';
-    print_r($_POST);
-    print_r($errors);
-    echo '</pre>';
-    // var_dump($errors);
 
     if (count($errors)) {
         $pageСontent = include_template(
@@ -133,6 +53,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 'errors' => $errors,
             ]
         );
+    } else {
+        $sql = "INSERT INTO lots (create_date, user_id, name, category_id, description, image_url, price, price_step, end_date) VALUES (NOW(), 1, '$lotName', '$lotCategory', '$lotDescription', '$fileUrl', '$lotRate', '$lotStep', '$lotDate')";
+
+        if (mysqli_query($dbConnection, $sql)) {
+            $lotId = mysqli_insert_id($dbConnection);
+
+            header("Location: lot.php?id=" . $lotId);
+        } else {
+            echo "Error: " . $sql . "<br>" . mysqli_error($dbConnection);
+        }
+        mysqli_close($dbConnection);
     }
 } else {
     $pageСontent = include_template(
