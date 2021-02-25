@@ -18,6 +18,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $userName = validate('name', $errors, 'Введите имя', FILTER_SANITIZE_SPECIAL_CHARS);
     $userContact = validate('message', $errors, 'Напишите как с вами связаться', FILTER_SANITIZE_SPECIAL_CHARS);
 
+    if (!filter_var($userEmail, FILTER_VALIDATE_EMAIL)) {
+        $errors['email'] = "Данный E-mail адрес не валидный";
+    }
+
     $emailCheck = mysqli_real_escape_string($dbConnection, $userEmail);
     $sqlEmailCheck = "SELECT id FROM users WHERE email = '$emailCheck'";
     $resEmailCheck = mysqli_query($dbConnection, $sqlEmailCheck);
