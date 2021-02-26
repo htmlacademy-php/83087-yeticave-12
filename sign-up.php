@@ -18,16 +18,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $userName = validate('name', $errors, 'Введите имя', FILTER_SANITIZE_SPECIAL_CHARS);
     $userContact = validate('message', $errors, 'Напишите как с вами связаться', FILTER_SANITIZE_SPECIAL_CHARS);
 
-    if (!filter_var($userEmail, FILTER_VALIDATE_EMAIL)) {
+    if ($userEmail === false) {
         $errors['email'] = "Данный E-mail адрес не валидный";
-    }
+    } else {
+        $emailCheck = mysqli_real_escape_string($dbConnection, $userEmail);
+        $sqlEmailCheck = "SELECT id FROM users WHERE email = '$emailCheck'";
+        $resEmailCheck = mysqli_query($dbConnection, $sqlEmailCheck);
 
-    $emailCheck = mysqli_real_escape_string($dbConnection, $userEmail);
-    $sqlEmailCheck = "SELECT id FROM users WHERE email = '$emailCheck'";
-    $resEmailCheck = mysqli_query($dbConnection, $sqlEmailCheck);
-
-    if (mysqli_num_rows($resEmailCheck) > 0) {
-        $errors['email'] = 'Пользователь с этим email уже зарегистрирован';
+        if (mysqli_num_rows($resEmailCheck) > 0) {
+            $errors['email'] = 'Пользователь с этим email уже зарегистрирован';
+        }
     }
 
     if (count($errors)) {
