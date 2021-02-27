@@ -190,3 +190,12 @@ function validateDate($date, &$errors, $errorText, $errorValidateText)
 
     return $dateField;
 }
+
+function checkSession()
+{
+    if (!isset($_SESSION['userName'])) {
+        return 0;
+    }
+
+    return 1;
+}

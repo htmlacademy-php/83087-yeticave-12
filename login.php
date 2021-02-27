@@ -8,6 +8,45 @@ $dbConnection = getConnection($config);
 
 $allCategories = getCategories($dbConnection);
 
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $required = ['email', 'password'];
+
+    $errors = [];
+
+    $userEmail = validate('email', $errors, 'Введите e-mail', FILTER_VALIDATE_EMAIL);
+    $userPassword = validate('password', $errors, 'Введите пароль', FILTER_DEFAULT);
+
+    $emailCheck = mysqli_real_escape_string($dbConnection, $userEmail);
+    $sqlEmailCheck = "SELECT * FROM users WHERE email = '$emailCheck'";
+    $resEmailCheck = mysqli_query($dbConnection, $sqlEmailCheck);
+
+    $user = $resEmailCheck ? mysqli_fetch_array($resEmailCheck, MYSQLI_ASSOC) : null;
+
+    if (!count($errors) and $user) {
+        if (password_verify($userPassword, $user['password'])) {
+
+            $_SESSION['userName'] = $user['name'];
+
+            header("Location: /");
+        } else {
+            $errors['password'] = 'Вы ввели неверный пароль';
+        }
+    } else {
+        $errors['email'] = 'Такой пользователь не найден';
+    }
+
+    if (count($errors)) {
+        $pageСontent = include_template(
+            'login.php',
+            [
+                'categories' => $allCategories,
+
+                'errors' => $errors,
+            ]
+        );
+    }
+}
+
 $pageСontent = include_template(
     'login.php',
     [
@@ -25,10 +64,6 @@ $layoutСontent = include_template(
         'content' => $pageСontent,
 
         'title' => 'Вход',
-
-        'isAuth' => '',
-
-        'userName' => 'Павел',
     ]
 );
 

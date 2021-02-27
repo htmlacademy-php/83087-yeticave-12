@@ -70,10 +70,6 @@ $layoutСontent = include_template(
         'content' => $pageСontent,
 
         'title' => 'Регистрация',
-
-        'isAuth' => '',
-
-        'userName' => 'Павел',
     ]
 );
 

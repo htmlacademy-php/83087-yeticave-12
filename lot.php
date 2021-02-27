@@ -48,9 +48,9 @@ $layoutСontent = include_template(
 
         'title' => $title,
 
-        'isAuth' => rand(0, 1),
+        'isAuth' => checkSession(),
 
-        'userName' => 'Павел',
+        'userName' => $_SESSION['userName'],
     ]
 );
 
