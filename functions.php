@@ -199,3 +199,25 @@ function checkSession()
 
     return 1;
 }
+
+function searchLot($connection, $searchText)
+{
+    $requestSearch =  "SELECT * FROM lots WHERE MATCH(name,description) AGAINST('$searchText')";
+    $resultSearch = mysqli_query($connection, $requestSearch);
+
+    if (!$resultSearch) {
+        $error = mysqli_error($connection);
+        print("Ошибка MySQL: " . $error);
+    }
+
+    $lots = mysqli_fetch_all($resultSearch, MYSQLI_ASSOC);
+
+    return $lots;
+}
+
+// function pagination($limit)
+// {
+//     $offset = ()
+
+//     $sql = "SELECT * FROM lots LIMIT $limit OFFSET $offset";
+// }
