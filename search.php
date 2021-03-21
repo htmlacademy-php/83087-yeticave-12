@@ -8,28 +8,31 @@ $dbConnection = getConnection($config);
 $allCategories = getCategories($dbConnection);
 
 if ($_SERVER['REQUEST_METHOD'] == 'GET') {
-    $trimmedSearch = trim($_GET['search']);
+    // $trimmedSearch = trim($_GET['search']);
 
-    $searchedLots = searchLot($dbConnection, $trimmedSearch);
+    $searchedLots = searchLot($dbConnection, $_GET['search']);
 
-    if (!empty($trimmedSearch)) {
-        $lotsQuantity = count($searchedLots);
-        $lotsLimit = 9;
-        $offset = 0;
+    if (!empty($searchedLots)) {
+        // $lotsQuantity = count($searchedLots);
+        // $lotsLimit = 9;
+        // $offset = 0;
 
-        $productsOnPage = array_slice($searchedLots, $offset, $lotsLimit, true);
+        // $productsOnPage = array_slice($searchedLots, $offset, $lotsLimit, true);
 
-        // if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') {
-        //     $url = "https://";
-        // } else {
-        //     $url = "http://";
-        // }
+        // $cur_page = $_GET['page'] ?? 1;
+        // $page_items = 6;
 
-        // $url .= $_SERVER['HTTP_HOST'];
-        // $url .= $_SERVER['REQUEST_URI'];
-        // $url .= '?page=1';
+        // $result = mysqli_query($dbConnection, "SELECT COUNT(*) as cnt FROM lots");
+        // $items_count = mysqli_fetch_assoc($result)['cnt'];
 
-        // echo $url;
+        // $pages_count = ceil($items_count / $page_items);
+        // $offset = ($cur_page - 1) * $page_items;
+
+        // $pages = range(1, $pages_count);
+
+        // $sql = 'SELECT gifs.id, title, path, like_count, users.name FROM gifs '
+        //     . 'JOIN users ON gifs.user_id = users.id '
+        //     . 'ORDER BY show_count DESC LIMIT ' . $page_items . ' OFFSET ' . $offset;
 
         $pageСontent = include_template(
             'search.php',

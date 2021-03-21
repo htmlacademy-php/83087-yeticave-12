@@ -49,7 +49,7 @@ if (checkSession()) {
                 ]
             );
         } else {
-            $sql = "INSERT INTO lots (create_date, user_id, name, category_id, description, image_url, price, price_step, end_date) VALUES (NOW(), 1, '$lotName', '$lotCategory', '$lotDescription', '$fileUrl', '$lotRate', '$lotStep', '$lotDate')";
+            $sql = addLot($lotName, $lotCategory, $lotDescription, $fileUrl, $lotRate, $lotStep, $lotDate);
 
             if (mysqli_query($dbConnection, $sql)) {
                 $lotId = mysqli_insert_id($dbConnection);

@@ -5,13 +5,13 @@
         <ul class="promo__list">
             <?php
             foreach ($categories as $category) : ?>
-                <li class="promo__item promo__item--<?= $category['code']; ?>">
-                    <a class="promo__link" href="pages/all-lots.html"><?= stripTags($category['name']); ?></a>
+                <li class="promo__item promo__item--<?= stripTags($category['code']); ?>">
+                    <a class="promo__link" href="/category.php?code=<?= stripTags($category['code']); ?>&page=1"><?= stripTags($category['name']); ?></a>
                 </li>
             <?php endforeach; ?>
         </ul>
     </section>
-    <section class="lots">
+    <section class=" lots">
         <div class="lots__header">
             <h2>Открытые лоты</h2>
         </div>
@@ -23,7 +23,7 @@
                     </div>
                     <div class="lot__info">
                         <span class="lot__category"><?= stripTags($lot['category']); ?></span>
-                        <h3 class="lot__title"><a class="text-link" href="/lot.php?id=<?= $lot['id']; ?>"><?= stripTags($lot['name']); ?></a></h3>
+                        <h3 class="lot__title"><a class="text-link" href="/lot.php?id=<?= stripTags($lot['id']); ?>"><?= stripTags($lot['name']); ?></a></h3>
                         <div class="lot__state">
                             <div class="lot__rate">
                                 <span class="lot__amount">Стартовая цена</span>

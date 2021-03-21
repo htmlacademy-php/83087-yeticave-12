@@ -72,11 +72,48 @@ function getCategories($connection)
     return $categories;
 }
 
+function getCategoryName($connection, $name)
+{
+    $requestCategory = "SELECT name FROM categories
+    WHERE categories.code = '$name'";
+
+    $resultCategory = mysqli_query($connection, $requestCategory);
+
+    if (!$resultCategory) {
+        $error = mysqli_error($connection);
+        print("Ошибка MySQL: " . $error);
+    }
+
+    $categoryName = mysqli_fetch_all($resultCategory, MYSQLI_ASSOC);
+
+    return $categoryName[0]['name'];
+}
+
 function getLots($connection)
 {
     $requestLots = "SELECT lots.name, lots.id, categories.name as category, image_url, price, end_date
     FROM lots JOIN categories
     WHERE lots.category_id = categories.id
+    ORDER BY create_date DESC
+    LIMIT 6";
+
+    $resultLot = mysqli_query($connection, $requestLots);
+
+    if (!$resultLot) {
+        $error = mysqli_error($connection);
+        print("Ошибка MySQL: " . $error);
+    }
+
+    $lots = mysqli_fetch_all($resultLot, MYSQLI_ASSOC);
+
+    return $lots;
+}
+
+function getLotsFromCategory($connection, $category)
+{
+    $requestLots = "SELECT lots.name, lots.id, categories.name as category, image_url, price, end_date
+    FROM lots JOIN categories
+    WHERE lots.category_id = categories.id AND categories.code = '$category'
     ORDER BY create_date DESC";
 
     $resultLot = mysqli_query($connection, $requestLots);
@@ -202,6 +239,7 @@ function checkSession()
 
 function searchLot($connection, $searchText)
 {
+    $searchText = mysqli_real_escape_string($connection, $searchText);
     $requestSearch =  "SELECT * FROM lots WHERE MATCH(name,description) AGAINST('$searchText')";
     $resultSearch = mysqli_query($connection, $requestSearch);
 
@@ -221,3 +259,22 @@ function searchLot($connection, $searchText)
 
 //     $sql = "SELECT * FROM lots LIMIT $limit OFFSET $offset";
 // }
+
+/**
+ * Функция sql запроса на создание нового лота
+ * @param $lotName - имя лота
+ * @param $lotCategory - категория лота
+ * @param $lotDescription - описание лота
+ * @param $fileUrl - url адрес изображения лота
+ * @param $lotRate - начальная ставка лота
+ * @param $lotStep - шаг ставки лота
+ * @param $lotDate - дата окончания лота
+ */
+function addLot($lotName, $lotCategory, $lotDescription, $fileUrl, $lotRate, $lotStep, $lotDate)
+{
+    return "INSERT INTO lots (create_date, user_id, name, category_id, description, image_url, price, price_step, end_date) VALUES (NOW(), 1, '$lotName', '$lotCategory', '$lotDescription', '$fileUrl', '$lotRate', '$lotStep', '$lotDate')";
+}
+
+function checkLoginEmail()
+{
+}
