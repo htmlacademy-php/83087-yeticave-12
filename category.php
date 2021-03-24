@@ -13,8 +13,8 @@ $allCategories = getCategories($dbConnection);
 
 $categoryName = getCategoryName($dbConnection, $currentCategory);
 
-$allLots = getLotsFromCategory($dbConnection, $trurl);
-$limit = 6;
+$allLots = getLots($dbConnection, $trurl);
+$limit = 1;
 $currentCategoryPage = intval($_GET['page']) ?: 1;
 $offset = ($currentCategoryPage - 1) * $limit;
 $lotsOnPage = array_slice($allLots, $offset, $limit, true);

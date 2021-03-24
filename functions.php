@@ -89,12 +89,17 @@ function getCategoryName($connection, $name)
     return $categoryName[0]['name'];
 }
 
-function getLots($connection)
+function getLots($connection, $category = null)
 {
     $requestLots = "SELECT lots.name, lots.id, categories.name as category, image_url, price, end_date
     FROM lots JOIN categories
-    WHERE lots.category_id = categories.id
-    ORDER BY create_date DESC
+    WHERE lots.category_id = categories.id";
+
+    if (!empty($category)) {
+        $requestLots .= " AND categories.code = '$category'";
+    }
+
+    $requestLots .= " ORDER BY create_date DESC
     LIMIT 6";
 
     $resultLot = mysqli_query($connection, $requestLots);
@@ -253,13 +258,6 @@ function searchLot($connection, $searchText)
     return $lots;
 }
 
-// function pagination($limit)
-// {
-//     $offset = ()
-
-//     $sql = "SELECT * FROM lots LIMIT $limit OFFSET $offset";
-// }
-
 /**
  * Функция sql запроса на создание нового лота
  * @param $lotName - имя лота
@@ -273,8 +271,4 @@ function searchLot($connection, $searchText)
 function addLot($lotName, $lotCategory, $lotDescription, $fileUrl, $lotRate, $lotStep, $lotDate)
 {
     return "INSERT INTO lots (create_date, user_id, name, category_id, description, image_url, price, price_step, end_date) VALUES (NOW(), 1, '$lotName', '$lotCategory', '$lotDescription', '$fileUrl', '$lotRate', '$lotStep', '$lotDate')";
-}
-
-function checkLoginEmail()
-{
 }

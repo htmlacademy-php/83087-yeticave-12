@@ -49,9 +49,17 @@ if (checkSession()) {
                 ]
             );
         } else {
-            $sql = addLot($lotName, $lotCategory, $lotDescription, $fileUrl, $lotRate, $lotStep, $lotDate);
+            // $sql = addLot($lotName, $lotCategory, $lotDescription, $fileUrl, $lotRate, $lotStep, $lotDate);
+            $_POST['image_url'] = $fileUrl;
 
-            if (mysqli_query($dbConnection, $sql)) {
+            $sql = "INSERT INTO lots (create_date, user_id, name, category_id, description, image_url, price, price_step, end_date) VALUES (NOW(), 1, ?, ?, ?, ?, ?, ?, ?)";
+
+            var_dump($_POST);
+
+            $stmt = db_get_prepare_stmt($dbConnection, $sql, $_POST);
+            $res = mysqli_stmt_execute($stmt);
+
+            if ($res) {
                 $lotId = mysqli_insert_id($dbConnection);
 
                 header("Location: lot.php?id=" . $lotId);
