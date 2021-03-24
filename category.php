@@ -22,6 +22,8 @@ $lotsQuantity = count($allLots);
 $pages = $lotsQuantity / $limit;
 $pagesTotal = ceil($pages);
 
+pagination($dbConnection);
+
 $pageContent = include_template(
     'category.php',
     [

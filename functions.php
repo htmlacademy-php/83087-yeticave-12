@@ -272,3 +272,26 @@ function addLot($lotName, $lotCategory, $lotDescription, $fileUrl, $lotRate, $lo
 {
     return "INSERT INTO lots (create_date, user_id, name, category_id, description, image_url, price, price_step, end_date) VALUES (NOW(), 1, '$lotName', '$lotCategory', '$lotDescription', '$fileUrl', '$lotRate', '$lotStep', '$lotDate')";
 }
+
+function redirect($id)
+{
+    header("Location: " . $id);
+
+    exit;
+}
+
+function pagination($connection)
+{
+    $lotsSql = "SELECT COUNT(*) FROM lots";
+
+    $lotsResult = mysqli_query($connection, $lotsSql);
+
+    if (!$lotsResult) {
+        $error = mysqli_error($connection);
+        print("Ошибка MySQL: " . $error);
+    }
+
+    $allLots = mysqli_fetch_all($lotsResult, MYSQLI_ASSOC);
+
+    var_dump($allLots);
+}
