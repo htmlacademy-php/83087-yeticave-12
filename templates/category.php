@@ -1,10 +1,9 @@
 <main>
     <nav class="nav">
         <ul class="nav__list container">
-            <?php
-            foreach ($categories as $category) : ?>
+            <?php foreach ($categories as $category) : ?>
                 <li class="nav__item">
-                    <a href="/category.php?code=<?= stripTags($category['code']); ?>"><?= stripTags($category['name']); ?></a>
+                    <a href="/category.php?id=<?= stripTags($category['id']); ?>"><?= stripTags($category['name']); ?></a>
                 </li>
             <?php endforeach; ?>
         </ul>
@@ -40,25 +39,24 @@
                 <?php endforeach; ?>
             </ul>
         </section>
-        <?php
-        if ($pagesTotal > 1) : ?>
+        <?php if ($totalPages > 1) : ?>
             <ul class="pagination-list">
-                <?php
-                if ($currentCategoryPage > 1) : ?>
-                    <li class="pagination-item pagination-item-prev"><a href="/category.php?code=<?= $trurl; ?>&page=<?= $currentCategoryPage - 1 ?>">Назад</a></li>
+                <?php if ($currentCategoryPage > 1) : ?>
+                    <li class="pagination-item pagination-item-prev"><a href="/category.php?id=<?= $categoryId; ?>&page=<?= $currentCategoryPage - 1 ?>">Назад</a></li>
+                <?php else : ?>
+                    <li class="pagination-item pagination-item-prev">Назад</li>
                 <?php endif; ?>
-                <?php for ($i = 1; $i <= $pagesTotal; $i = $i + 1) : ?>
+                <?php for ($i = 1; $i <= $totalPages; $i = $i + 1) : ?>
                     <li class="pagination-item <?= $i === $currentCategoryPage ? 'pagination-item-active' : '' ?>">
-                        <a href="/category.php?code=<?= $trurl; ?>&page=<?= $i ?>"><?= $i ?></a>
+                        <a href="/category.php?id=<?= $categoryId; ?>&page=<?= $i ?>"><?= $i ?></a>
                     </li>
                 <?php endfor; ?>
-                <?php
-                if ($pagesTotal > $currentCategoryPage) : ?>
-                    <li class="pagination-item pagination-item-next"><a href="/category.php?code=<?= $trurl; ?>&page=<?= $currentCategoryPage + 1 ?>">Вперед</a></li>
-                <?php endif;
-                ?>
+                <?php if ($totalPages > $currentCategoryPage) : ?>
+                    <li class="pagination-item pagination-item-next"><a href="/category.php?id=<?= $categoryId; ?>&page=<?= $currentCategoryPage + 1 ?>">Вперед</a></li>
+                <?php else : ?>
+                    <li class="pagination-item pagination-item-next">Вперед</li>
+                <?php endif; ?>
             </ul>
-        <?php endif;
-        ?>
+        <?php endif; ?>
     </div>
 </main>

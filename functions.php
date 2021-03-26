@@ -75,7 +75,7 @@ function getCategories($connection)
 function getCategoryName($connection, $name)
 {
     $requestCategory = "SELECT name FROM categories
-    WHERE categories.code = '$name'";
+    WHERE categories.id = '$name'";
 
     $resultCategory = mysqli_query($connection, $requestCategory);
 
@@ -280,9 +280,13 @@ function redirect($id)
     exit;
 }
 
-function pagination($connection)
+function pagination($connection, $category)
 {
-    $lotsSql = "SELECT COUNT(*) FROM lots";
+    $lotsSql = "SELECT COUNT(*) FROM lots WHERE lots.category_id = '$category'";
+
+    $lotsSqlLimit = "SELECT COUNT(*) FROM lots WHERE lots.category_id = 2 LIMIT 6";
+
+    $lotsSqlOffset = "SELECT COUNT(*) FROM lots WHERE lots.category_id = 2 LIMIT 6 OFFSET 6";
 
     $lotsResult = mysqli_query($connection, $lotsSql);
 
@@ -294,4 +298,39 @@ function pagination($connection)
     $allLots = mysqli_fetch_all($lotsResult, MYSQLI_ASSOC);
 
     var_dump($allLots);
+}
+
+function getLotsQtyByCategory($connection, $category)
+{
+    $lotsSql = "SELECT COUNT(*) AS cnt FROM lots WHERE lots.category_id = '$category'";
+
+    $lotsResult = mysqli_query($connection, $lotsSql);
+
+    if (!$lotsResult) {
+        $error = mysqli_error($connection);
+        print("Ошибка MySQL: " . $error);
+    }
+
+    $allLots = mysqli_fetch_all($lotsResult, MYSQLI_ASSOC);
+
+    return $allLots[0]['cnt'];
+}
+
+define("LOTS_PER_PAGE", 1);
+
+function getLotsByCategory($connection, $category, $page)
+{
+    $lotsSqlLimit = "SELECT * FROM lots WHERE lots.category_id = '$category' LIMIT " . LOTS_PER_PAGE;
+    $lotsSqlOffset = $lotsSqlLimit . " OFFSET " . LOTS_PER_PAGE * ($page - 1);
+
+    $resultLot = mysqli_query($connection, $lotsSqlLimit);
+
+    if (!$resultLot) {
+        $error = mysqli_error($connection);
+        print("Ошибка MySQL: " . $error);
+    }
+
+    $lots = mysqli_fetch_all($resultLot, MYSQLI_ASSOC);
+
+    return $lots;
 }

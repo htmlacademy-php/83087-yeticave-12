@@ -3,9 +3,7 @@ require_once('helpers.php');
 require_once('functions.php');
 
 $config = require 'config.php';
-$currentCategory = $_GET['code'];
-
-$trurl = filter_input(INPUT_GET, 'code', FILTER_SANITIZE_URL);
+$currentCategory = $_GET['id'];
 
 $dbConnection = getConnection($config);
 
@@ -13,29 +11,24 @@ $allCategories = getCategories($dbConnection);
 
 $categoryName = getCategoryName($dbConnection, $currentCategory);
 
-$allLots = getLots($dbConnection, $trurl);
-$limit = 1;
+$lotsQtyByCategory = getLotsQtyByCategory($dbConnection, $currentCategory);
 $currentCategoryPage = intval($_GET['page']) ?: 1;
-$offset = ($currentCategoryPage - 1) * $limit;
-$lotsOnPage = array_slice($allLots, $offset, $limit, true);
-$lotsQuantity = count($allLots);
-$pages = $lotsQuantity / $limit;
-$pagesTotal = ceil($pages);
-
-pagination($dbConnection);
+$pages = $lotsQtyByCategory / LOTS_PER_PAGE;
+$totalPages = ceil($pages);
+$lotsByCategory = getLotsByCategory($dbConnection, $currentCategory, $pages);
 
 $pageContent = include_template(
     'category.php',
     [
         'categories' => $allCategories,
 
-        'lots' => $lotsOnPage,
+        'lots' => $lotsByCategory,
 
         'categoryName' => $categoryName,
 
-        'pagesTotal' => $pagesTotal,
+        'totalPages' => $totalPages,
 
-        'trurl' => $trurl,
+        'categoryId' => $currentCategory,
 
         'currentCategoryPage' => $currentCategoryPage,
     ]

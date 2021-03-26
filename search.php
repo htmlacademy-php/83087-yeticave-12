@@ -9,13 +9,19 @@ $allCategories = getCategories($dbConnection);
 
 $searchedLots = searchLot($dbConnection, $_GET['search']);
 
+
+$searchedLotsQty = count($searchedLots);
+$currentPage = intval($_GET['page']) ?: 1;
+$pages = $searchedLotsQty / LOTS_PER_PAGE;
+$totalPages = ceil($pages);
+
 if (!empty($searchedLots)) {
     $pageСontent = include_template(
         'search.php',
         [
             'categories' => $allCategories,
 
-            'lots' => $productsOnPage,
+            'lots' => $searchedLots,
         ]
     );
 } else {
