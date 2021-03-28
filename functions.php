@@ -311,6 +311,10 @@ function getLotsByCategory($connection, $category, $page)
         print("Ошибка MySQL: " . $error);
     }
 
+    if ($page > 1) {
+        $resultLot = mysqli_query($connection, $lotsSqlOffset);
+    }
+
     $lots = mysqli_fetch_all($resultLot, MYSQLI_ASSOC);
 
     return $lots;
