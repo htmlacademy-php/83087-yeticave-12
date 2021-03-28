@@ -43,16 +43,25 @@
                 <p><?= $errors; ?></p>
             <?php endif; ?>
         </section>
-        <ul class="pagination-list">
-            <!-- <?php foreach ($pages as $page) : ?>
-                <li class="pagination-item"><a href="#">2</a></li>
-            <?php endforeach; ?> -->
-            <li class="pagination-item pagination-item-prev"><a>Назад</a></li>
-            <li class="pagination-item pagination-item-active"><a>1</a></li>
-            <li class="pagination-item"><a href="#">2</a></li>
-            <li class="pagination-item"><a href="#">3</a></li>
-            <li class="pagination-item"><a href="#">4</a></li>
-            <li class="pagination-item pagination-item-next"><a href="#">Вперед</a></li>
-        </ul>
+
+        <?php if ($totalPages > 1) : ?>
+            <ul class="pagination-list">
+                <?php if ($currentSearchPage > 1) : ?>
+                    <li class="pagination-item pagination-item-prev"><a href="/search.php?search=<?= $searchedWord; ?>&page=<?= $currentSearchPage - 1 ?>">Назад</a></li>
+                <?php else : ?>
+                    <li class="pagination-item pagination-item-prev">Назад</li>
+                <?php endif; ?>
+                <?php for ($i = 1; $i <= $totalPages; $i = $i + 1) : ?>
+                    <li class="pagination-item <?= $i === $currentSearchPage ? 'pagination-item-active' : '' ?>">
+                        <a href="/search.php?search=<?= $searchedWord; ?>&page=<?= $i ?>"><?= $i ?></a>
+                    </li>
+                <?php endfor; ?>
+                <?php if ($totalPages > $currentSearchPage) : ?>
+                    <li class="pagination-item pagination-item-next"><a href="/search.php?search=<?= $searchedWord; ?>&page=<?= $currentSearchPage + 1 ?>">Вперед</a></li>
+                <?php else : ?>
+                    <li class="pagination-item pagination-item-next">Вперед</li>
+                <?php endif; ?>
+            </ul>
+        <?php endif; ?>
     </div>
 </main>

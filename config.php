@@ -1,4 +1,6 @@
 <?php
+define("LOTS_PER_PAGE", 9);
+
 return [
     'db' => [
         'host' => 'localhost',

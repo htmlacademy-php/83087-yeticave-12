@@ -223,10 +223,26 @@ function checkSession()
     return 1;
 }
 
-function searchLot($connection, $searchText)
+function getLotsQtyBySearch($connection, $searchText)
+{
+    $lotsSql = "SELECT COUNT(*) AS cnt FROM lots WHERE MATCH(name,description) AGAINST('$searchText')";
+
+    $lotsResult = mysqli_query($connection, $lotsSql);
+
+    if (!$lotsResult) {
+        $error = mysqli_error($connection);
+        print("Ошибка MySQL: " . $error);
+    }
+
+    $allLots = mysqli_fetch_all($lotsResult, MYSQLI_ASSOC);
+
+    return $allLots[0]['cnt'];
+}
+
+function searchLot($connection, $searchText, $page)
 {
     $searchText = mysqli_real_escape_string($connection, $searchText);
-    $requestSearch =  "SELECT * FROM lots WHERE MATCH(name,description) AGAINST('$searchText')";
+    $requestSearch =  "SELECT * FROM lots WHERE MATCH(name,description) AGAINST('$searchText') LIMIT " . LOTS_PER_PAGE . " OFFSET " . LOTS_PER_PAGE * ($page - 1);
     $resultSearch = mysqli_query($connection, $requestSearch);
 
     if (!$resultSearch) {
@@ -261,26 +277,6 @@ function redirect($id)
     exit;
 }
 
-function pagination($connection, $category)
-{
-    $lotsSql = "SELECT COUNT(*) FROM lots WHERE lots.category_id = '$category'";
-
-    $lotsSqlLimit = "SELECT COUNT(*) FROM lots WHERE lots.category_id = 2 LIMIT 6";
-
-    $lotsSqlOffset = "SELECT COUNT(*) FROM lots WHERE lots.category_id = 2 LIMIT 6 OFFSET 6";
-
-    $lotsResult = mysqli_query($connection, $lotsSql);
-
-    if (!$lotsResult) {
-        $error = mysqli_error($connection);
-        print("Ошибка MySQL: " . $error);
-    }
-
-    $allLots = mysqli_fetch_all($lotsResult, MYSQLI_ASSOC);
-
-    var_dump($allLots);
-}
-
 function getLotsQtyByCategory($connection, $category)
 {
     $lotsSql = "SELECT COUNT(*) AS cnt FROM lots WHERE lots.category_id = '$category'";
@@ -296,8 +292,6 @@ function getLotsQtyByCategory($connection, $category)
 
     return $allLots[0]['cnt'];
 }
-
-define("LOTS_PER_PAGE", 2);
 
 function getLotsByCategory($connection, $category, $page)
 {

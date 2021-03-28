@@ -7,13 +7,11 @@ $config = require 'config.php';
 $dbConnection = getConnection($config);
 $allCategories = getCategories($dbConnection);
 
-$searchedLots = searchLot($dbConnection, $_GET['search']);
-
-
-$searchedLotsQty = count($searchedLots);
-$currentPage = intval($_GET['page']) ?: 1;
+$searchedLotsQty = getLotsQtyBySearch($dbConnection, $_GET['search']);
+$currentSearchPage = intval($_GET['page'] ?: 1);
 $pages = $searchedLotsQty / LOTS_PER_PAGE;
 $totalPages = ceil($pages);
+$searchedLots = searchLot($dbConnection, $_GET['search'], $currentSearchPage);
 
 if (!empty($searchedLots)) {
     $pageСontent = include_template(
@@ -22,6 +20,12 @@ if (!empty($searchedLots)) {
             'categories' => $allCategories,
 
             'lots' => $searchedLots,
+
+            'searchedWord' => $_GET['search'],
+
+            'currentSearchPage' => $currentSearchPage,
+
+            'totalPages' => $totalPages,
         ]
     );
 } else {
