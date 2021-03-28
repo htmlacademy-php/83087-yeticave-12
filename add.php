@@ -49,9 +49,7 @@ if (checkSession()) {
                 ]
             );
         } else {
-            $_POST['image_url'] = $fileUrl;
-
-            $sql = "INSERT INTO lots (create_date, user_id, name, category_id, description, price, price_step, end_date, image_url) VALUES (NOW(), 1, ?, ?, ?, ?, ?, ?, ?)";
+            $sql = "INSERT INTO lots (create_date, user_id, name, category_id, description, price, price_step, end_date, image_url) VALUES (NOW(), 1, ?, ?, ?, ?, ?, ?, '$fileUrl')";
 
             $stmt = db_get_prepare_stmt($dbConnection, $sql, $_POST);
             $res = mysqli_stmt_execute($stmt);
