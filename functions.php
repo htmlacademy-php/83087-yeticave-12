@@ -301,18 +301,13 @@ define("LOTS_PER_PAGE", 2);
 
 function getLotsByCategory($connection, $category, $page)
 {
-    $lotsSqlLimit = "SELECT * FROM lots WHERE lots.category_id = '$category' LIMIT " . LOTS_PER_PAGE;
-    $lotsSqlOffset = $lotsSqlLimit . " OFFSET " . LOTS_PER_PAGE * ($page - 1);
+    $lotsSqlLimit = "SELECT * FROM lots WHERE lots.category_id = '$category' LIMIT " . LOTS_PER_PAGE . " OFFSET " . LOTS_PER_PAGE * ($page - 1);
 
     $resultLot = mysqli_query($connection, $lotsSqlLimit);
 
     if (!$resultLot) {
         $error = mysqli_error($connection);
         print("Ошибка MySQL: " . $error);
-    }
-
-    if ($page > 1) {
-        $resultLot = mysqli_query($connection, $lotsSqlOffset);
     }
 
     $lots = mysqli_fetch_all($resultLot, MYSQLI_ASSOC);
