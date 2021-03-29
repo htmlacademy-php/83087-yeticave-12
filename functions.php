@@ -72,12 +72,35 @@ function getCategories($connection)
     return $categories;
 }
 
-function getLots($connection)
+function getCategoryName($connection, $name)
+{
+    $requestCategory = "SELECT name FROM categories
+    WHERE categories.id = '$name'";
+
+    $resultCategory = mysqli_query($connection, $requestCategory);
+
+    if (!$resultCategory) {
+        $error = mysqli_error($connection);
+        print("Ошибка MySQL: " . $error);
+    }
+
+    $categoryName = mysqli_fetch_all($resultCategory, MYSQLI_ASSOC);
+
+    return $categoryName[0]['name'];
+}
+
+function getLots($connection, $category = null)
 {
     $requestLots = "SELECT lots.name, lots.id, categories.name as category, image_url, price, end_date
     FROM lots JOIN categories
-    WHERE lots.category_id = categories.id
-    ORDER BY create_date DESC";
+    WHERE lots.category_id = categories.id";
+
+    if (!empty($category)) {
+        $requestLots .= " AND categories.code = '$category'";
+    }
+
+    $requestLots .= " ORDER BY create_date DESC
+    LIMIT 6";
 
     $resultLot = mysqli_query($connection, $requestLots);
 
@@ -198,4 +221,90 @@ function checkSession()
     }
 
     return 1;
+}
+
+function getLotsQtyBySearch($connection, $searchText)
+{
+    $lotsSql = "SELECT COUNT(*) AS cnt FROM lots WHERE MATCH(name,description) AGAINST('$searchText')";
+
+    $lotsResult = mysqli_query($connection, $lotsSql);
+
+    if (!$lotsResult) {
+        $error = mysqli_error($connection);
+        print("Ошибка MySQL: " . $error);
+    }
+
+    $allLots = mysqli_fetch_all($lotsResult, MYSQLI_ASSOC);
+
+    return $allLots[0]['cnt'];
+}
+
+function searchLot($connection, $searchText, $page)
+{
+    $searchText = mysqli_real_escape_string($connection, $searchText);
+    $requestSearch =  "SELECT * FROM lots WHERE MATCH(name,description) AGAINST('$searchText') LIMIT " . LOTS_PER_PAGE . " OFFSET " . LOTS_PER_PAGE * ($page - 1);
+    $resultSearch = mysqli_query($connection, $requestSearch);
+
+    if (!$resultSearch) {
+        $error = mysqli_error($connection);
+        print("Ошибка MySQL: " . $error);
+    }
+
+    $lots = mysqli_fetch_all($resultSearch, MYSQLI_ASSOC);
+
+    return $lots;
+}
+
+/**
+ * Функция sql запроса на создание нового лота
+ * @param $lotName - имя лота
+ * @param $lotCategory - категория лота
+ * @param $lotDescription - описание лота
+ * @param $fileUrl - url адрес изображения лота
+ * @param $lotRate - начальная ставка лота
+ * @param $lotStep - шаг ставки лота
+ * @param $lotDate - дата окончания лота
+ */
+function addLot($lotName, $lotCategory, $lotDescription, $fileUrl, $lotRate, $lotStep, $lotDate)
+{
+    return "INSERT INTO lots (create_date, user_id, name, category_id, description, image_url, price, price_step, end_date) VALUES (NOW(), 1, '$lotName', '$lotCategory', '$lotDescription', '$fileUrl', '$lotRate', '$lotStep', '$lotDate')";
+}
+
+function redirect($id)
+{
+    header("Location: " . $id);
+
+    exit;
+}
+
+function getLotsQtyByCategory($connection, $category)
+{
+    $lotsSql = "SELECT COUNT(*) AS cnt FROM lots WHERE lots.category_id = '$category'";
+
+    $lotsResult = mysqli_query($connection, $lotsSql);
+
+    if (!$lotsResult) {
+        $error = mysqli_error($connection);
+        print("Ошибка MySQL: " . $error);
+    }
+
+    $allLots = mysqli_fetch_all($lotsResult, MYSQLI_ASSOC);
+
+    return $allLots[0]['cnt'];
+}
+
+function getLotsByCategory($connection, $category, $page)
+{
+    $lotsSqlLimit = "SELECT * FROM lots WHERE lots.category_id = '$category' LIMIT " . LOTS_PER_PAGE . " OFFSET " . LOTS_PER_PAGE * ($page - 1);
+
+    $resultLot = mysqli_query($connection, $lotsSqlLimit);
+
+    if (!$resultLot) {
+        $error = mysqli_error($connection);
+        print("Ошибка MySQL: " . $error);
+    }
+
+    $lots = mysqli_fetch_all($resultLot, MYSQLI_ASSOC);
+
+    return $lots;
 }

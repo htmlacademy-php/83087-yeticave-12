@@ -49,12 +49,15 @@ if (checkSession()) {
                 ]
             );
         } else {
-            $sql = "INSERT INTO lots (create_date, user_id, name, category_id, description, image_url, price, price_step, end_date) VALUES (NOW(), 1, '$lotName', '$lotCategory', '$lotDescription', '$fileUrl', '$lotRate', '$lotStep', '$lotDate')";
+            $sql = "INSERT INTO lots (create_date, user_id, name, category_id, description, price, price_step, end_date, image_url) VALUES (NOW(), 1, ?, ?, ?, ?, ?, ?, '$fileUrl')";
 
-            if (mysqli_query($dbConnection, $sql)) {
+            $stmt = db_get_prepare_stmt($dbConnection, $sql, $_POST);
+            $res = mysqli_stmt_execute($stmt);
+
+            if ($res) {
                 $lotId = mysqli_insert_id($dbConnection);
 
-                header("Location: lot.php?id=" . $lotId);
+                redirect("lot.php?id=" . $lotId);
             } else {
                 echo "Error: " . $sql . "<br>" . mysqli_error($dbConnection);
             }

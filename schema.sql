@@ -40,3 +40,5 @@ CREATE TABLE users (
   password VARCHAR(128),
   contact TEXT
 );
+
+CREATE FULLTEXT INDEX lot_search ON lots(name, description);
