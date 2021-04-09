@@ -10,8 +10,6 @@ $allCategories = getCategories($dbConnection);
 
 if (checkSession()) {
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-        $required = ['lot-name', 'category', 'message', 'file', 'lot-rate', 'lot-step', 'lot-date'];
-
         $errors = [];
 
         $lotName        = validate('lot-name', $errors, 'Введите наименование лота', FILTER_SANITIZE_SPECIAL_CHARS);

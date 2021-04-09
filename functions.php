@@ -16,6 +16,11 @@ function formatPrice($numberRate)
     return $numberRate . ' ₽';
 }
 
+/**
+ * Функция для вывода текста, которая удаляет теги HTML и PHP из строки
+ * @param string $str текст
+ * @return string Отформатированный текст
+ */
 function stripTags($str)
 {
     $text = strip_tags($str);
@@ -26,8 +31,9 @@ function stripTags($str)
 /**
  * Функция возврата оставшегося времени лота в формате ЧЧ:ММ
  * @param string $lotDate дата вида - ГГГГ-ММ-ДД
+ * @param bool $showSeconds - вывести секунды
  */
-function getDifferenceTime($lotDate)
+function getDifferenceTime(string $lotDate, bool $showSeconds = null)
 {
     $currentDate = time();
     $lotDateUnix = strtotime($lotDate);
@@ -36,10 +42,17 @@ function getDifferenceTime($lotDate)
     $allMinutes = floor($dateDiff / 60);
     $hours = floor($allMinutes / 60);
     $minute = $allMinutes - $hours * 60;
+    $seconds =  $dateDiff - $allMinutes * 60;
 
-    $res = [
-        $hours, $minute
-    ];
+    if ($showSeconds === true) {
+        $res = [
+            $hours, $minute, $seconds
+        ];
+    } else {
+        $res = [
+            $hours, $minute
+        ];
+    }
 
     return $res;
 }
@@ -153,7 +166,7 @@ function validate($field, &$errors, $errorText, $filter)
     return $fieldValue;
 }
 
-function validateFloatNumber($field, &$errors, $errorText, $errorValidateText)
+function validateFloatNumber($field, &$errors, $errorText, $errorValidateText, $minRate = null, $errorMinRateValidateText = null)
 {
     if (!isset($_POST[$field]) || $_POST[$field] === "") {
         $errors[$field] = $errorText;
@@ -165,6 +178,12 @@ function validateFloatNumber($field, &$errors, $errorText, $errorValidateText)
 
     if ($fieldValue < 1) {
         $errors[$field] = $errorValidateText;
+
+        return false;
+    }
+
+    if ($fieldValue < $minRate) {
+        $errors[$field] = $errorMinRateValidateText;
 
         return false;
     }
@@ -308,3 +327,131 @@ function getLotsByCategory($connection, $category, $page)
 
     return $lots;
 }
+
+/**
+ * Функция вывода ставок по лоту
+ * @param $connection - подключение
+ * @param $lotId - id лота
+ */
+function lotRates($connection, $lotId)
+{
+    $lotRatesSql = "SELECT rates.rate_date, rates.sum, users.name
+    FROM rates
+    JOIN users
+    ON users.id = rates.user_id
+    WHERE rates.lot_id = '$lotId'
+    ORDER BY rates.sum DESC
+    LIMIT 10";
+
+    $lotRatesResult = mysqli_query($connection, $lotRatesSql);
+
+    if (!$lotRatesResult) {
+        $error = mysqli_error($connection);
+        print("Ошибка MySQL: " . $error);
+    }
+
+    $lotRates = mysqli_fetch_all($lotRatesResult, MYSQLI_ASSOC);
+
+    return $lotRates;
+}
+
+/**
+ * Функция возврата значения текущей ставки и минимальной ставки
+ * @param int $lotId - id лота
+ * @param int $step - шаг ставки лота
+ */
+function lotMinRate($connection, $lotId, $step = null)
+{
+    $check = "SELECT * FROM rates WHERE lot_id = '$lotId'";
+    $checkResult = mysqli_query($connection, $check);
+
+    if (mysqli_num_rows($checkResult) === 0) {
+        if (true !== $step) {
+            $lotMinRateSql = "SELECT price as min_rate";
+        } else {
+            $lotMinRateSql = "SELECT price + price_step as min_rate";
+        }
+
+        $lotMinRateSql .= " FROM lots
+        WHERE id = '$lotId'";
+    } else {
+        if (true !== $step) {
+            $lotMinRateSql = "SELECT rates.sum as min_rate";
+        } else {
+            $lotMinRateSql = "SELECT rates.sum  + lots.price_step as min_rate";
+        }
+
+        $lotMinRateSql .= " FROM rates
+        JOIN lots
+        ON rates.lot_id = lots.id
+        WHERE rates.lot_id = '$lotId'
+        AND rates.sum IS NOT NULL
+        ORDER BY sum DESC
+        LIMIT 1";
+    }
+
+    $lotMinRateResult = mysqli_query($connection, $lotMinRateSql);
+
+    if (!$lotMinRateResult) {
+        $error = mysqli_error($connection);
+        print("Ошибка MySQL: " . $error);
+    }
+
+    $lotMinRate = mysqli_fetch_all($lotMinRateResult, MYSQLI_ASSOC);
+
+    return $lotMinRate;
+}
+
+/**
+ * Функция вывода ставок пользователя
+ * @param $userId - id пользователя
+ */
+
+function getLotsRates($connection, $userId)
+{
+    $lotsRatesSql = "SELECT lots.image_url, lots.name, lots.id, categories.name as category, lots.end_date, rates.rate_date, rates.sum
+    FROM users
+    JOIN rates
+    ON users.id = rates.user_id
+    JOIN lots
+    ON rates.lot_id = lots.id
+    JOIN categories
+    ON lots.category_id = categories.id
+    WHERE users.id = $userId";
+    $lotsRatesSqlResult = mysqli_query($connection, $lotsRatesSql);
+
+    if (!$lotsRatesSqlResult) {
+        $error = mysqli_error($connection);
+        print("Ошибка MySQL: " . $error);
+    }
+
+    $lotsRates = mysqli_fetch_all($lotsRatesSqlResult, MYSQLI_ASSOC);
+
+    return $lotsRates;
+}
+
+// function timePassed($connection, $lotRateDate)
+// {
+//     $lotRateDateSql = "SELECT rates.rate_date as rate_date
+//     FROM lots
+//     JOIN rates
+//     ON lots.id = rates.lot_id
+//     WHERE lots.id = 2";
+
+//     $lotRateDateSqlResult = mysqli_query($connection, $lotRateDateSql);
+
+//     if (!$lotRateDateSqlResult) {
+//         $error = mysqli_error($connection);
+//         print("Ошибка MySQL: " . $error);
+//     }
+
+//     $lotRateDate = mysqli_fetch_all($lotRateDateSqlResult, MYSQLI_ASSOC);
+
+
+//     $currentDate = time();
+//     $lotDateUnix = strtotime($lotRateDate);
+
+//     $lotCountdown = $currentDate - $lotDateUnix;
+
+//     return $lotCountdown;
+// }

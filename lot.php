@@ -13,6 +13,12 @@ $allCategories = getCategories($dbConnection);
 
 $lots = getLot($dbConnection, $trid);
 
+$lotRates = lotRates($dbConnection, $trid);
+
+$userId = $_SESSION['userId'];
+
+$lotMinRate = lotMinRate($dbConnection, $trid, true);
+
 if (!empty($lots)) {
     $pageСontent = include_template(
         'lot.php',
@@ -22,6 +28,14 @@ if (!empty($lots)) {
             'categories' => $allCategories,
 
             'lots' => $lots,
+
+            'lotRates' => $lotRates,
+
+            'lotRateQty' => count($lotRates),
+
+            'currentPrice' => lotMinRate($dbConnection, $trid),
+
+            'lotMinRate' => $lotMinRate,
         ]
     );
 
@@ -37,6 +51,50 @@ if (!empty($lots)) {
     );
 
     $title = 'Ошибка';
+}
+
+if (checkSession()) {
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        $errors = [];
+
+        $lotCost = validateFloatNumber('cost', $errors, 'Поле не может быть пустым', 'Введите минимальную ставку', $lotMinRate[0]['min_rate'], 'Ставка не может быть ниже минимальной');
+
+        if (count($errors)) {
+            $pageСontent = include_template(
+                "lot.php",
+                [
+                    'id' => $trid,
+
+                    'categories' => $allCategories,
+
+                    'lots' => $lots,
+
+                    'lotRates' => $lotRates,
+
+                    'lotRateQty' => count($lotRates),
+
+                    'currentPrice' => lotMinRate($dbConnection, $trid),
+
+                    'lotMinRate' => lotMinRate($dbConnection, $trid, true),
+
+                    'errors' => $errors,
+                ]
+            );
+        } else {
+            $sql = "INSERT INTO rates (sum, rate_date, user_id, lot_id) VALUES (?, NOW(), $userId, $trid)";
+
+            $stmt = db_get_prepare_stmt($dbConnection, $sql, $_POST);
+            $res = mysqli_stmt_execute($stmt);
+
+            if ($res) {
+                echo "<meta http-equiv='refresh' content='0'>";
+            } else {
+                echo "Error: " . $sql . "<br>" . mysqli_error($dbConnection);
+            }
+
+            // mysqli_close($dbConnection);
+        }
+    }
 }
 
 $layoutСontent = include_template(
