@@ -284,9 +284,9 @@ function searchLot($connection, $searchText, $page)
  * @param $lotStep - шаг ставки лота
  * @param $lotDate - дата окончания лота
  */
-function addLot($lotName, $lotCategory, $lotDescription, $fileUrl, $lotRate, $lotStep, $lotDate)
+function addLot($imageUrl)
 {
-    return "INSERT INTO lots (create_date, user_id, name, category_id, description, image_url, price, price_step, end_date) VALUES (NOW(), 1, '$lotName', '$lotCategory', '$lotDescription', '$fileUrl', '$lotRate', '$lotStep', '$lotDate')";
+    return "INSERT INTO lots (create_date, user_id, name, category_id, description, price, price_step, end_date, image_url) VALUES (NOW(), 1, ?, ?, ?, ?, ?, ?, '$imageUrl')";
 }
 
 function redirect($id)
@@ -409,7 +409,7 @@ function lotMinRate($connection, $lotId, $step = null)
 
 function getLotsRates($connection, $userId)
 {
-    $lotsRatesSql = "SELECT lots.image_url, lots.name, lots.id, categories.name as category, lots.end_date, rates.rate_date, rates.sum
+    $lotsRatesSql = "SELECT lots.image_url, lots.name, lots.id, categories.name as category, lots.end_date, lots.winner_id, rates.rate_date, rates.sum
     FROM users
     JOIN rates
     ON users.id = rates.user_id
@@ -417,7 +417,8 @@ function getLotsRates($connection, $userId)
     ON rates.lot_id = lots.id
     JOIN categories
     ON lots.category_id = categories.id
-    WHERE users.id = $userId";
+    WHERE users.id = $userId
+    ORDER BY rates.rate_date DESC";
     $lotsRatesSqlResult = mysqli_query($connection, $lotsRatesSql);
 
     if (!$lotsRatesSqlResult) {
@@ -430,28 +431,53 @@ function getLotsRates($connection, $userId)
     return $lotsRates;
 }
 
-// function timePassed($connection, $lotRateDate)
+/**
+ * Функция, в которой считаем сколько прошло времени с момента ставки
+ * @param $rateDate - дата ставки
+ */
+function lotRateDifference($rateDate)
+{
+    $currentDate = time();
+    $lotDateUnix = strtotime($rateDate);
+
+    $lotCountdown = $currentDate - $lotDateUnix;
+
+    return $lotCountdown;
+}
+
+/**
+ * Функция, в которой получаем часы/минуты сколько прошло времени с момента ставки
+ * @param $value - время в секундах
+ */
+function lotRateCount($value)
+{
+    $allMinutes = floor($value / 60);
+    $hours = floor($allMinutes / 60);
+    $minute = $allMinutes - $hours * 60;
+
+    $res = [
+        $hours, $minute
+    ];
+
+    return $res;
+}
+
+function addRate($userId, $lotId)
+{
+    return "INSERT INTO rates (sum, rate_date, user_id, lot_id) VALUES (?, NOW(), $userId, $lotId)";
+}
+
+// function lotLastRate($connection, $lotId)
 // {
-//     $lotRateDateSql = "SELECT rates.rate_date as rate_date
-//     FROM lots
-//     JOIN rates
-//     ON lots.id = rates.lot_id
-//     WHERE lots.id = 2";
+//     $sql = "SELECT user_id FROM rates WHERE lot_id = '$lotId' ORDER BY rate_date DESC LIMIT 1";
+//     $sqlResult = mysqli_query($connection, $sql);
 
-//     $lotRateDateSqlResult = mysqli_query($connection, $lotRateDateSql);
-
-//     if (!$lotRateDateSqlResult) {
+//     if (!$sqlResult) {
 //         $error = mysqli_error($connection);
 //         print("Ошибка MySQL: " . $error);
 //     }
 
-//     $lotRateDate = mysqli_fetch_all($lotRateDateSqlResult, MYSQLI_ASSOC);
+//     $lotLastRate = mysqli_fetch_all($sqlResult, MYSQLI_ASSOC);
 
-
-//     $currentDate = time();
-//     $lotDateUnix = strtotime($lotRateDate);
-
-//     $lotCountdown = $currentDate - $lotDateUnix;
-
-//     return $lotCountdown;
+//     return $lotLastRate;
 // }

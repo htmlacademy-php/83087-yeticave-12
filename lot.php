@@ -81,18 +81,17 @@ if (checkSession()) {
                 ]
             );
         } else {
-            $sql = "INSERT INTO rates (sum, rate_date, user_id, lot_id) VALUES (?, NOW(), $userId, $trid)";
-
+            $sql = addRate($userId, $trid);
             $stmt = db_get_prepare_stmt($dbConnection, $sql, $_POST);
             $res = mysqli_stmt_execute($stmt);
 
             if ($res) {
-                echo "<meta http-equiv='refresh' content='0'>";
+                redirect("/lot.php?id=" . $trid);
             } else {
                 echo "Error: " . $sql . "<br>" . mysqli_error($dbConnection);
             }
 
-            // mysqli_close($dbConnection);
+            mysqli_close($dbConnection);
         }
     }
 }

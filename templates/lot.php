@@ -49,7 +49,6 @@
                                 <?php if (isset($errors['cost'])) : ?>
                                     <span class="form__error"><?= $errors['cost']; ?></span>
                                 <?php endif; ?>
-                                <!-- <span class="form__error">Введите наименование лота</span> -->
                             </p>
                             <button type="submit" class="button">Сделать ставку</button>
                         </form>
@@ -66,61 +65,37 @@
                                     <td class="history__name"><?= stripTags($lotRate['name']); ?></td>
                                     <td class="history__price"><?= formatPrice(stripTags($lotRate['sum'])); ?></td>
                                     <td class="history__time">
-                                        <?= stripTags($lotRate['rate_date']); ?>
-                                        <?= stripTags($timePassed); ?>
+                                        <?php
+                                        $rateDate = $lotRate['rate_date'];
+                                        $rateDateShow = date("d.m.y в H:i", strtotime($rateDate));
+                                        $countRateDatePassed = lotRateDifference($lotRate['rate_date']);
+                                        $rateDatePassed = lotRateCount($countRateDatePassed);
+
+                                        if ($rateDatePassed[0] < 1) {
+                                            echo "$rateDatePassed[1] " .
+                                                get_noun_plural_form(
+                                                    $rateDatePassed[1],
+                                                    'минута',
+                                                    'минуты',
+                                                    'минут'
+                                                ) . " назад";
+                                        } elseif ($rateDatePassed[0] == 1) {
+                                            echo "Час назад";
+                                        } elseif ($rateDatePassed[0] > 1 && $rateDatePassed[0] < 24) {
+                                            echo "{$rateDatePassed[0]} " .
+                                                get_noun_plural_form(
+                                                    $rateDatePassed[0],
+                                                    'час',
+                                                    'часа',
+                                                    'часов'
+                                                ) . " назад";
+                                        } else {
+                                            echo stripTags($rateDateShow);
+                                        }
+                                        ?>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
-                            <!-- <tr class="history__item">
-                                <td class="history__name">Иван</td>
-                                <td class="history__price">10 999 р</td>
-                                <td class="history__time">5 минут назад</td>
-                            </tr>
-                            <tr class="history__item">
-                                <td class="history__name">Константин</td>
-                                <td class="history__price">10 999 р</td>
-                                <td class="history__time">20 минут назад</td>
-                            </tr>
-                            <tr class="history__item">
-                                <td class="history__name">Евгений</td>
-                                <td class="history__price">10 999 р</td>
-                                <td class="history__time">Час назад</td>
-                            </tr>
-                            <tr class="history__item">
-                                <td class="history__name">Игорь</td>
-                                <td class="history__price">10 999 р</td>
-                                <td class="history__time">19.03.17 в 08:21</td>
-                            </tr>
-                            <tr class="history__item">
-                                <td class="history__name">Енакентий</td>
-                                <td class="history__price">10 999 р</td>
-                                <td class="history__time">19.03.17 в 13:20</td>
-                            </tr>
-                            <tr class="history__item">
-                                <td class="history__name">Семён</td>
-                                <td class="history__price">10 999 р</td>
-                                <td class="history__time">19.03.17 в 12:20</td>
-                            </tr>
-                            <tr class="history__item">
-                                <td class="history__name">Илья</td>
-                                <td class="history__price">10 999 р</td>
-                                <td class="history__time">19.03.17 в 10:20</td>
-                            </tr>
-                            <tr class="history__item">
-                                <td class="history__name">Енакентий</td>
-                                <td class="history__price">10 999 р</td>
-                                <td class="history__time">19.03.17 в 13:20</td>
-                            </tr>
-                            <tr class="history__item">
-                                <td class="history__name">Семён</td>
-                                <td class="history__price">10 999 р</td>
-                                <td class="history__time">19.03.17 в 12:20</td>
-                            </tr>
-                            <tr class="history__item">
-                                <td class="history__name">Илья</td>
-                                <td class="history__price">10 999 р</td>
-                                <td class="history__time">19.03.17 в 10:20</td>
-                            </tr> -->
                         </table>
                     <?php else : ?>
                         <p>Ставок нет</p>

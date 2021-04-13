@@ -18,7 +18,7 @@
                 <tr class="rates__item <?= ($data[0] <= 0) ? 'rates__item--end' : ''; ?>">
                     <td class="rates__info">
                         <div class="rates__img">
-                            <img src="<?= stripTags($lot['image_url']); ?>" width="54" height="40" alt="Сноуборд">
+                            <img src="<?= stripTags($lot['image_url']); ?>" width="54" height="40" alt="<?= stripTags($lot['name']); ?>">
                         </div>
                         <h3 class="rates__title"><a href="lot.php?id=<?= stripTags($lot['id']); ?>"><?= stripTags($lot['name']); ?></a></h3>
                     </td>
@@ -28,6 +28,14 @@
                     <td class="rates__timer">
                         <?php if ($data[0] <= 0) : ?>
                             <div class="timer timer--end">Торги окончены</div>
+                        <?php elseif ($data[0] < 24) : ?>
+                            <div class="timer timer--finishing">
+                                <?php
+                                echo $data[0] . ':' . $data[1] . ':' . $data[2];
+                                ?>
+                            </div>
+                        <?php elseif (isset($lot['winner_id'])) : ?>
+                            <div class="timer timer--win">Ставка выиграла</div>
                         <?php else : ?>
                             <div class="timer">
                                 <?php
@@ -40,7 +48,37 @@
                         <?= formatPrice(stripTags($lot['sum'])); ?>
                     </td>
                     <td class="rates__time">
-                        5 минут назад
+                        <?php
+                        $rateDate = $lot['rate_date'];
+                        $rateDateShow = date("d.m.y в H:i", strtotime($rateDate));
+                        $rateDateShowTommorow = date("H:i", strtotime($rateDate));
+                        $countRateDatePassed = lotRateDifference($lot['rate_date']);
+                        $rateDatePassed = lotRateCount($countRateDatePassed);
+
+                        if ($rateDatePassed[0] < 1) {
+                            echo "$rateDatePassed[1] " .
+                                get_noun_plural_form(
+                                    $rateDatePassed[1],
+                                    'минута',
+                                    'минуты',
+                                    'минут'
+                                ) . " назад";
+                        } elseif ($rateDatePassed[0] == 1) {
+                            echo "Час назад";
+                        } elseif ($rateDatePassed[0] > 1 && $rateDatePassed[0] < 24) {
+                            echo "{$rateDatePassed[0]} " .
+                                get_noun_plural_form(
+                                    $rateDatePassed[0],
+                                    'час',
+                                    'часа',
+                                    'часов'
+                                ) . " назад";
+                        } elseif ($rateDatePassed[0] >= 24 && $rateDatePassed[0] < 48) {
+                            echo "Вчера, в " . $rateDateShowTommorow;
+                        } else {
+                            echo stripTags($rateDateShow);
+                        }
+                        ?>
                     </td>
                 </tr>
             <?php endforeach; ?>

@@ -1,6 +1,7 @@
 <?php
 require_once('helpers.php');
 require_once('functions.php');
+require_once('winner.php');
 
 $config = require 'config.php';
 
