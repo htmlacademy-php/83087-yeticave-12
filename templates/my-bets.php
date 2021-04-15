@@ -26,16 +26,19 @@
                         <?= stripTags($lot['category']); ?>
                     </td>
                     <td class="rates__timer">
-                        <?php if ($data[0] <= 0) : ?>
-                            <div class="timer timer--end">Торги окончены</div>
+                        <?php
+                        if ($data[0] <= 0) : ?>
+                            <?php if (isset($lot['winner_id']) && $lot['winner_id'] == $userId) : ?>
+                                <div class="timer timer--win">Ставка выиграла</div>
+                            <?php else : ?>
+                                <div class="timer timer--end">Торги окончены</div>
+                            <?php endif; ?>
                         <?php elseif ($data[0] < 24) : ?>
                             <div class="timer timer--finishing">
                                 <?php
                                 echo $data[0] . ':' . $data[1] . ':' . $data[2];
                                 ?>
                             </div>
-                        <?php elseif (isset($lot['winner_id'])) : ?>
-                            <div class="timer timer--win">Ставка выиграла</div>
                         <?php else : ?>
                             <div class="timer">
                                 <?php

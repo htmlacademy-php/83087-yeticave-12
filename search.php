@@ -8,7 +8,11 @@ $dbConnection = getConnection($config);
 $allCategories = getCategories($dbConnection);
 
 $searchedLotsQty = getLotsQtyBySearch($dbConnection, $_GET['search']);
-$currentSearchPage = intval($_GET['page'] ?: 1);
+if (isset($_GET['page'])) {
+    $currentSearchPage = intval($_GET['page']);
+} else {
+    $currentSearchPage = 1;
+}
 $pages = $searchedLotsQty / LOTS_PER_PAGE;
 $totalPages = ceil($pages);
 $searchedLots = searchLot($dbConnection, $_GET['search'], $currentSearchPage);

@@ -16,6 +16,8 @@ $pageСontent = include_template(
         'categories' => $allCategories,
 
         'lots' => getLotsRates($dbConnection, $userId),
+
+        'userId' => $userId,
     ]
 );
 

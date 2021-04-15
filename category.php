@@ -1,4 +1,5 @@
 <?php
+error_reporting(E_ALL);
 require_once('helpers.php');
 require_once('functions.php');
 
@@ -12,7 +13,11 @@ $allCategories = getCategories($dbConnection);
 $categoryName = getCategoryName($dbConnection, $currentCategory);
 
 $lotsQtyByCategory = getLotsQtyByCategory($dbConnection, $currentCategory);
-$currentCategoryPage = intval($_GET['page']) ?: 1;
+if (isset($_GET['page'])) {
+    $currentCategoryPage = intval($_GET['page']);
+} else {
+    $currentCategoryPage = 1;
+}
 $pages = $lotsQtyByCategory / LOTS_PER_PAGE;
 $totalPages = ceil($pages);
 $lotsByCategory = getLotsByCategory($dbConnection, $currentCategory, $currentCategoryPage);

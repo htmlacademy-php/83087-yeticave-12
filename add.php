@@ -12,6 +12,7 @@ if (checkSession()) {
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $errors = [];
 
+        $fields = [];
         $lotName        = validate('lot-name', $errors, 'Введите наименование лота', FILTER_SANITIZE_SPECIAL_CHARS);
         $lotCategory    = validate('category', $errors, 'Выберите категорию', FILTER_DEFAULT);
         $lotDescription = validate('message', $errors, 'Напишите описание лота', FILTER_SANITIZE_SPECIAL_CHARS);
@@ -19,12 +20,20 @@ if (checkSession()) {
         $lotStep        = validateIntNumber('lot-step', $errors, 'Введите шаг ставки', 'Число должно быть больше 0');
         $lotDate        = validateDate('lot-date', $errors, 'Введите дату завершения торгов', 'Дата должна быть больше текущей даты, хотя бы на один день');
 
+        $fields = [
+            $lotName, $lotCategory, $lotDescription, $lotRate, $lotStep, $lotDate
+        ];
+
         if (!empty($_FILES['file']['name'])) {
             $fileNameOriginal = $_FILES['file']['name'];
             $fileType = $_FILES['file']['type'];
             $fileTemporaryName = $_FILES['file']['tmp_name'];
             $filePath = __DIR__ . '/uploads/';
             $fileUrl = '/uploads/' . $fileNameOriginal;
+
+            $fields .= [
+                $fileUrl
+            ];
 
             $mimetype = mime_content_type($fileTemporaryName);
 
@@ -47,7 +56,7 @@ if (checkSession()) {
                 ]
             );
         } else {
-            addLot($dbConnection, $fileUrl);
+            addLot($dbConnection, $fields);
         }
     } else {
         $pageСontent = include_template(

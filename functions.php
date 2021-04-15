@@ -2,18 +2,18 @@
 
 /**
  * Функция для форматирования суммы и добавления к ней знака рубля
- * @param int $numberRate сумма лота
+ * @param int $sum сумма лота
  * @return string Отформатированная сумма вместе со знаком рубля
  */
-function formatPrice($numberRate)
+function formatPrice(int $sum)
 {
-    $numberRate = ceil($numberRate);
+    $sum = ceil($sum);
 
-    if ($numberRate >= 1000) {
-        $numberRate = number_format($numberRate, 0, ".", " ");
+    if ($sum >= 1000) {
+        $sum = number_format($sum, 0, ".", " ");
     }
 
-    return $numberRate . ' ₽';
+    return $sum . ' ₽';
 }
 
 /**
@@ -21,7 +21,7 @@ function formatPrice($numberRate)
  * @param string $str текст
  * @return string Отформатированный текст
  */
-function stripTags($str)
+function stripTags(string $str)
 {
     $text = strip_tags($str);
 
@@ -31,7 +31,7 @@ function stripTags($str)
 /**
  * Функция возврата оставшегося времени лота в формате ЧЧ:ММ
  * @param string $lotDate дата вида - ГГГГ-ММ-ДД
- * @param bool $showSeconds - вывести секунды
+ * @param bool $showSeconds вывести секунды
  */
 function getDifferenceTime(string $lotDate, bool $showSeconds = null)
 {
@@ -59,9 +59,9 @@ function getDifferenceTime(string $lotDate, bool $showSeconds = null)
 
 /**
  * Функция подключения к базе данных
- * @param $config - данные подключения
+ * @param array $config данные подключения
  */
-function getConnection($config)
+function getConnection(array $config)
 {
     $connection = mysqli_connect($config['db']['host'], $config['db']['user'], $config['db']['password'], $config['db']['database']);
     mysqli_set_charset($connection, "utf8");
@@ -75,9 +75,9 @@ function getConnection($config)
 
 /**
  * Функция получения категорий
- * @param $connection - соединение с базой данных
+ * @param object $connection соединение с базой данных
  */
-function getCategories($connection)
+function getCategories(object $connection)
 {
     $requestCategories = "SELECT id, name, code FROM categories";
 
@@ -95,10 +95,10 @@ function getCategories($connection)
 
 /**
  * Функция получения названия категории
- * @param $connection - соединение с базой данных
- * @param $id - id категории
+ * @param object $connection соединение с базой данных
+ * @param int $id id категории
  */
-function getCategoryName($connection, $id)
+function getCategoryName(object $connection, int $id)
 {
     $requestCategory = "SELECT name FROM categories
     WHERE categories.id = '$id'";
@@ -117,10 +117,10 @@ function getCategoryName($connection, $id)
 
 /**
  * Функция получения всех лотов
- * @param $connection - соединение с базой данных
- * @param $category - получение лотов по категории
+ * @param object $connection соединение с базой данных
+ * @param $category получение лотов по категории
  */
-function getLots($connection, $category = null)
+function getLots(object $connection, $category = null)
 {
     $requestLots = "SELECT lots.name, lots.id, categories.name as category, image_url, price, end_date
     FROM lots JOIN categories
@@ -147,10 +147,11 @@ function getLots($connection, $category = null)
 
 /**
  * Функция получения лота по id
- * @param $connection - соединение с базой данных
- * @param $lotId - id лота
+ * @param object $connection соединение с базой данных
+ * @param int $lotId id лота
+ * @return array $lots
  */
-function getLot($connection, $lotId)
+function getLot(object $connection, int $lotId)
 {
     $requestLot = "SELECT lots.name, description, lots.id, categories.name as category, image_url, price, end_date
     FROM lots JOIN categories
@@ -170,7 +171,7 @@ function getLot($connection, $lotId)
 
 /**
  * Функция сохранения значения полей формы после валидации
- * @param $name - поле ввода
+ * @param $name поле ввода
  */
 function getPostVal($name)
 {
@@ -179,12 +180,12 @@ function getPostVal($name)
 
 /**
  * Функция валидации полей
- * @param $field - поле ввода
- * @param $errors - ошибки
- * @param $errorText - текст ошибки
- * @param $filter - тип фильтра поля ввода
+ * @param $field поле ввода
+ * @param $errors ошибки
+ * @param string $errorText текст ошибки
+ * @param $filter тип фильтра поля ввода
  */
-function validate($field, &$errors, $errorText, $filter)
+function validate($field, &$errors, string $errorText, $filter)
 {
     if (empty($_POST[$field])) {
         $errors[$field] = $errorText;
@@ -198,12 +199,12 @@ function validate($field, &$errors, $errorText, $filter)
 
 /**
  * Функция валидации чисел с плавающей точкой чисел
- * @param $field - поле ввода числа
- * @param $errors - ошибки
- * @param $errorText - текст ошибки
- * @param $errorValidateText - текст ошибки валидации
- * @param $minRate - минимальное число
- * @param $errorMinRateValidateText - текст ошибки минимального числа
+ * @param $field поле ввода числа
+ * @param $errors ошибки
+ * @param string $errorText текст ошибки
+ * @param string $errorValidateText текст ошибки валидации
+ * @param $minRate минимальное число
+ * @param string $errorMinRateValidateText текст ошибки минимального числа
  */
 function validateFloatNumber($field, &$errors, $errorText, $errorValidateText, $minRate = null, $errorMinRateValidateText = null)
 {
@@ -232,12 +233,12 @@ function validateFloatNumber($field, &$errors, $errorText, $errorValidateText, $
 
 /**
  * Функция валидации целых чисел
- * @param $field - поле ввода числа
- * @param $errors - ошибки
- * @param $errorText - текст ошибки
- * @param $errorValidateText - текст ошибки валидации
+ * @param $field поле ввода числа
+ * @param $errors ошибки
+ * @param string $errorText текст ошибки
+ * @param string $errorValidateText текст ошибки валидации
  */
-function validateIntNumber($field, &$errors, $errorText, $errorValidateText)
+function validateIntNumber($field, &$errors, string $errorText, string $errorValidateText)
 {
     if (!isset($_POST[$field]) || $_POST[$field] === "") {
         $errors[$field] = $errorText;
@@ -257,12 +258,12 @@ function validateIntNumber($field, &$errors, $errorText, $errorValidateText)
 
 /**
  * Функция валидация даты
- * @param $date - дата, которую указал пользователь
- * @param $errors - ошибки
- * @param $errorText - текст ошибки
- * @param $errorValidateText - текст ошибки валидации
+ * @param $date дата, которую указал пользователь
+ * @param $errors ошибки
+ * @param string $errorText текст ошибки
+ * @param string $errorValidateText текст ошибки валидации
  */
-function validateDate($date, &$errors, $errorText, $errorValidateText)
+function validateDate($date, &$errors, string $errorText, string $errorValidateText)
 {
     $dateField = $_POST[$date];
 
@@ -300,10 +301,10 @@ function checkSession()
 
 /**
  * Функция подсчета количества лотов по поиску
- * @param $connection - соединение с базой данных
- * @param $searchText - текст поиска
+ * @param object $connection соединение с базой данных
+ * @param string $searchText текст поиска
  */
-function getLotsQtyBySearch($connection, $searchText)
+function getLotsQtyBySearch(object $connection, string $searchText)
 {
     $lotsSql = "SELECT COUNT(*) AS cnt FROM lots WHERE MATCH(name,description) AGAINST('$searchText')";
 
@@ -321,14 +322,18 @@ function getLotsQtyBySearch($connection, $searchText)
 
 /**
  * Функция поиска лота
- * @param $connection - соединение с базой данных
- * @param $searchText - текст поиска
- * @param $page - количество страниц, для пагинации на странице поиска
+ * @param object $connection соединение с базой данных
+ * @param string $searchText текст поиска
+ * @param int $page количество страниц, для пагинации на странице поиска
+ * @return array возвращает лоты по тексту поиска
  */
-function searchLot($connection, $searchText, $page)
+function searchLot(object $connection, string $searchText, int $page)
 {
     $searchText = mysqli_real_escape_string($connection, $searchText);
-    $requestSearch =  "SELECT * FROM lots WHERE MATCH(name,description) AGAINST('$searchText') LIMIT " . LOTS_PER_PAGE . " OFFSET " . LOTS_PER_PAGE * ($page - 1);
+    $requestSearch =  "SELECT lots.image_url, lots.name, categories.name AS category, lots.price, lots.end_date FROM lots
+    JOIN categories
+    ON lots.category_id = categories.id
+    WHERE MATCH(lots.name,lots.description) AGAINST('$searchText') LIMIT " . LOTS_PER_PAGE . " OFFSET " . LOTS_PER_PAGE * ($page - 1);
     $resultSearch = mysqli_query($connection, $requestSearch);
 
     if (!$resultSearch) {
@@ -343,13 +348,13 @@ function searchLot($connection, $searchText, $page)
 
 /**
  * Функция sql запроса на создание нового лота
- * @param $connection - соединение с базой данных
- * @param $imageUrl - url адрес изображения лота
+ * @param object $connection соединение с базой данных
+ * @param $imageUrl url адрес изображения лота
  */
-function addLot($connection, $imageUrl)
+function addLot(object $connection, array $fields)
 {
-    $sql = "INSERT INTO lots (create_date, user_id, name, category_id, description, price, price_step, end_date, image_url) VALUES (NOW(), 1, ?, ?, ?, ?, ?, ?, '$imageUrl')";
-    $stmt = db_get_prepare_stmt($connection, $sql, $_POST);
+    $sql = "INSERT INTO lots (create_date, user_id, name, category_id, description, price, price_step, end_date, image_url) VALUES (NOW(), 1, ?, ?, ?, ?, ?, ?, ?)";
+    $stmt = db_get_prepare_stmt($connection, $sql, $fields);
     $res = mysqli_stmt_execute($stmt);
 
     if ($res) {
@@ -376,12 +381,12 @@ function redirect($link)
 
 /**
  * Функция подсчета количества лотов по категории
- * @param $connection - соединение с базой данных
- * @param $category - категория лотов
+ * @param object $connection соединение с базой данных
+ * @param int $category категория лотов
  */
-function getLotsQtyByCategory($connection, $category)
+function getLotsQtyByCategory(object $connection, int $category)
 {
-    $lotsSql = "SELECT COUNT(*) AS cnt FROM lots WHERE lots.category_id = '$category'";
+    $lotsSql = "SELECT COUNT(*) AS cnt FROM lots WHERE lots.category_id = $category";
 
     $lotsResult = mysqli_query($connection, $lotsSql);
 
@@ -397,13 +402,13 @@ function getLotsQtyByCategory($connection, $category)
 
 /**
  * Функция вывода лотов по категории
- * @param $connection - соединение с базой данных
- * @param $category - категория лотов
- * @param $page - количество страниц категории
+ * @param object $connection соединение с базой данных
+ * @param int $category категория лотов
+ * @param int $page количество страниц категории
  */
-function getLotsByCategory($connection, $category, $page)
+function getLotsByCategory(object $connection, int $category, int $page)
 {
-    $lotsSqlLimit = "SELECT * FROM lots WHERE lots.category_id = '$category' LIMIT " . LOTS_PER_PAGE . " OFFSET " . LOTS_PER_PAGE * ($page - 1);
+    $lotsSqlLimit = "SELECT lots.id, lots.image_url, lots.name, categories.name AS category, lots.price, lots.end_date FROM lots JOIN categories ON lots.category_id = categories.id WHERE lots.category_id = $category LIMIT " . LOTS_PER_PAGE . " OFFSET " . LOTS_PER_PAGE * ($page - 1);
 
     $resultLot = mysqli_query($connection, $lotsSqlLimit);
 
@@ -419,10 +424,10 @@ function getLotsByCategory($connection, $category, $page)
 
 /**
  * Функция вывода ставок по лоту
- * @param $connection - соединение с базой данных
- * @param $lotId - id лота
+ * @param object $connection соединение с базой данных
+ * @param int $lotId id лота
  */
-function lotRates($connection, $lotId)
+function lotRates(object $connection, int $lotId)
 {
     $lotRatesSql = "SELECT rates.rate_date, rates.sum, users.name
     FROM rates
@@ -446,11 +451,11 @@ function lotRates($connection, $lotId)
 
 /**
  * Функция возврата значения текущей ставки и минимальной ставки
- * @param $connection - соединение с базой данных
- * @param int $lotId - id лота
- * @param int $step - шаг ставки лота
+ * @param object $connection соединение с базой данных
+ * @param int $lotId id лота
+ * @param int $step шаг ставки лота
  */
-function lotMinRate($connection, $lotId, $step = null)
+function lotMinRate(object $connection, int $lotId, int $step = null)
 {
     $check = "SELECT * FROM rates WHERE lot_id = '$lotId'";
     $checkResult = mysqli_query($connection, $check);
@@ -494,10 +499,10 @@ function lotMinRate($connection, $lotId, $step = null)
 
 /**
  * Функция вывода ставок
- * @param $connection - соединение с базой данных
- * @param $userId - id пользователя
+ * @param object $connection соединение с базой данных
+ * @param int $userId id пользователя
  */
-function getLotsRates($connection, $userId)
+function getLotsRates(object $connection, int $userId)
 {
     $lotsRatesSql = "SELECT lots.image_url, lots.name, lots.id, categories.name as category, lots.end_date, lots.winner_id, rates.rate_date, rates.sum
     FROM users
@@ -523,9 +528,9 @@ function getLotsRates($connection, $userId)
 
 /**
  * Функция, в которой считаем сколько прошло времени с момента ставки
- * @param $rateDate - дата ставки
+ * @param string $rateDate дата ставки
  */
-function lotRateDifference($rateDate)
+function lotRateDifference(string $rateDate)
 {
     $currentDate = time();
     $lotDateUnix = strtotime($rateDate);
@@ -537,9 +542,9 @@ function lotRateDifference($rateDate)
 
 /**
  * Функция, в которой получаем часы/минуты сколько прошло времени с момента ставки
- * @param $value - время в секундах
+ * @param int $value время в секундах
  */
-function lotRateCount($value)
+function lotRateCount(int $value)
 {
     $allMinutes = floor($value / 60);
     $hours = floor($allMinutes / 60);
@@ -554,11 +559,11 @@ function lotRateCount($value)
 
 /**
  * Функция добавления ставки
- * @param $connection - соединение с базой данных
- * @param $userId - id юзера, который добавляет ставку
- * @param $lotId - id лота, к которому добавляется ставка
+ * @param object $connection соединение с базой данных
+ * @param int $userId id юзера, который добавляет ставку
+ * @param int $lotId id лота, к которому добавляется ставка
  */
-function addRate($connection, $userId, $lotId)
+function addRate(object $connection, int $userId, int $lotId)
 {
     $sql = "INSERT INTO rates (sum, rate_date, user_id, lot_id) VALUES (?, NOW(), $userId, $lotId)";
     $stmt = db_get_prepare_stmt($connection, $sql, $_POST);
@@ -575,15 +580,15 @@ function addRate($connection, $userId, $lotId)
 
 /**
  * Функция, которая показывает сколько времени прошло с момента ставки
- * @param $lotRateDate - время ставки
+ * @param string $date время ставки
  */
-function lotRateDatePassed($lotRateDate)
+function lotRateDatePassed(string $date)
 {
-    $rateDate = $lotRateDate;
-    $rateDateShow = date("d.m.y в H:i", strtotime($rateDate));
-    $rateDateShowTommorow = date("H:i", strtotime($rateDate));
-    $countRateDatePassed = lotRateDifference($lotRateDate);
-    $rateDatePassed = lotRateCount($countRateDatePassed);
+    $rateDate = $date;
+    $dateFormat = date("d.m.y в H:i", strtotime($rateDate));
+    $dateFormatTommorow = date("H:i", strtotime($rateDate));
+    $countRateDate = lotRateDifference($date);
+    $rateDatePassed = lotRateCount($countRateDate);
 
     if ($rateDatePassed[0] < 1) {
         echo "$rateDatePassed[1] " .
@@ -604,8 +609,63 @@ function lotRateDatePassed($lotRateDate)
                 'часов'
             ) . " назад";
     } elseif ($rateDatePassed[0] >= 24 && $rateDatePassed[0] < 48) {
-        echo "Вчера, в " . $rateDateShowTommorow;
+        echo "Вчера, в " . $dateFormatTommorow;
     } else {
-        echo stripTags($rateDateShow);
+        echo stripTags($dateFormat);
     }
+}
+
+/**
+ * Функция определения лота без победителя
+ * @param object $connection - соединение с базой данных
+ */
+function lotsWithoutWinner(object $connection)
+{
+    $currentDate = date('Y-m-d');
+    $lotsNoWinnerSql = "SELECT id FROM lots WHERE winner_id IS NULL AND end_date <= '$currentDate'";
+    $lotsNoWinnerSqlResult = mysqli_query($connection, $lotsNoWinnerSql);
+
+    if (!$lotsNoWinnerSqlResult) {
+        $error = mysqli_error($connection);
+        print("Ошибка MySQL: " . $error);
+    }
+
+    $lotsNoWinner = mysqli_fetch_all($lotsNoWinnerSqlResult, MYSQLI_ASSOC);
+
+    return $lotsNoWinner;
+}
+
+/**
+ * Функция, которая возвращает id юзера последней ставки
+ * @param object $connection - соединение с базой данных
+ * @param int $lotId - id лота
+ */
+function winnerUserId(object $connection, int $lotId)
+{
+    $userIdSql = "SELECT user_id FROM rates WHERE lot_id = $lotId ORDER BY rate_date DESC LIMIT 1";
+    $userIdSqlResult = mysqli_query($connection, $userIdSql);
+    $userId = mysqli_fetch_assoc($userIdSqlResult);
+
+    return $userId;
+}
+
+/**
+ * Функция записи победителя в лот
+ * @param object $connection - соединение с базой данных
+ * @param int $lotId - id лота
+ * @param int $userId - id победителя
+ */
+function updateWinner(object $connection, int $lotId, int $userId)
+{
+    $sql = "UPDATE lots SET winner_id = $userId WHERE id = $lotId";
+    $sqlResult = mysqli_query($connection, $sql);
+
+    if (!$sqlResult) {
+        $error = mysqli_error($connection);
+        print("Ошибка MySQL: " . $error);
+    }
+
+    $update = mysqli_fetch_all($sqlResult, MYSQLI_ASSOC);
+
+    return $update;
 }

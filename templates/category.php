@@ -2,7 +2,7 @@
     <nav class="nav">
         <ul class="nav__list container">
             <?php foreach ($categories as $category) : ?>
-                <li class="nav__item">
+                <li class="nav__item <?= ($categoryId === $category['id']) ? 'nav__item--current' : ''; ?>">
                     <a href="/category.php?id=<?= stripTags($category['id']); ?>"><?= stripTags($category['name']); ?></a>
                 </li>
             <?php endforeach; ?>
