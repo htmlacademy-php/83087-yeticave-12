@@ -81,17 +81,7 @@ if (checkSession()) {
                 ]
             );
         } else {
-            $sql = addRate($userId, $trid);
-            $stmt = db_get_prepare_stmt($dbConnection, $sql, $_POST);
-            $res = mysqli_stmt_execute($stmt);
-
-            if ($res) {
-                redirect("/lot.php?id=" . $trid);
-            } else {
-                echo "Error: " . $sql . "<br>" . mysqli_error($dbConnection);
-            }
-
-            mysqli_close($dbConnection);
+            addRate($dbConnection, $userId, $trid);
         }
     }
 }

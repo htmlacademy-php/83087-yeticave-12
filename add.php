@@ -47,18 +47,7 @@ if (checkSession()) {
                 ]
             );
         } else {
-            $sql = addLot($fileUrl);
-            $stmt = db_get_prepare_stmt($dbConnection, $sql, $_POST);
-            $res = mysqli_stmt_execute($stmt);
-
-            if ($res) {
-                $lotId = mysqli_insert_id($dbConnection);
-
-                redirect("lot.php?id=" . $lotId);
-            } else {
-                echo "Error: " . $sql . "<br>" . mysqli_error($dbConnection);
-            }
-            mysqli_close($dbConnection);
+            addLot($dbConnection, $fileUrl);
         }
     } else {
         $pageСontent = include_template(

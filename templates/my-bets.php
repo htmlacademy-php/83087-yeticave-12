@@ -49,35 +49,7 @@
                     </td>
                     <td class="rates__time">
                         <?php
-                        $rateDate = $lot['rate_date'];
-                        $rateDateShow = date("d.m.y в H:i", strtotime($rateDate));
-                        $rateDateShowTommorow = date("H:i", strtotime($rateDate));
-                        $countRateDatePassed = lotRateDifference($lot['rate_date']);
-                        $rateDatePassed = lotRateCount($countRateDatePassed);
-
-                        if ($rateDatePassed[0] < 1) {
-                            echo "$rateDatePassed[1] " .
-                                get_noun_plural_form(
-                                    $rateDatePassed[1],
-                                    'минута',
-                                    'минуты',
-                                    'минут'
-                                ) . " назад";
-                        } elseif ($rateDatePassed[0] == 1) {
-                            echo "Час назад";
-                        } elseif ($rateDatePassed[0] > 1 && $rateDatePassed[0] < 24) {
-                            echo "{$rateDatePassed[0]} " .
-                                get_noun_plural_form(
-                                    $rateDatePassed[0],
-                                    'час',
-                                    'часа',
-                                    'часов'
-                                ) . " назад";
-                        } elseif ($rateDatePassed[0] >= 24 && $rateDatePassed[0] < 48) {
-                            echo "Вчера, в " . $rateDateShowTommorow;
-                        } else {
-                            echo stripTags($rateDateShow);
-                        }
+                        lotRateDatePassed($lot['rate_date']);
                         ?>
                     </td>
                 </tr>
