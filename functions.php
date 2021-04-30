@@ -669,3 +669,29 @@ function updateWinner(object $connection, int $lotId, int $userId)
 
     return $update;
 }
+
+/**
+ * Функция отображения кол-ва ставок
+ * @param object $connection - соединение с базой данных
+ * @param int $lotId - id лота
+ */
+function rateQty($connection, $lotId)
+{
+    $sql = "SELECT COUNT(lot_id) as rate_qty FROM rates WHERE lot_id = $lotId";
+    $sqlResult = mysqli_query($connection, $sql);
+
+    if (!$sqlResult) {
+        $error = mysqli_error($connection);
+        print("Ошибка MySQL: " . $error);
+    }
+
+    $rateQtyResult = mysqli_fetch_all($sqlResult, MYSQLI_ASSOC);
+
+    $rateQty = $rateQtyResult[0]['rate_qty'];
+
+    if ($rateQty > 0) {
+        echo "{$rateQty} " . get_noun_plural_form($rateQty, 'ставка', 'ставки', 'ставок');
+    } else {
+        echo 'Стартовая цена';
+    }
+}

@@ -14,6 +14,8 @@ $pageСontent = include_template(
         'categories' => $allCategories,
 
         'lots' => getLots($dbConnection),
+
+        'connection' => $dbConnection,
     ]
 );
 

@@ -25,7 +25,9 @@
                         <h3 class="lot__title"><a class="text-link" href="/lot.php?id=<?= stripTags($lot['id']); ?>"><?= stripTags($lot['name']); ?></a></h3>
                         <div class="lot__state">
                             <div class="lot__rate">
-                                <span class="lot__amount">Стартовая цена</span>
+                                <span class="lot__amount">
+                                    <?php rateQty($connection, $lot['id']); ?>
+                                </span>
                                 <span class="lot__cost"><?= formatPrice(stripTags($lot['price'])); ?></span>
                             </div>
                             <?php

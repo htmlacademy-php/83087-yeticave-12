@@ -19,26 +19,26 @@
                 <p class="lot-item__description"><?= stripTags($lots[0]['description']); ?></p>
             </div>
             <div class="lot-item__right">
-                <?php
-                if (checkSession()) { ?>
-                    <div class="lot-item__state">
+
+                <div class="lot-item__state">
+                    <?php
+                    $data = getDifferenceTime($lots[0]['end_date']);
+                    ?>
+                    <div class="lot-item__timer timer <?php echo ($data[0] <= 0) ? 'timer--finishing' : ''; ?>">
                         <?php
-                        $data = getDifferenceTime($lots[0]['end_date']);
+                        echo $data[0] . ':' . $data[1];
                         ?>
-                        <div class="lot-item__timer timer <?php echo ($data[0] <= 0) ? 'timer--finishing' : ''; ?>">
-                            <?php
-                            echo $data[0] . ':' . $data[1];
-                            ?>
+                    </div>
+                    <div class="lot-item__cost-state">
+                        <div class="lot-item__rate">
+                            <span class="lot-item__amount">Текущая цена</span>
+                            <span class="lot-item__cost"><?= formatPrice(stripTags($currentPrice[0]['min_rate'])); ?></span>
                         </div>
-                        <div class="lot-item__cost-state">
-                            <div class="lot-item__rate">
-                                <span class="lot-item__amount">Текущая цена</span>
-                                <span class="lot-item__cost"><?= formatPrice(stripTags($currentPrice[0]['min_rate'])); ?></span>
-                            </div>
-                            <div class="lot-item__min-cost">
-                                Мин. ставка <span><?= formatPrice(stripTags($lotMinRate[0]['min_rate'])); ?></span>
-                            </div>
+                        <div class="lot-item__min-cost">
+                            Мин. ставка <span><?= formatPrice(stripTags($lotMinRate[0]['min_rate'])); ?></span>
                         </div>
+                    </div>
+                    <?php if (checkSession()) : ?>
                         <form class="lot-item__form" action="lot.php?id=<?= $id; ?>" method="post" autocomplete="off">
                             <?php
                             $classname = isset($errors['cost']) ? "form__item--invalid" : "";
@@ -52,9 +52,9 @@
                             </p>
                             <button type="submit" class="button">Сделать ставку</button>
                         </form>
-                    </div>
-                <?php }
-                ?>
+                    <?php endif; ?>
+                </div>
+
                 <div class="history">
                     <h3>История ставок (<span><?= stripTags($lotRateQty); ?></span>)</h3>
                     <?php if ($lotRateQty >= 1) : ?>

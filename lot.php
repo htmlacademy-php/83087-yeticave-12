@@ -17,8 +17,6 @@ $lotRates = lotRates($dbConnection, $trid);
 
 $userId = $_SESSION['userId'];
 
-$lotMinRate = lotMinRate($dbConnection, $trid, true);
-
 if (!empty($lots)) {
     $pageСontent = include_template(
         'lot.php',
@@ -35,7 +33,7 @@ if (!empty($lots)) {
 
             'currentPrice' => lotMinRate($dbConnection, $trid),
 
-            'lotMinRate' => $lotMinRate,
+            'lotMinRate' => lotMinRate($dbConnection, $trid, true),
         ]
     );
 
