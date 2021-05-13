@@ -450,51 +450,46 @@ function lotRates(object $connection, int $lotId)
 }
 
 /**
- * Функция возврата значения текущей ставки и минимальной ставки
+ * Функция возврата значения текущей ставки
  * @param object $connection соединение с базой данных
  * @param int $lotId id лота
- * @param int $step шаг ставки лота
  */
-function lotMinRate(object $connection, int $lotId, int $step = null)
+function currentRate(object $connection, int $lotId)
 {
-    $check = "SELECT * FROM rates WHERE lot_id = '$lotId'";
-    $checkResult = mysqli_query($connection, $check);
+    $sql = "SELECT sum FROM rates WHERE lot_id = $lotId ORDER BY sum DESC LIMIT 1";
+    $sqlResult = mysqli_query($connection, $sql);
 
-    if (mysqli_num_rows($checkResult) === 0) {
-        if (true !== $step) {
-            $lotMinRateSql = "SELECT price as min_rate";
-        } else {
-            $lotMinRateSql = "SELECT price + price_step as min_rate";
-        }
-
-        $lotMinRateSql .= " FROM lots
-        WHERE id = '$lotId'";
-    } else {
-        if (true !== $step) {
-            $lotMinRateSql = "SELECT rates.sum as min_rate";
-        } else {
-            $lotMinRateSql = "SELECT rates.sum  + lots.price_step as min_rate";
-        }
-
-        $lotMinRateSql .= " FROM rates
-        JOIN lots
-        ON rates.lot_id = lots.id
-        WHERE rates.lot_id = '$lotId'
-        AND rates.sum IS NOT NULL
-        ORDER BY sum DESC
-        LIMIT 1";
-    }
-
-    $lotMinRateResult = mysqli_query($connection, $lotMinRateSql);
-
-    if (!$lotMinRateResult) {
+    if (!$sqlResult) {
         $error = mysqli_error($connection);
         print("Ошибка MySQL: " . $error);
     }
 
-    $lotMinRate = mysqli_fetch_all($lotMinRateResult, MYSQLI_ASSOC);
+    $rate = mysqli_fetch_assoc($sqlResult);
 
-    return $lotMinRate;
+    return $rate['sum'];
+}
+
+/**
+ * Функция возврата минимальной ставки
+ * @param object $connection соединение с базой данных
+ * @param int $lotId id лота
+ */
+function lotMinRate(object $connection, int $lotId)
+{
+    $sql = "SELECT price_step FROM lots WHERE id = $lotId";
+    $sqlResult = mysqli_query($connection, $sql);
+
+    if (!$sqlResult) {
+        $error = mysqli_error($connection);
+        print("Ошибка MySQL: " . $error);
+    }
+
+    $currentRate = currentRate($connection, $lotId);
+    $rateStep = mysqli_fetch_assoc($sqlResult);
+
+    $rate = $currentRate + $rateStep['price_step'];
+
+    return $rate;
 }
 
 /**
@@ -524,6 +519,26 @@ function getLotsRates(object $connection, int $userId)
     $lotsRates = mysqli_fetch_all($lotsRatesSqlResult, MYSQLI_ASSOC);
 
     return $lotsRates;
+}
+
+/**
+ * Функция возврата контактов владельца лота
+ * @param object $connection соединение с базой данных
+ * @param int $lotId id лота
+ */
+function userContacts(object $connection, int $lotId)
+{
+    $sql = "SELECT contact FROM lots JOIN users ON lots.user_id = users.id WHERE lots.id = $lotId";
+    $sqlResult = mysqli_query($connection, $sql);
+
+    if (!$sqlResult) {
+        $error = mysqli_error($connection);
+        print("Ошибка MySQL: " . $error);
+    }
+
+    $contacts = mysqli_fetch_assoc($sqlResult);
+
+    return $contacts['contact'];
 }
 
 /**

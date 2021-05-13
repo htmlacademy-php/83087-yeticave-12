@@ -15,20 +15,28 @@
                 <?php
                 $data = getDifferenceTime($lot['end_date'], true);
                 ?>
-                <tr class="rates__item <?= ($data[0] <= 0) ? 'rates__item--end' : ''; ?>">
+                <tr class="rates__item <?php if (isset($lot['winner_id']) && $lot['winner_id'] == $userId && $lot['sum'] == currentRate($connection, $lot['id'])) {
+                                            echo 'rates__item--win';
+                                        } elseif ($data[0] <= 0) {
+                                            echo 'rates__item--end';
+                                        } ?>">
                     <td class="rates__info">
                         <div class="rates__img">
                             <img src="<?= stripTags($lot['image_url']); ?>" width="54" height="40" alt="<?= stripTags($lot['name']); ?>">
                         </div>
-                        <h3 class="rates__title"><a href="lot.php?id=<?= stripTags($lot['id']); ?>"><?= stripTags($lot['name']); ?></a></h3>
+                        <div>
+                            <h3 class="rates__title"><a href="lot.php?id=<?= stripTags($lot['id']); ?>"><?= stripTags($lot['name']); ?></a></h3>
+                            <?php if (isset($lot['winner_id']) && $lot['winner_id'] == $userId && $lot['sum'] == currentRate($connection, $lot['id'])) : ?>
+                                <p><?= userContacts($connection, $lot['id']); ?></p>
+                            <?php endif; ?>
+                        </div>
                     </td>
                     <td class="rates__category">
                         <?= stripTags($lot['category']); ?>
                     </td>
                     <td class="rates__timer">
-                        <?php
-                        if ($data[0] <= 0) : ?>
-                            <?php if (isset($lot['winner_id']) && $lot['winner_id'] == $userId) : ?>
+                        <?php if ($data[0] <= 0) : ?>
+                            <?php if (isset($lot['winner_id']) && $lot['winner_id'] == $userId && $lot['sum'] == currentRate($connection, $lot['id'])) : ?>
                                 <div class="timer timer--win">Ставка выиграла</div>
                             <?php else : ?>
                                 <div class="timer timer--end">Торги окончены</div>
@@ -51,95 +59,10 @@
                         <?= formatPrice(stripTags($lot['sum'])); ?>
                     </td>
                     <td class="rates__time">
-                        <?php
-                        lotRateDatePassed($lot['rate_date']);
-                        ?>
+                        <?= lotRateDatePassed($lot['rate_date']); ?>
                     </td>
                 </tr>
             <?php endforeach; ?>
-            <tr class="rates__item">
-                <td class="rates__info">
-                    <div class="rates__img">
-                        <img src="../img/rate1.jpg" width="54" height="40" alt="Сноуборд">
-                    </div>
-                    <h3 class="rates__title"><a href="lot.html">2014 Rossignol District Snowboard</a></h3>
-                </td>
-                <td class="rates__category">
-                    Доски и лыжи
-                </td>
-                <td class="rates__timer">
-                    <div class="timer timer--finishing">07:13:34</div>
-                </td>
-                <td class="rates__price">
-                    10 999 р
-                </td>
-                <td class="rates__time">
-                    5 минут назад
-                </td>
-            </tr>
-            <tr class="rates__item rates__item--win">
-                <td class="rates__info">
-                    <div class="rates__img">
-                        <img src="../img/rate3.jpg" width="54" height="40" alt="Крепления">
-                    </div>
-                    <div>
-                        <h3 class="rates__title"><a href="lot.html">Крепления Union Contact Pro 2015 года размер L/XL</a></h3>
-                        <p>Телефон +7 900 667-84-48, Скайп: Vlas92. Звонить с 14 до 20</p>
-                    </div>
-                </td>
-                <td class="rates__category">
-                    Крепления
-                </td>
-                <td class="rates__timer">
-                    <div class="timer timer--win">Ставка выиграла</div>
-                </td>
-                <td class="rates__price">
-                    10 999 р
-                </td>
-                <td class="rates__time">
-                    Час назад
-                </td>
-            </tr>
-            <tr class="rates__item">
-                <td class="rates__info">
-                    <div class="rates__img">
-                        <img src="../img/rate4.jpg" width="54" height="40" alt="Ботинки">
-                    </div>
-                    <h3 class="rates__title"><a href="lot.html">Ботинки для сноуборда DC Mutiny Charocal</a></h3>
-                </td>
-                <td class="rates__category">
-                    Ботинки
-                </td>
-                <td class="rates__timer">
-                    <div class="timer">07:13:34</div>
-                </td>
-                <td class="rates__price">
-                    10 999 р
-                </td>
-                <td class="rates__time">
-                    Вчера, в 21:30
-                </td>
-            </tr>
-            <tr class="rates__item rates__item--end">
-                <td class="rates__info">
-                    <div class="rates__img">
-                        <img src="../img/rate5.jpg" width="54" height="40" alt="Куртка">
-                    </div>
-                    <h3 class="rates__title"><a href="lot.html">Куртка для сноуборда DC Mutiny Charocal</a></h3>
-                </td>
-                <td class="rates__category">
-                    Одежда
-                </td>
-                <td class="rates__timer">
-                    <div class="timer timer--end">Торги окончены</div>
-                </td>
-                <td class="rates__price">
-                    10 999 р
-                </td>
-                <td class="rates__time">
-                    Вчера, в 21:30
-                </td>
-            </tr>
         </table>
     </section>
 </main>

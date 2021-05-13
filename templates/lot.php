@@ -32,10 +32,20 @@
                     <div class="lot-item__cost-state">
                         <div class="lot-item__rate">
                             <span class="lot-item__amount">Текущая цена</span>
-                            <span class="lot-item__cost"><?= formatPrice(stripTags($currentPrice[0]['min_rate'])); ?></span>
+                            <span class="lot-item__cost">
+                                <?php
+                                $currentRate = currentRate($connection, $id);
+
+                                if (!empty($currentRate)) {
+                                    echo formatPrice(stripTags($currentRate));
+                                } else {
+                                    echo formatPrice(stripTags($lots[0]['price']));
+                                }
+                                ?>
+                            </span>
                         </div>
                         <div class="lot-item__min-cost">
-                            Мин. ставка <span><?= formatPrice(stripTags($lotMinRate[0]['min_rate'])); ?></span>
+                            Мин. ставка <span><?= formatPrice(stripTags(lotMinRate($connection, $id))); ?></span>
                         </div>
                     </div>
                     <?php if (checkSession()) : ?>

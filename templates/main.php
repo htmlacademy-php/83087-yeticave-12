@@ -28,7 +28,17 @@
                                 <span class="lot__amount">
                                     <?php rateQty($connection, $lot['id']); ?>
                                 </span>
-                                <span class="lot__cost"><?= formatPrice(stripTags($lot['price'])); ?></span>
+                                <span class="lot__cost">
+                                    <?php
+                                    $currentRate = currentRate($connection, $lot['id']);
+
+                                    if (!empty($currentRate)) {
+                                        echo formatPrice(stripTags($currentRate));
+                                    } else {
+                                        echo formatPrice(stripTags($lot['price']));
+                                    }
+                                    ?>
+                                </span>
                             </div>
                             <?php
                             $data = getDifferenceTime($lot['end_date']);

@@ -31,9 +31,7 @@ if (!empty($lots)) {
 
             'lotRateQty' => count($lotRates),
 
-            'currentPrice' => lotMinRate($dbConnection, $trid),
-
-            'lotMinRate' => lotMinRate($dbConnection, $trid, true),
+            'connection' => $dbConnection,
         ]
     );
 
