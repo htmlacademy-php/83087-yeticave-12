@@ -450,6 +450,26 @@ function lotRates(object $connection, int $lotId)
 }
 
 /**
+ * Функция возврата начальной цены ставки
+ * @param object $connection соединение с базой данных
+ * @param int $lotId id лота
+ */
+function startingPrice(object $connection, int $lotId)
+{
+    $sql = "SELECT price FROM lots WHERE id = $lotId";
+    $sqlResult = mysqli_query($connection, $sql);
+
+    if (!$sqlResult) {
+        $error = mysqli_error($connection);
+        print("Ошибка MySQL: " . $error);
+    }
+
+    $price = mysqli_fetch_assoc($sqlResult);
+
+    return $price['price'];
+}
+
+/**
  * Функция возврата значения текущей ставки
  * @param object $connection соединение с базой данных
  * @param int $lotId id лота
@@ -485,9 +505,15 @@ function lotMinRate(object $connection, int $lotId)
     }
 
     $currentRate = currentRate($connection, $lotId);
+    $startingPrice = startingPrice($connection, $lotId);
+
     $rateStep = mysqli_fetch_assoc($sqlResult);
 
-    $rate = $currentRate + $rateStep['price_step'];
+    if (!empty($currentRate)) {
+        $rate = $currentRate + $rateStep['price_step'];
+    } else {
+        $rate = $startingPrice + $rateStep['price_step'];
+    }
 
     return $rate;
 }

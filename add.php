@@ -12,7 +12,6 @@ if (checkSession()) {
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $errors = [];
 
-        $fields = [];
         $lotName        = validate('lot-name', $errors, 'Введите наименование лота', FILTER_SANITIZE_SPECIAL_CHARS);
         $lotCategory    = validate('category', $errors, 'Выберите категорию', FILTER_DEFAULT);
         $lotDescription = validate('message', $errors, 'Напишите описание лота', FILTER_SANITIZE_SPECIAL_CHARS);
@@ -21,7 +20,12 @@ if (checkSession()) {
         $lotDate        = validateDate('lot-date', $errors, 'Введите дату завершения торгов', 'Дата должна быть больше текущей даты, хотя бы на один день');
 
         $fields = [
-            $lotName, $lotCategory, $lotDescription, $lotRate, $lotStep, $lotDate
+            'lot-name' => $lotName,
+            'category' => $lotCategory,
+            'message' => $lotDescription,
+            'lot-rate' => $lotRate,
+            'lot-step' => $lotStep,
+            'lot-date' => $lotDate,
         ];
 
         if (!empty($_FILES['file']['name'])) {
@@ -31,9 +35,7 @@ if (checkSession()) {
             $filePath = __DIR__ . '/uploads/';
             $fileUrl = '/uploads/' . $fileNameOriginal;
 
-            $fields .= [
-                $fileUrl
-            ];
+            $fields['file'] .= $fileUrl;
 
             $mimetype = mime_content_type($fileTemporaryName);
 
