@@ -32,8 +32,7 @@
                 <select id="category" name="category">
                     <option value="">Выберите категорию</option>
                     <?php foreach ($categories as $category) : ?>
-                        <option value="<?= $category['id']; ?>" <?php if ($category['name'] == getPostVal('category')) : ?>selected<?php endif; ?>><?= stripTags($category['name']); ?></option>
-                        </li>
+                        <option value="<?= $category['id']; ?>" <?php if ($category['id'] == getPostVal('category')) : ?>selected<?php endif; ?>><?= stripTags($category['name']); ?></option>
                     <?php endforeach; ?>
                 </select>
                 <?php if (isset($errors['category'])) : ?>

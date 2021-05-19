@@ -408,7 +408,7 @@ function getLotsQtyByCategory(object $connection, int $category)
  */
 function getLotsByCategory(object $connection, int $category, int $page)
 {
-    $lotsSqlLimit = "SELECT lots.id, lots.image_url, lots.name, categories.name AS category, lots.price, lots.end_date FROM lots JOIN categories ON lots.category_id = categories.id WHERE lots.category_id = $category LIMIT " . LOTS_PER_PAGE . " OFFSET " . LOTS_PER_PAGE * ($page - 1);
+    $lotsSqlLimit = "SELECT lots.id, lots.image_url, lots.name, categories.name AS category, lots.price, lots.end_date FROM lots JOIN categories ON lots.category_id = categories.id WHERE lots.category_id = $category ORDER BY lots.create_date DESC LIMIT " . LOTS_PER_PAGE . " OFFSET " . LOTS_PER_PAGE * ($page - 1);
 
     $resultLot = mysqli_query($connection, $lotsSqlLimit);
 
@@ -735,4 +735,14 @@ function rateQty($connection, $lotId)
     } else {
         echo 'Стартовая цена';
     }
+}
+
+/**
+ * Функция проверки истечения срока лота
+ * @param object $connection - соединение с базой данных
+ * @param int $lotId - id лота
+ */
+function lotDateExpired($connection, $lotId)
+{
+    $sql = "SELECT end_date FROM lots WHERE id = $lotId";
 }

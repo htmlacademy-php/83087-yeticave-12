@@ -13,7 +13,7 @@ if (checkSession()) {
         $errors = [];
 
         $lotName        = validate('lot-name', $errors, 'Введите наименование лота', FILTER_SANITIZE_SPECIAL_CHARS);
-        $lotCategory    = validate('category', $errors, 'Выберите категорию', FILTER_DEFAULT);
+        $lotCategory    = validate('category', $errors, 'Выберите категорию', FILTER_VALIDATE_INT);
         $lotDescription = validate('message', $errors, 'Напишите описание лота', FILTER_SANITIZE_SPECIAL_CHARS);
         $lotRate        = validateFloatNumber('lot-rate', $errors, 'Введите начальную цену', 'Число должно быть больше 0');
         $lotStep        = validateIntNumber('lot-step', $errors, 'Введите шаг ставки', 'Число должно быть больше 0');
@@ -35,7 +35,7 @@ if (checkSession()) {
             $filePath = __DIR__ . '/uploads/';
             $fileUrl = '/uploads/' . $fileNameOriginal;
 
-            $fields['file'] .= $fileUrl;
+            $fields['file'] = $fileUrl;
 
             $mimetype = mime_content_type($fileTemporaryName);
 
@@ -49,6 +49,7 @@ if (checkSession()) {
         }
 
         if (count($errors)) {
+            var_dump($errors);
             $pageСontent = include_template(
                 'add-lot.php',
                 [

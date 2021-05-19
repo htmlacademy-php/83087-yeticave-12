@@ -11,17 +11,17 @@ INSERT INTO users SET id = 1, reg_date = '2020-12-19', email = 'papan41k@gmail.c
 INSERT INTO users SET id = 2, reg_date = '2020-12-22', email = 'aleks.palyan@gmail.com', name = 'Александр', password = ';UKQ&x.<3p+\vM(u';
 
 -- добавление существующего списка объявлений
-INSERT INTO lots SET id = 1, create_date = '2020-12-17', user_id = 1, name = '2014 Rossignol District Snowboard', category_id = 1, image_url = 'img/lot-1.jpg', price = 10999, end_date = '2020-12-19';
+INSERT INTO lots SET id = 1, create_date = '2020-12-17', user_id = 1, name = '2014 Rossignol District Snowboard', category_id = 1, image_url = 'img/lot-1.jpg', price = 10999, end_date = '2020-12-19', price_step = 100;
 
-INSERT INTO lots SET id = 2, create_date = '2020-12-18', user_id = 2, name = 'DC Ply Mens 2016/2017 Snowboard', category_id = 1, image_url = 'img/lot-2.jpg', price = 159999, end_date = '2021-01-14';
+INSERT INTO lots SET id = 2, create_date = '2020-12-18', user_id = 2, name = 'DC Ply Mens 2016/2017 Snowboard', category_id = 1, image_url = 'img/lot-2.jpg', price = 159999, end_date = '2021-01-14', price_step = 200;
 
-INSERT INTO lots SET id = 3, create_date = '2020-12-19', user_id = 2, name = 'Крепления Union Contact Pro 2015 года размер L/XL', category_id = 2, image_url = 'img/lot-3.jpg', price = '8000', end_date = '2021-01-15';
+INSERT INTO lots SET id = 3, create_date = '2020-12-19', user_id = 2, name = 'Крепления Union Contact Pro 2015 года размер L/XL', category_id = 2, image_url = 'img/lot-3.jpg', price = '8000', end_date = '2021-01-15', price_step = 300;
 
-INSERT INTO lots SET id = 4, create_date = '2020-12-20', user_id = 1, name = 'Ботинки для сноуборда DC Mutiny Charocal', category_id = 3, image_url = 'img/lot-4.jpg', price = '10999', end_date = '2021-01-16';
+INSERT INTO lots SET id = 4, create_date = '2020-12-20', user_id = 1, name = 'Ботинки для сноуборда DC Mutiny Charocal', category_id = 3, image_url = 'img/lot-4.jpg', price = '10999', end_date = '2021-01-16', price_step = 400;
 
-INSERT INTO lots SET id = 5, create_date = '2020-12-21', user_id = 1, name = 'Куртка для сноуборда DC Mutiny Charocal', category_id = 4, image_url = 'img/lot-5.jpg', price = '7500', end_date = '2021-01-17';
+INSERT INTO lots SET id = 5, create_date = '2020-12-21', user_id = 1, name = 'Куртка для сноуборда DC Mutiny Charocal', category_id = 4, image_url = 'img/lot-5.jpg', price = '7500', end_date = '2021-01-17', , price_step = 500;
 
-INSERT INTO lots SET id = 6, create_date = '2020-12-22', user_id = 1, name = 'Маска Oakley Canopy', category_id = 6, image_url = 'img/lot-6.jpg', price = '5400', end_date = '2021-01-18';
+INSERT INTO lots SET id = 6, create_date = '2020-12-22', user_id = 1, name = 'Маска Oakley Canopy', category_id = 6, image_url = 'img/lot-6.jpg', price = '5400', end_date = '2021-01-18', price_step = 600;
 
 -- добавляем пару ставок для двух объявлений
 INSERT INTO rates SET sum = 11999, rate_date = '2020-12-22', lot_id = 1, user_id = 1;
