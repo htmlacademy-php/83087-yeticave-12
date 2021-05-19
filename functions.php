@@ -736,13 +736,3 @@ function rateQty($connection, $lotId)
         echo 'Стартовая цена';
     }
 }
-
-/**
- * Функция проверки истечения срока лота
- * @param object $connection - соединение с базой данных
- * @param int $lotId - id лота
- */
-function lotDateExpired($connection, $lotId)
-{
-    $sql = "SELECT end_date FROM lots WHERE id = $lotId";
-}
