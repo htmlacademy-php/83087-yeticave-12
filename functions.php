@@ -153,7 +153,7 @@ function getLots(object $connection, $category = null)
  */
 function getLot(object $connection, int $lotId)
 {
-    $requestLot = "SELECT lots.name, description, lots.id, categories.name as category, image_url, price, end_date
+    $requestLot = "SELECT lots.name, description, lots.id, lots.user_id, categories.name as category, image_url, price, end_date
     FROM lots JOIN categories
     WHERE lots.category_id = categories.id AND lots.id = $lotId
     ORDER BY create_date DESC";

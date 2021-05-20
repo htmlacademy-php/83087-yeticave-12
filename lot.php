@@ -32,6 +32,8 @@ if (!empty($lots)) {
             'lotRateQty' => count($lotRates),
 
             'connection' => $dbConnection,
+
+            'userId' => $userId,
         ]
     );
 
