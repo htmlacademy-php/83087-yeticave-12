@@ -30,7 +30,7 @@ $layoutСontent = include_template(
 
         'isAuth' => checkSession(),
 
-        'userName' => $_SESSION['userName'],
+        'userName' => $_SESSION['userName'] ?? '',
     ]
 );
 

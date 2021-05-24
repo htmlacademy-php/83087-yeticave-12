@@ -8,6 +8,8 @@ $dbConnection = getConnection($config);
 
 $allCategories = getCategories($dbConnection);
 
+$userId = $_SESSION['userId'] ?? '';
+
 if (checkSession()) {
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $errors = [];
@@ -20,6 +22,7 @@ if (checkSession()) {
         $lotDate        = validateDate('lot-date', $errors, 'Введите дату завершения торгов', 'Дата должна быть больше текущей даты, хотя бы на один день');
 
         $fields = [
+            'user_id' => $userId,
             'lot-name' => $lotName,
             'category' => $lotCategory,
             'message' => $lotDescription,
@@ -49,7 +52,6 @@ if (checkSession()) {
         }
 
         if (count($errors)) {
-            var_dump($errors);
             $pageСontent = include_template(
                 'add-lot.php',
                 [
@@ -84,7 +86,7 @@ $layoutСontent = include_template(
 
         'isAuth' => checkSession(),
 
-        'userName' => $_SESSION['userName'],
+        'userName' => $_SESSION['userName'] ?? '',
     ]
 );
 

@@ -15,7 +15,7 @@ $lots = getLot($dbConnection, $trid);
 
 $lotRates = lotRates($dbConnection, $trid);
 
-$userId = $_SESSION['userId'];
+$userId = $_SESSION['userId'] ?? '';
 
 if (!empty($lots)) {
     $pageСontent = include_template(
@@ -74,6 +74,8 @@ if (checkSession()) {
                     'connection' => $dbConnection,
 
                     'errors' => $errors,
+
+                    'userId' => $userId,
                 ]
             );
         } else {
@@ -93,7 +95,7 @@ $layoutСontent = include_template(
 
         'isAuth' => checkSession(),
 
-        'userName' => $_SESSION['userName'],
+        'userName' => $_SESSION['userName'] ?? '',
     ]
 );
 

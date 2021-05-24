@@ -19,7 +19,7 @@
             ?>
             <div class="form__item <?= $classname; ?>">
                 <label for="lot-name">Наименование <sup>*</sup></label>
-                <input id="lot-name" type="text" name="lot-name" placeholder="Введите наименование лота" value="<?= getPostVal('lot-name'); ?>">
+                <input id="lot-name" type="text" name="lot-name" placeholder="Введите наименование лота" value="<?= getPostVal('lot-name'); ?>" required="">
                 <?php if (isset($errors['lot-name'])) : ?>
                     <span class="form__error"><?= $errors['lot-name']; ?></span>
                 <?php endif; ?>
@@ -29,7 +29,7 @@
             ?>
             <div class="form__item <?= $classname; ?>">
                 <label for="category">Категория <sup>*</sup></label>
-                <select id="category" name="category">
+                <select id="category" name="category" required="">
                     <option value="">Выберите категорию</option>
                     <?php foreach ($categories as $category) : ?>
                         <option value="<?= $category['id']; ?>" <?php if ($category['id'] == getPostVal('category')) : ?>selected<?php endif; ?>><?= stripTags($category['name']); ?></option>
@@ -45,7 +45,7 @@
         ?>
         <div class="form__item form__item--wide <?= $classname; ?>">
             <label for="message">Описание <sup>*</sup></label>
-            <textarea id="message" name="message" placeholder="Напишите описание лота"><?= getPostVal('message'); ?></textarea>
+            <textarea id="message" name="message" placeholder="Напишите описание лота" required=""><?= getPostVal('message'); ?></textarea>
             <?php if (isset($errors['message'])) : ?>
                 <span class="form__error"><?= $errors['message']; ?></span>
             <?php endif; ?>
@@ -56,7 +56,7 @@
         <div class="form__item form__item--file <?= $classname; ?>">
             <label>Изображение <sup>*</sup></label>
             <div class="form__input-file">
-                <input class="visually-hidden" type="file" id="lot-img" value="<?= getPostVal('file'); ?>" name="file">
+                <input class="visually-hidden" type="file" id="lot-img" value="<?= getPostVal('file'); ?>" name="file" required="">
                 <label for="lot-img">
                     Добавить
                 </label>
@@ -71,7 +71,7 @@
             ?>
             <div class="form__item form__item--small <?= $classname; ?>">
                 <label for="lot-rate">Начальная цена <sup>*</sup></label>
-                <input id="lot-rate" type="text" name="lot-rate" placeholder="0" value="<?= getPostVal('lot-rate'); ?>">
+                <input id="lot-rate" type="text" name="lot-rate" placeholder="0" value="<?= getPostVal('lot-rate'); ?>" required="">
                 <?php if (isset($errors['lot-rate'])) : ?>
                     <span class="form__error"><?= $errors['lot-rate']; ?></span>
                 <?php endif; ?>
@@ -81,7 +81,7 @@
             ?>
             <div class="form__item form__item--small <?= $classname; ?>">
                 <label for="lot-step">Шаг ставки <sup>*</sup></label>
-                <input id="lot-step" type="text" name="lot-step" placeholder="0" value="<?= getPostVal('lot-step'); ?>">
+                <input id="lot-step" type="text" name="lot-step" placeholder="0" value="<?= getPostVal('lot-step'); ?>" required="">
                 <?php if (isset($errors['lot-step'])) : ?>
                     <span class="form__error"><?= $errors['lot-step']; ?></span>
                 <?php endif; ?>
@@ -91,7 +91,7 @@
             ?>
             <div class="form__item <?= $classname; ?>">
                 <label for="lot-date">Дата окончания торгов <sup>*</sup></label>
-                <input class="form__input-date" id="lot-date" type="text" name="lot-date" placeholder="Введите дату в формате ГГГГ-ММ-ДД" value="<?= getPostVal('lot-date'); ?>">
+                <input class="form__input-date" id="lot-date" type="text" name="lot-date" placeholder="Введите дату в формате ГГГГ-ММ-ДД" value="<?= getPostVal('lot-date'); ?>" required="">
                 <?php if (isset($errors['lot-date'])) : ?>
                     <span class="form__error"><?= $errors['lot-date']; ?></span>
                 <?php endif; ?>
