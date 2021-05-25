@@ -13,6 +13,10 @@ $allCategories = getCategories($dbConnection);
 
 $lots = getLot($dbConnection, $trid);
 
+$lotRates = lotRates($dbConnection, $trid);
+
+$userId = $_SESSION['userId'] ?? '';
+
 if (!empty($lots)) {
     $pageСontent = include_template(
         'lot.php',
@@ -22,6 +26,14 @@ if (!empty($lots)) {
             'categories' => $allCategories,
 
             'lots' => $lots,
+
+            'lotRates' => $lotRates,
+
+            'lotRateQty' => count($lotRates),
+
+            'connection' => $dbConnection,
+
+            'userId' => $userId,
         ]
     );
 
@@ -39,6 +51,39 @@ if (!empty($lots)) {
     $title = 'Ошибка';
 }
 
+if (checkSession()) {
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        $errors = [];
+
+        $lotCost = validateFloatNumber('cost', $errors, 'Поле не может быть пустым', 'Введите минимальную ставку', lotMinRate($dbConnection, $trid), 'Ставка не может быть ниже минимальной');
+
+        if (count($errors)) {
+            $pageСontent = include_template(
+                "lot.php",
+                [
+                    'id' => $trid,
+
+                    'categories' => $allCategories,
+
+                    'lots' => $lots,
+
+                    'lotRates' => $lotRates,
+
+                    'lotRateQty' => count($lotRates),
+
+                    'connection' => $dbConnection,
+
+                    'errors' => $errors,
+
+                    'userId' => $userId,
+                ]
+            );
+        } else {
+            addRate($dbConnection, $userId, $trid);
+        }
+    }
+}
+
 $layoutСontent = include_template(
     'layout.php',
     [
@@ -50,7 +95,7 @@ $layoutСontent = include_template(
 
         'isAuth' => checkSession(),
 
-        'userName' => $_SESSION['userName'],
+        'userName' => $_SESSION['userName'] ?? '',
     ]
 );
 

@@ -9,8 +9,6 @@ $dbConnection = getConnection($config);
 $allCategories = getCategories($dbConnection);
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $required = ['email', 'password'];
-
     $errors = [];
 
     $userEmail = validate('email', $errors, 'Введите e-mail', FILTER_VALIDATE_EMAIL);
@@ -26,6 +24,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if (password_verify($userPassword, $user['password'])) {
 
             $_SESSION['userName'] = $user['name'];
+
+            $_SESSION['userId'] = $user['id'];
 
             header("Location: /");
         } else {

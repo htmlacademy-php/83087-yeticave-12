@@ -1,5 +1,5 @@
 <?php
-define("LOTS_PER_PAGE", 9);
+if (!defined('LOTS_PER_PAGE')) define('LOTS_PER_PAGE', 9);
 
 return [
     'db' => [

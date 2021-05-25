@@ -12,9 +12,13 @@ $allCategories = getCategories($dbConnection);
 $categoryName = getCategoryName($dbConnection, $currentCategory);
 
 $lotsQtyByCategory = getLotsQtyByCategory($dbConnection, $currentCategory);
-$currentCategoryPage = intval($_GET['page']) ?: 1;
+
+$currentCategoryPage = intval($_GET['page'] ?? 1);
+
 $pages = $lotsQtyByCategory / LOTS_PER_PAGE;
+
 $totalPages = ceil($pages);
+
 $lotsByCategory = getLotsByCategory($dbConnection, $currentCategory, $currentCategoryPage);
 
 $pageContent = include_template(

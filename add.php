@@ -8,18 +8,28 @@ $dbConnection = getConnection($config);
 
 $allCategories = getCategories($dbConnection);
 
+$userId = $_SESSION['userId'] ?? '';
+
 if (checkSession()) {
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-        $required = ['lot-name', 'category', 'message', 'file', 'lot-rate', 'lot-step', 'lot-date'];
-
         $errors = [];
 
         $lotName        = validate('lot-name', $errors, 'Введите наименование лота', FILTER_SANITIZE_SPECIAL_CHARS);
-        $lotCategory    = validate('category', $errors, 'Выберите категорию', FILTER_DEFAULT);
+        $lotCategory    = validate('category', $errors, 'Выберите категорию', FILTER_VALIDATE_INT);
         $lotDescription = validate('message', $errors, 'Напишите описание лота', FILTER_SANITIZE_SPECIAL_CHARS);
         $lotRate        = validateFloatNumber('lot-rate', $errors, 'Введите начальную цену', 'Число должно быть больше 0');
         $lotStep        = validateIntNumber('lot-step', $errors, 'Введите шаг ставки', 'Число должно быть больше 0');
         $lotDate        = validateDate('lot-date', $errors, 'Введите дату завершения торгов', 'Дата должна быть больше текущей даты, хотя бы на один день');
+
+        $fields = [
+            'user_id' => $userId,
+            'lot-name' => $lotName,
+            'category' => $lotCategory,
+            'message' => $lotDescription,
+            'lot-rate' => $lotRate,
+            'lot-step' => $lotStep,
+            'lot-date' => $lotDate,
+        ];
 
         if (!empty($_FILES['file']['name'])) {
             $fileNameOriginal = $_FILES['file']['name'];
@@ -27,6 +37,8 @@ if (checkSession()) {
             $fileTemporaryName = $_FILES['file']['tmp_name'];
             $filePath = __DIR__ . '/uploads/';
             $fileUrl = '/uploads/' . $fileNameOriginal;
+
+            $fields['file'] = $fileUrl;
 
             $mimetype = mime_content_type($fileTemporaryName);
 
@@ -49,19 +61,7 @@ if (checkSession()) {
                 ]
             );
         } else {
-            $sql = "INSERT INTO lots (create_date, user_id, name, category_id, description, price, price_step, end_date, image_url) VALUES (NOW(), 1, ?, ?, ?, ?, ?, ?, '$fileUrl')";
-
-            $stmt = db_get_prepare_stmt($dbConnection, $sql, $_POST);
-            $res = mysqli_stmt_execute($stmt);
-
-            if ($res) {
-                $lotId = mysqli_insert_id($dbConnection);
-
-                redirect("lot.php?id=" . $lotId);
-            } else {
-                echo "Error: " . $sql . "<br>" . mysqli_error($dbConnection);
-            }
-            mysqli_close($dbConnection);
+            addLot($dbConnection, $fields);
         }
     } else {
         $pageСontent = include_template(
@@ -86,7 +86,7 @@ $layoutСontent = include_template(
 
         'isAuth' => checkSession(),
 
-        'userName' => $_SESSION['userName'],
+        'userName' => $_SESSION['userName'] ?? '',
     ]
 );
 
