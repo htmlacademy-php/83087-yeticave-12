@@ -1,0 +1,14 @@
+{
+    "name": "aristocrat/yeticave",
+    "description": "Internet auction \"YetiCave\"",
+    "type": "project",
+    "authors": [
+        {
+            "name": "Павел",
+            "email": "papan41k@gmail.com"
+        }
+    ],
+    "require": {
+        "swiftmailer/swiftmailer": "^6.0"
+    }
+}
