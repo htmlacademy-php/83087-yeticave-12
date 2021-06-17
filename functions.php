@@ -677,6 +677,26 @@ function lotsWithoutWinner(object $connection)
 }
 
 /**
+ * Функция, которая возвращает название лота, который был выигран
+ * @param object $connection - соединение с базой данных
+ * @param int $lotId - id лота
+ */
+function lotWinnerName(object $connection, $lotId)
+{
+    $sql = "SELECT name FROM lots WHERE id = $lotId";
+    $sqlResult = mysqli_query($connection, $sql);
+
+    if (!$sqlResult) {
+        $error = mysqli_error($connection);
+        print("Ошибка MySQL: " . $error);
+    }
+
+    $lotName = mysqli_fetch_assoc($sqlResult);
+
+    return $lotName;
+}
+
+/**
  * Функция, которая возвращает id юзера последней ставки
  * @param object $connection - соединение с базой данных
  * @param int $lotId - id лота
@@ -685,9 +705,55 @@ function winnerUserId(object $connection, int $lotId)
 {
     $userIdSql = "SELECT user_id FROM rates WHERE lot_id = $lotId ORDER BY rate_date DESC LIMIT 1";
     $userIdSqlResult = mysqli_query($connection, $userIdSql);
+
+    if (!$userIdSqlResult) {
+        $error = mysqli_error($connection);
+        print("Ошибка MySQL: " . $error);
+    }
+
     $userId = mysqli_fetch_assoc($userIdSqlResult);
 
     return $userId;
+}
+
+/**
+ * Функция, которая возвращает email победителя
+ * @param object $connection - соединение с базой данных
+ * @param int $userId - id пользователя
+ */
+function winnerUserEmail(object $connection, int $userId)
+{
+    $sql = "SELECT email FROM users WHERE id = $userId";
+    $sqlResult = mysqli_query($connection, $sql);
+
+    if (!$sqlResult) {
+        $error = mysqli_error($connection);
+        print("Ошибка MySQL: " . $error);
+    }
+
+    $userEmail = mysqli_fetch_assoc($sqlResult);
+
+    return $userEmail;
+}
+
+/**
+ * Функция, которая возвращает Имя победителя
+ * @param object $connection - соединение с базой данных
+ * @param int $userId - id пользователя
+ */
+function winnerUserName(object $connection, int $userId)
+{
+    $sql = "SELECT name FROM users WHERE id = $userId";
+    $sqlResult = mysqli_query($connection, $sql);
+
+    if (!$sqlResult) {
+        $error = mysqli_error($connection);
+        print("Ошибка MySQL: " . $error);
+    }
+
+    $userName = mysqli_fetch_assoc($sqlResult);
+
+    return $userName;
 }
 
 /**
