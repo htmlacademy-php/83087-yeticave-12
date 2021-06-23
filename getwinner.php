@@ -5,20 +5,30 @@ require_once('functions.php');
 $config = require 'config.php';
 $dbConnection = getConnection($config);
 
-$lotsNoWinner = lotsWithoutWinner($dbConnection);
+$lotsWithoutWinner = lotsWithoutWinner($dbConnection);
 
-foreach ($lotsNoWinner as $lotNoWinner) {
-    $lotId = $lotNoWinner['id'];
+foreach ($lotsWithoutWinner as $lotWithoutWinner) {
+    $lotId = $lotWithoutWinner['id'];
     $userId = intval(winnerUserId($dbConnection, $lotId));
     updateWinner($dbConnection, $lotId, $userId);
 
-    $userEmail = winnerUserEmail($dbConnection, $userId);
+    $userData = winnerUserData($dbConnection, $userId);
+    $userEmail = $userData[0]['email'];
+    $userName = $userData[0]['name'];
+    $lotName = getLot($dbConnection, $lotId);
 
-    $transport = (new Swift_SmtpTransport('smtp.mailtrap.io', 2525))
-        ->setUsername('36a3308ec06188')
-        ->setPassword('96b20787611324');
+    $transport = (new Swift_SmtpTransport($config['swiftmailer']['host'], $config['swiftmailer']['port']))
+        ->setUsername($config['swiftmailer']['username'])
+        ->setPassword($config['swiftmailer']['password']);
     $mailer = new Swift_Mailer($transport);
-    $messageContent = include_template('email.php', ['userName' => winnerUserName($dbConnection, $userId), 'lotId' => $lotId, 'lotName' => lotWinnerName($dbConnection, $lotId)]);
+    $messageContent = include_template(
+        'email.php',
+        [
+            'userName' => $userName,
+            'lotId' => $lotId,
+            'lotName' => $lotName[0]['name'],
+        ]
+    );
     $message = (new Swift_Message('Ваша ставка победила'))
         ->setFrom(['keks@phpdemo.ru'])
         ->setTo([$userEmail])
@@ -26,16 +36,3 @@ foreach ($lotsNoWinner as $lotNoWinner) {
 
     $result = $mailer->send($message);
 }
-
-
-// $transport = (new Swift_SmtpTransport('smtp.mailtrap.io', 2525))
-//     ->setUsername('36a3308ec06188')
-//     ->setPassword('96b20787611324');
-// $mailer = new Swift_Mailer($transport);
-// $messageContent = include_template('email.php', ['userName' => winnerUserName($dbConnection, 3), 'lotId' => 9, 'lotName' => lotWinnerName($dbConnection, 9)]);
-// $message = (new Swift_Message('Ваша ставка победила'))
-//     ->setFrom(['keks@phpdemo.ru'])
-//     ->setTo(['papan41k@gmail.com'])
-//     ->setBody($messageContent, 'text/html');
-
-// $result = $mailer->send($message);

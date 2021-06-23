@@ -7,5 +7,12 @@ return [
         'user' => 'root',
         'password' => 'root',
         'database' => 'yeticave',
+    ],
+
+    'swiftmailer' => [
+        'username' => '36a3308ec06188',
+        'password' => '96b20787611324',
+        'host' => 'smtp.mailtrap.io',
+        'port' => 2525,
     ]
 ];

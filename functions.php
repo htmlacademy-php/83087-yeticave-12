@@ -171,7 +171,7 @@ function getLot(object $connection, int $lotId)
 
 /**
  * Функция сохранения значения полей формы после валидации
- * @param $name поле ввода
+ * @param string $name поле ввода
  */
 function getPostVal($name)
 {
@@ -663,17 +663,17 @@ function lotRateDatePassed(string $date)
 function lotsWithoutWinner(object $connection)
 {
     $currentDate = date('Y-m-d');
-    $lotsNoWinnerSql = "SELECT id FROM lots WHERE winner_id IS NULL AND end_date <= '$currentDate'";
-    $lotsNoWinnerSqlResult = mysqli_query($connection, $lotsNoWinnerSql);
+    $sql = "SELECT id FROM lots WHERE winner_id IS NULL AND end_date <= '$currentDate'";
+    $sqlResult = mysqli_query($connection, $sql);
 
-    if (!$lotsNoWinnerSqlResult) {
+    if (!$sqlResult) {
         $error = mysqli_error($connection);
         print("Ошибка MySQL: " . $error);
     }
 
-    $lotsNoWinner = mysqli_fetch_all($lotsNoWinnerSqlResult, MYSQLI_ASSOC);
+    $lotsWithoutWinner = mysqli_fetch_all($sqlResult, MYSQLI_ASSOC);
 
-    return $lotsNoWinner;
+    return $lotsWithoutWinner;
 }
 
 /**
@@ -717,13 +717,13 @@ function winnerUserId(object $connection, int $lotId)
 }
 
 /**
- * Функция, которая возвращает email победителя
+ * Функция, которая возвращает email и имя  победителя
  * @param object $connection - соединение с базой данных
  * @param int $userId - id пользователя
  */
-function winnerUserEmail(object $connection, int $userId)
+function winnerUserData(object $connection, int $userId)
 {
-    $sql = "SELECT email FROM users WHERE id = $userId";
+    $sql = "SELECT email, name FROM users WHERE id = $userId";
     $sqlResult = mysqli_query($connection, $sql);
 
     if (!$sqlResult) {
@@ -731,29 +731,9 @@ function winnerUserEmail(object $connection, int $userId)
         print("Ошибка MySQL: " . $error);
     }
 
-    $userEmail = mysqli_fetch_assoc($sqlResult);
+    $userData = mysqli_fetch_all($sqlResult, MYSQLI_ASSOC);
 
-    return $userEmail;
-}
-
-/**
- * Функция, которая возвращает Имя победителя
- * @param object $connection - соединение с базой данных
- * @param int $userId - id пользователя
- */
-function winnerUserName(object $connection, int $userId)
-{
-    $sql = "SELECT name FROM users WHERE id = $userId";
-    $sqlResult = mysqli_query($connection, $sql);
-
-    if (!$sqlResult) {
-        $error = mysqli_error($connection);
-        print("Ошибка MySQL: " . $error);
-    }
-
-    $userName = mysqli_fetch_assoc($sqlResult);
-
-    return $userName;
+    return $userData;
 }
 
 /**
