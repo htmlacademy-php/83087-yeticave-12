@@ -122,8 +122,10 @@ function getCategoryName(object $connection, int $id)
  */
 function getLots(object $connection, $category = null)
 {
-    $requestLots = "SELECT lots.name, lots.id, categories.name as category, image_url, price, end_date
-    FROM lots JOIN categories
+    $requestLots = "SELECT DISTINCT lots.name, lots.id, categories.name as category, image_url, price, end_date, (SELECT COUNT(lot_id) FROM rates WHERE lot_id = lots.id) as rate_qty, create_date
+	FROM lots
+    INNER JOIN categories ON lots.category_id = categories.id
+    INNER JOIN rates ON lots.id = rates.lot_id
     WHERE lots.category_id = categories.id";
 
     if (!empty($category)) {
@@ -755,30 +757,4 @@ function updateWinner(object $connection, int $lotId, int $userId)
     $update = mysqli_fetch_all($sqlResult, MYSQLI_ASSOC);
 
     return $update;
-}
-
-/**
- * Функция отображения кол-ва ставок
- * @param object $connection - соединение с базой данных
- * @param int $lotId - id лота
- */
-function rateQty($connection, $lotId)
-{
-    $sql = "SELECT COUNT(lot_id) as rate_qty FROM rates WHERE lot_id = $lotId";
-    $sqlResult = mysqli_query($connection, $sql);
-
-    if (!$sqlResult) {
-        $error = mysqli_error($connection);
-        print("Ошибка MySQL: " . $error);
-    }
-
-    $rateQtyResult = mysqli_fetch_all($sqlResult, MYSQLI_ASSOC);
-
-    $rateQty = $rateQtyResult[0]['rate_qty'];
-
-    if ($rateQty > 0) {
-        echo "{$rateQty} " . get_noun_plural_form($rateQty, 'ставка', 'ставки', 'ставок');
-    } else {
-        echo 'Стартовая цена';
-    }
 }

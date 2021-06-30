@@ -26,7 +26,14 @@
                         <div class="lot__state">
                             <div class="lot__rate">
                                 <span class="lot__amount">
-                                    <?php rateQty($connection, $lot['id']); ?>
+                                    <?php
+                                    $rateQty = $lot['rate_qty'];
+                                    if ($rateQty > 0) {
+                                        echo "{$rateQty} " . get_noun_plural_form($rateQty, 'ставка', 'ставки', 'ставок');
+                                    } else {
+                                        echo 'Стартовая цена';
+                                    }
+                                    ?>
                                 </span>
                                 <span class="lot__cost">
                                     <?php
