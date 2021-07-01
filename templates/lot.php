@@ -49,7 +49,7 @@
                         </div>
                     </div>
                     <?php
-                    $lastRateUserId = winnerUserId($connection, $id);
+                    $lastRateUserId = getWinnerId($connection, $id);
                     ?>
                     <?php if (checkSession() && ($data[0] > 0 && $data[1] > 0) && $lots[0]['user_id'] != $userId && $lastRateUserId['user_id'] !== $userId) : ?>
                         <form class="lot-item__form" action="lot.php?id=<?= $id; ?>" method="post" autocomplete="off">

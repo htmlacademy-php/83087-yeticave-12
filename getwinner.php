@@ -9,10 +9,10 @@ $lotsWithoutWinner = lotsWithoutWinner($dbConnection);
 
 foreach ($lotsWithoutWinner as $lotWithoutWinner) {
     $lotId = $lotWithoutWinner['id'];
-    $userId = intval(winnerUserId($dbConnection, $lotId));
+    $userId = intval(getWinnerId($dbConnection, $lotId));
     updateWinner($dbConnection, $lotId, $userId);
 
-    $userData = winnerUserData($dbConnection, $userId);
+    $userData = getUserData($dbConnection, $userId);
     $userEmail = $userData[0]['email'];
     $userName = $userData[0]['name'];
     $lotName = getLot($dbConnection, $lotId);

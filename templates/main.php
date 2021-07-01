@@ -37,7 +37,7 @@
                                 </span>
                                 <span class="lot__cost">
                                     <?php
-                                    $currentRate = currentRate($connection, $lot['id']);
+                                    $currentRate = $lot['sum'];
 
                                     if (!empty($currentRate)) {
                                         echo formatPrice(stripTags($currentRate));

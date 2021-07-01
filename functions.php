@@ -32,6 +32,7 @@ function stripTags(string $str)
  * Функция возврата оставшегося времени лота в формате ЧЧ:ММ
  * @param string $lotDate дата вида - ГГГГ-ММ-ДД
  * @param bool $showSeconds вывести секунды
+ * @return array оставшееся время
  */
 function getDifferenceTime(string $lotDate, bool $showSeconds = null)
 {
@@ -45,25 +46,31 @@ function getDifferenceTime(string $lotDate, bool $showSeconds = null)
     $seconds =  $dateDiff - $allMinutes * 60;
 
     if ($showSeconds === true) {
-        $res = [
+        $result = [
             $hours, $minute, $seconds
         ];
     } else {
-        $res = [
+        $result = [
             $hours, $minute
         ];
     }
 
-    return $res;
+    return $result;
 }
 
 /**
  * Функция подключения к базе данных
  * @param array $config данные подключения
+ * @return object возвращает данные сервера
  */
 function getConnection(array $config)
 {
-    $connection = mysqli_connect($config['db']['host'], $config['db']['user'], $config['db']['password'], $config['db']['database']);
+    $connection = mysqli_connect(
+        $config['db']['host'],
+        $config['db']['user'],
+        $config['db']['password'],
+        $config['db']['database']
+    );
     mysqli_set_charset($connection, "utf8");
 
     if ($connection == false) {
@@ -76,19 +83,20 @@ function getConnection(array $config)
 /**
  * Функция получения категорий
  * @param object $connection соединение с базой данных
+ * @return array возвращает массив категорий
  */
 function getCategories(object $connection)
 {
-    $requestCategories = "SELECT id, name, code FROM categories";
+    $sql = "SELECT id, name, code FROM categories";
 
-    $resultCategories = mysqli_query($connection, $requestCategories);
+    $sqlResult = mysqli_query($connection, $sql);
 
-    if (!$resultCategories) {
+    if (!$sqlResult) {
         $error = mysqli_error($connection);
         print("Ошибка MySQL: " . $error);
     }
 
-    $categories = mysqli_fetch_all($resultCategories, MYSQLI_ASSOC);
+    $categories = mysqli_fetch_all($sqlResult, MYSQLI_ASSOC);
 
     return $categories;
 }
@@ -97,20 +105,21 @@ function getCategories(object $connection)
  * Функция получения названия категории
  * @param object $connection соединение с базой данных
  * @param int $id id категории
+ * @return string возвращает название категории
  */
 function getCategoryName(object $connection, int $id)
 {
-    $requestCategory = "SELECT name FROM categories
+    $sql = "SELECT name FROM categories
     WHERE categories.id = '$id'";
 
-    $resultCategory = mysqli_query($connection, $requestCategory);
+    $sqlResult = mysqli_query($connection, $sql);
 
-    if (!$resultCategory) {
+    if (!$sqlResult) {
         $error = mysqli_error($connection);
         print("Ошибка MySQL: " . $error);
     }
 
-    $categoryName = mysqli_fetch_all($resultCategory, MYSQLI_ASSOC);
+    $categoryName = mysqli_fetch_all($sqlResult, MYSQLI_ASSOC);
 
     return $categoryName[0]['name'];
 }
@@ -118,31 +127,32 @@ function getCategoryName(object $connection, int $id)
 /**
  * Функция получения всех лотов
  * @param object $connection соединение с базой данных
- * @param $category получение лотов по категории
+ * @param string $category получение лотов по категории
+ * @return array возвращает массив лотов
  */
-function getLots(object $connection, $category = null)
+function getLots(object $connection, string $category = null)
 {
-    $requestLots = "SELECT DISTINCT lots.name, lots.id, categories.name as category, image_url, price, end_date, (SELECT COUNT(lot_id) FROM rates WHERE lot_id = lots.id) as rate_qty, create_date
+    $sql = "SELECT lots.name, lots.id, categories.name as category, image_url, price, end_date, COUNT(rates.lot_id) as rate_qty, create_date, MAX(rates.sum) as sum
 	FROM lots
     INNER JOIN categories ON lots.category_id = categories.id
-    INNER JOIN rates ON lots.id = rates.lot_id
+    LEFT JOIN rates ON lots.id = rates.lot_id
     WHERE lots.category_id = categories.id";
 
     if (!empty($category)) {
-        $requestLots .= " AND categories.code = '$category'";
+        $sql .= " AND categories.code = '$category'";
     }
 
-    $requestLots .= " ORDER BY create_date DESC
+    $sql .= " GROUP BY lots.id ORDER BY create_date DESC
     LIMIT 6";
 
-    $resultLot = mysqli_query($connection, $requestLots);
+    $sqlResult = mysqli_query($connection, $sql);
 
-    if (!$resultLot) {
+    if (!$sqlResult) {
         $error = mysqli_error($connection);
         print("Ошибка MySQL: " . $error);
     }
 
-    $lots = mysqli_fetch_all($resultLot, MYSQLI_ASSOC);
+    $lots = mysqli_fetch_all($sqlResult, MYSQLI_ASSOC);
 
     return $lots;
 }
@@ -151,22 +161,22 @@ function getLots(object $connection, $category = null)
  * Функция получения лота по id
  * @param object $connection соединение с базой данных
  * @param int $lotId id лота
- * @return array $lots
+ * @return array возвращает лот по id
  */
 function getLot(object $connection, int $lotId)
 {
-    $requestLot = "SELECT lots.name, description, lots.id, lots.user_id, categories.name as category, image_url, price, end_date
+    $sql = "SELECT lots.name, description, lots.id, lots.user_id, categories.name as category, image_url, price, end_date
     FROM lots JOIN categories
     WHERE lots.category_id = categories.id AND lots.id = $lotId
     ORDER BY create_date DESC";
-    $resultLot = mysqli_query($connection, $requestLot);
+    $sqlResult = mysqli_query($connection, $sql);
 
-    if (!$resultLot) {
+    if (!$sqlResult) {
         $error = mysqli_error($connection);
         print("Ошибка MySQL: " . $error);
     }
 
-    $lots = mysqli_fetch_all($resultLot, MYSQLI_ASSOC);
+    $lots = mysqli_fetch_all($sqlResult, MYSQLI_ASSOC);
 
     return $lots;
 }
@@ -200,7 +210,7 @@ function validate($field, &$errors, string $errorText, $filter)
 }
 
 /**
- * Функция валидации чисел с плавающей точкой чисел
+ * Функция валидации чисел с плавающей точкой
  * @param $field поле ввода числа
  * @param $errors ошибки
  * @param string $errorText текст ошибки
@@ -305,19 +315,20 @@ function checkSession()
  * Функция подсчета количества лотов по поиску
  * @param object $connection соединение с базой данных
  * @param string $searchText текст поиска
+ * @return string количество лотов
  */
 function getLotsQtyBySearch(object $connection, string $searchText)
 {
-    $lotsSql = "SELECT COUNT(*) AS cnt FROM lots WHERE MATCH(name,description) AGAINST('$searchText')";
+    $sql = "SELECT COUNT(*) AS cnt FROM lots WHERE MATCH(name,description) AGAINST('$searchText')";
 
-    $lotsResult = mysqli_query($connection, $lotsSql);
+    $sqlResult = mysqli_query($connection, $sql);
 
-    if (!$lotsResult) {
+    if (!$sqlResult) {
         $error = mysqli_error($connection);
         print("Ошибка MySQL: " . $error);
     }
 
-    $allLots = mysqli_fetch_all($lotsResult, MYSQLI_ASSOC);
+    $allLots = mysqli_fetch_all($sqlResult, MYSQLI_ASSOC);
 
     return $allLots[0]['cnt'];
 }
@@ -332,18 +343,18 @@ function getLotsQtyBySearch(object $connection, string $searchText)
 function searchLot(object $connection, string $searchText, int $page)
 {
     $searchText = mysqli_real_escape_string($connection, $searchText);
-    $requestSearch =  "SELECT lots.image_url, lots.name, categories.name AS category, lots.price, lots.end_date FROM lots
+    $sql =  "SELECT lots.image_url, lots.name, categories.name AS category, lots.price, lots.end_date FROM lots
     JOIN categories
     ON lots.category_id = categories.id
     WHERE MATCH(lots.name,lots.description) AGAINST('$searchText') LIMIT " . LOTS_PER_PAGE . " OFFSET " . LOTS_PER_PAGE * ($page - 1);
-    $resultSearch = mysqli_query($connection, $requestSearch);
+    $sqlResult = mysqli_query($connection, $sql);
 
-    if (!$resultSearch) {
+    if (!$sqlResult) {
         $error = mysqli_error($connection);
         print("Ошибка MySQL: " . $error);
     }
 
-    $lots = mysqli_fetch_all($resultSearch, MYSQLI_ASSOC);
+    $lots = mysqli_fetch_all($sqlResult, MYSQLI_ASSOC);
 
     return $lots;
 }
@@ -385,19 +396,20 @@ function redirect($link)
  * Функция подсчета количества лотов по категории
  * @param object $connection соединение с базой данных
  * @param int $category категория лотов
+ * @return string возвращает количество лотов по категории
  */
 function getLotsQtyByCategory(object $connection, int $category)
 {
-    $lotsSql = "SELECT COUNT(*) AS cnt FROM lots WHERE lots.category_id = $category";
+    $sql = "SELECT COUNT(*) AS cnt FROM lots WHERE lots.category_id = $category";
 
-    $lotsResult = mysqli_query($connection, $lotsSql);
+    $sqlResult = mysqli_query($connection, $sql);
 
-    if (!$lotsResult) {
+    if (!$sqlResult) {
         $error = mysqli_error($connection);
         print("Ошибка MySQL: " . $error);
     }
 
-    $allLots = mysqli_fetch_all($lotsResult, MYSQLI_ASSOC);
+    $allLots = mysqli_fetch_all($sqlResult, MYSQLI_ASSOC);
 
     return $allLots[0]['cnt'];
 }
@@ -407,19 +419,20 @@ function getLotsQtyByCategory(object $connection, int $category)
  * @param object $connection соединение с базой данных
  * @param int $category категория лотов
  * @param int $page количество страниц категории
+ * @return array возвращает лоты по категории
  */
 function getLotsByCategory(object $connection, int $category, int $page)
 {
-    $lotsSqlLimit = "SELECT lots.id, lots.image_url, lots.name, categories.name AS category, lots.price, lots.end_date FROM lots JOIN categories ON lots.category_id = categories.id WHERE lots.category_id = $category ORDER BY lots.create_date DESC LIMIT " . LOTS_PER_PAGE . " OFFSET " . LOTS_PER_PAGE * ($page - 1);
+    $sql = "SELECT lots.id, lots.image_url, lots.name, categories.name AS category, lots.price, lots.end_date FROM lots JOIN categories ON lots.category_id = categories.id WHERE lots.category_id = $category ORDER BY lots.create_date DESC LIMIT " . LOTS_PER_PAGE . " OFFSET " . LOTS_PER_PAGE * ($page - 1);
 
-    $resultLot = mysqli_query($connection, $lotsSqlLimit);
+    $sqlResult = mysqli_query($connection, $sql);
 
-    if (!$resultLot) {
+    if (!$sqlResult) {
         $error = mysqli_error($connection);
         print("Ошибка MySQL: " . $error);
     }
 
-    $lots = mysqli_fetch_all($resultLot, MYSQLI_ASSOC);
+    $lots = mysqli_fetch_all($sqlResult, MYSQLI_ASSOC);
 
     return $lots;
 }
@@ -428,33 +441,35 @@ function getLotsByCategory(object $connection, int $category, int $page)
  * Функция вывода ставок по лоту
  * @param object $connection соединение с базой данных
  * @param int $lotId id лота
+ * @return array возвращает ставки по лоту
  */
 function lotRates(object $connection, int $lotId)
 {
-    $lotRatesSql = "SELECT rates.rate_date, rates.sum, users.name
+    $sql = "SELECT rates.rate_date, rates.sum, users.name
     FROM rates
     JOIN users
     ON users.id = rates.user_id
-    WHERE rates.lot_id = '$lotId'
+    WHERE rates.lot_id = $lotId
     ORDER BY rates.sum DESC
     LIMIT 10";
 
-    $lotRatesResult = mysqli_query($connection, $lotRatesSql);
+    $sqlResult = mysqli_query($connection, $sql);
 
-    if (!$lotRatesResult) {
+    if (!$sqlResult) {
         $error = mysqli_error($connection);
         print("Ошибка MySQL: " . $error);
     }
 
-    $lotRates = mysqli_fetch_all($lotRatesResult, MYSQLI_ASSOC);
+    $lotRates = mysqli_fetch_all($sqlResult, MYSQLI_ASSOC);
 
     return $lotRates;
 }
 
 /**
- * Функция возврата начальной цены ставки
+ * Функция возврата начальной цены лота
  * @param object $connection соединение с базой данных
  * @param int $lotId id лота
+ * @return string возвращает начальную цену лота
  */
 function startingPrice(object $connection, int $lotId)
 {
@@ -475,6 +490,7 @@ function startingPrice(object $connection, int $lotId)
  * Функция возврата значения текущей ставки
  * @param object $connection соединение с базой данных
  * @param int $lotId id лота
+ * @return string возвращает текущую ставку
  */
 function currentRate(object $connection, int $lotId)
 {
@@ -495,6 +511,7 @@ function currentRate(object $connection, int $lotId)
  * Функция возврата минимальной ставки
  * @param object $connection соединение с базой данных
  * @param int $lotId id лота
+ * @return int возвращает значение минимальной ставки
  */
 function lotMinRate(object $connection, int $lotId)
 {
@@ -524,10 +541,11 @@ function lotMinRate(object $connection, int $lotId)
  * Функция вывода ставок
  * @param object $connection соединение с базой данных
  * @param int $userId id пользователя
+ * @return array возвращает ставки пользователя
  */
 function getLotsRates(object $connection, int $userId)
 {
-    $lotsRatesSql = "SELECT lots.image_url, lots.name, lots.id, categories.name as category, lots.end_date, lots.winner_id, rates.rate_date, rates.sum
+    $sql = "SELECT lots.image_url, lots.name, lots.id, categories.name as category, lots.end_date, lots.winner_id, rates.rate_date, rates.sum
     FROM users
     JOIN rates
     ON users.id = rates.user_id
@@ -537,14 +555,14 @@ function getLotsRates(object $connection, int $userId)
     ON lots.category_id = categories.id
     WHERE users.id = $userId
     ORDER BY rates.rate_date DESC";
-    $lotsRatesSqlResult = mysqli_query($connection, $lotsRatesSql);
+    $sqlResult = mysqli_query($connection, $sql);
 
-    if (!$lotsRatesSqlResult) {
+    if (!$sqlResult) {
         $error = mysqli_error($connection);
         print("Ошибка MySQL: " . $error);
     }
 
-    $lotsRates = mysqli_fetch_all($lotsRatesSqlResult, MYSQLI_ASSOC);
+    $lotsRates = mysqli_fetch_all($sqlResult, MYSQLI_ASSOC);
 
     return $lotsRates;
 }
@@ -553,6 +571,7 @@ function getLotsRates(object $connection, int $userId)
  * Функция возврата контактов владельца лота
  * @param object $connection соединение с базой данных
  * @param int $lotId id лота
+ * @return string возвращает данные владельца лота
  */
 function userContacts(object $connection, int $lotId)
 {
@@ -572,6 +591,7 @@ function userContacts(object $connection, int $lotId)
 /**
  * Функция, в которой считаем сколько прошло времени с момента ставки
  * @param string $rateDate дата ставки
+ * @return int возвращает время с момента ставки
  */
 function lotRateDifference(string $rateDate)
 {
@@ -586,6 +606,7 @@ function lotRateDifference(string $rateDate)
 /**
  * Функция, в которой получаем часы/минуты сколько прошло времени с момента ставки
  * @param int $value время в секундах
+ * @return array возвращает часы/минуты с момента ставки
  */
 function lotRateCount(int $value)
 {
@@ -661,6 +682,7 @@ function lotRateDatePassed(string $date)
 /**
  * Функция определения лота без победителя
  * @param object $connection - соединение с базой данных
+ * @return array возвращает лоты без победителей
  */
 function lotsWithoutWinner(object $connection)
 {
@@ -682,6 +704,7 @@ function lotsWithoutWinner(object $connection)
  * Функция, которая возвращает название лота, который был выигран
  * @param object $connection - соединение с базой данных
  * @param int $lotId - id лота
+ * @return string возвращает название лота, который выигран
  */
 function lotWinnerName(object $connection, $lotId)
 {
@@ -702,18 +725,19 @@ function lotWinnerName(object $connection, $lotId)
  * Функция, которая возвращает id юзера последней ставки
  * @param object $connection - соединение с базой данных
  * @param int $lotId - id лота
+ * @return int возвращает id юзера последней ставки
  */
-function winnerUserId(object $connection, int $lotId)
+function getWinnerId(object $connection, int $lotId)
 {
-    $userIdSql = "SELECT user_id FROM rates WHERE lot_id = $lotId ORDER BY rate_date DESC LIMIT 1";
-    $userIdSqlResult = mysqli_query($connection, $userIdSql);
+    $sql = "SELECT user_id FROM rates WHERE lot_id = $lotId ORDER BY rate_date DESC LIMIT 1";
+    $sqlResult = mysqli_query($connection, $sql);
 
-    if (!$userIdSqlResult) {
+    if (!$sqlResult) {
         $error = mysqli_error($connection);
         print("Ошибка MySQL: " . $error);
     }
 
-    $userId = mysqli_fetch_assoc($userIdSqlResult);
+    $userId = mysqli_fetch_assoc($sqlResult);
 
     return $userId;
 }
@@ -722,8 +746,9 @@ function winnerUserId(object $connection, int $lotId)
  * Функция, которая возвращает email и имя  победителя
  * @param object $connection - соединение с базой данных
  * @param int $userId - id пользователя
+ * @return array возвращает данные победителя
  */
-function winnerUserData(object $connection, int $userId)
+function getUserData(object $connection, int $userId)
 {
     $sql = "SELECT email, name FROM users WHERE id = $userId";
     $sqlResult = mysqli_query($connection, $sql);
