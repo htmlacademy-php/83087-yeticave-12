@@ -32,8 +32,6 @@ $pageContent = include_template(
 
         'totalPages' => $totalPages,
 
-        'categoryId' => $currentCategory,
-
         'currentCategoryPage' => $currentCategoryPage,
     ]
 );
@@ -50,6 +48,8 @@ $layoutСontent = include_template(
         'isAuth' => checkSession(),
 
         'userName' => $_SESSION['userName'],
+
+        'categoryId' => $currentCategory,
     ]
 );
 

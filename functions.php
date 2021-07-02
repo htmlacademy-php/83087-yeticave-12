@@ -132,7 +132,7 @@ function getCategoryName(object $connection, int $id)
  */
 function getLots(object $connection, string $category = null)
 {
-    $sql = "SELECT lots.name, lots.id, categories.name as category, image_url, price, end_date, COUNT(rates.lot_id) as rate_qty, create_date, MAX(rates.sum) as sum
+    $sql = "SELECT lots.name, lots.id, categories.name as category, image_url, price, end_date, COUNT(rates.lot_id) as rate_qty, create_date, IFNULL(MAX(rates.sum), price) AS current_price
 	FROM lots
     INNER JOIN categories ON lots.category_id = categories.id
     LEFT JOIN rates ON lots.id = rates.lot_id
@@ -423,7 +423,14 @@ function getLotsQtyByCategory(object $connection, int $category)
  */
 function getLotsByCategory(object $connection, int $category, int $page)
 {
-    $sql = "SELECT lots.id, lots.image_url, lots.name, categories.name AS category, lots.price, lots.end_date FROM lots JOIN categories ON lots.category_id = categories.id WHERE lots.category_id = $category ORDER BY lots.create_date DESC LIMIT " . LOTS_PER_PAGE . " OFFSET " . LOTS_PER_PAGE * ($page - 1);
+    $sql = "SELECT lots.id, lots.image_url, lots.name, categories.name AS category, lots.price, lots.end_date, COUNT(rates.lot_id) as rate_qty, IFNULL(MAX(rates.sum), price) AS current_price
+    FROM lots
+    JOIN categories ON lots.category_id = categories.id
+    LEFT JOIN rates ON lots.id = rates.lot_id
+    WHERE lots.category_id = $category
+    GROUP BY lots.id
+    ORDER BY lots.create_date DESC
+    LIMIT " . LOTS_PER_PAGE . " OFFSET " . LOTS_PER_PAGE * ($page - 1);
 
     $sqlResult = mysqli_query($connection, $sql);
 
