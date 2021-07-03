@@ -23,15 +23,7 @@
                     <div class="lot-item__rate">
                         <span class="lot-item__amount">Текущая цена</span>
                         <span class="lot-item__cost">
-                            <?php
-                            $currentRate = currentRate($connection, $id);
-
-                            if (!empty($currentRate)) {
-                                echo formatPrice(stripTags($currentRate));
-                            } else {
-                                echo formatPrice(stripTags($lots[0]['price']));
-                            }
-                            ?>
+                            <?php echo formatPrice(stripTags($lots[0]['current_price'])); ?>
                         </span>
                     </div>
                     <div class="lot-item__min-cost">

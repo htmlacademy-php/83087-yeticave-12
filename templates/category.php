@@ -47,7 +47,7 @@
             <?php else : ?>
                 <li class="pagination-item pagination-item-prev">Назад</li>
             <?php endif; ?>
-            <?php for ($i = 1; $i <= $totalPages; $i = $i + 1) : ?>
+            <?php for ($i = 1; $i <= $totalPages; $i += 1) : ?>
                 <li class="pagination-item <?= $i === $currentCategoryPage ? 'pagination-item-active' : '' ?>">
                     <a href="/category.php?id=<?= $categoryId; ?>&page=<?= $i ?>"><?= $i ?></a>
                 </li>

@@ -73,7 +73,7 @@ function getConnection(array $config)
     );
     mysqli_set_charset($connection, "utf8");
 
-    if ($connection == false) {
+    if ($connection === false) {
         print("Ошибка подключения: " . mysqli_connect_error());
     }
 
@@ -132,7 +132,7 @@ function getCategoryName(object $connection, int $id)
  */
 function getLots(object $connection, string $category = null)
 {
-    $sql = "SELECT lots.name, lots.id, categories.name as category, image_url, price, end_date, COUNT(rates.lot_id) as rate_qty, create_date, IFNULL(MAX(rates.sum), price) AS current_price
+    $sql = "SELECT lots.name, lots.id, categories.name as category, image_url, end_date, COUNT(rates.lot_id) as rate_qty, create_date, IFNULL(MAX(rates.sum), price) AS current_price
 	FROM lots
     INNER JOIN categories ON lots.category_id = categories.id
     LEFT JOIN rates ON lots.id = rates.lot_id
@@ -165,8 +165,9 @@ function getLots(object $connection, string $category = null)
  */
 function getLot(object $connection, int $lotId)
 {
-    $sql = "SELECT lots.name, description, lots.id, lots.user_id, categories.name as category, image_url, price, end_date
+    $sql = "SELECT lots.name, description, lots.id, lots.user_id, categories.name as category, image_url, end_date, IFNULL(MAX(rates.sum), price) AS current_price
     FROM lots JOIN categories
+    LEFT JOIN rates ON lots.id = rates.lot_id
     WHERE lots.category_id = categories.id AND lots.id = $lotId
     ORDER BY create_date DESC";
     $sqlResult = mysqli_query($connection, $sql);
@@ -192,12 +193,13 @@ function getPostVal($name)
 
 /**
  * Функция валидации полей
- * @param $field поле ввода
- * @param $errors ошибки
+ * @param string $field поле ввода
+ * @param array $errors ошибки
  * @param string $errorText текст ошибки
- * @param $filter тип фильтра поля ввода
+ * @param array|int $filter тип фильтра поля ввода
+ * @return string возвращает значение поля
  */
-function validate($field, &$errors, string $errorText, $filter)
+function validate($field, &$errors, $errorText, $filter)
 {
     if (empty($_POST[$field])) {
         $errors[$field] = $errorText;
@@ -211,12 +213,13 @@ function validate($field, &$errors, string $errorText, $filter)
 
 /**
  * Функция валидации чисел с плавающей точкой
- * @param $field поле ввода числа
- * @param $errors ошибки
+ * @param int $field поле ввода числа
+ * @param array $errors ошибки
  * @param string $errorText текст ошибки
  * @param string $errorValidateText текст ошибки валидации
- * @param $minRate минимальное число
+ * @param int $minRate минимальное число
  * @param string $errorMinRateValidateText текст ошибки минимального числа
+ * @return int возвращает значение поля
  */
 function validateFloatNumber($field, &$errors, $errorText, $errorValidateText, $minRate = null, $errorMinRateValidateText = null)
 {
@@ -245,10 +248,11 @@ function validateFloatNumber($field, &$errors, $errorText, $errorValidateText, $
 
 /**
  * Функция валидации целых чисел
- * @param $field поле ввода числа
- * @param $errors ошибки
+ * @param int $field поле ввода числа
+ * @param array $errors ошибки
  * @param string $errorText текст ошибки
  * @param string $errorValidateText текст ошибки валидации
+ * @return int возвращает значение поля
  */
 function validateIntNumber($field, &$errors, string $errorText, string $errorValidateText)
 {
@@ -270,10 +274,11 @@ function validateIntNumber($field, &$errors, string $errorText, string $errorVal
 
 /**
  * Функция валидация даты
- * @param $date дата, которую указал пользователь
- * @param $errors ошибки
+ * @param string $date дата, которую указал пользователь
+ * @param array $errors ошибки
  * @param string $errorText текст ошибки
  * @param string $errorValidateText текст ошибки валидации
+ * @return string возвращает значение поля
  */
 function validateDate($date, &$errors, string $errorText, string $errorValidateText)
 {
@@ -301,6 +306,7 @@ function validateDate($date, &$errors, string $errorText, string $errorValidateT
 
 /**
  * Функция, которая проверяет запущена ли сессия
+ * @return bool возвращает 1 или 0, проверив, запущена ли сессия
  */
 function checkSession()
 {
@@ -362,7 +368,7 @@ function searchLot(object $connection, string $searchText, int $page)
 /**
  * Функция sql запроса на создание нового лота
  * @param object $connection соединение с базой данных
- * @param $imageUrl url адрес изображения лота
+ * @param array $fields поля на создание нового лота
  */
 function addLot(object $connection, array $fields)
 {
@@ -383,7 +389,7 @@ function addLot(object $connection, array $fields)
 
 /**
  * Функция редиректа со страницы
- * @param $link - адрес страницы, на которую нужно сделать редирект
+ * @param string $link - адрес страницы, на которую нужно сделать редирект
  */
 function redirect($link)
 {
@@ -423,7 +429,7 @@ function getLotsQtyByCategory(object $connection, int $category)
  */
 function getLotsByCategory(object $connection, int $category, int $page)
 {
-    $sql = "SELECT lots.id, lots.image_url, lots.name, categories.name AS category, lots.price, lots.end_date, COUNT(rates.lot_id) as rate_qty, IFNULL(MAX(rates.sum), price) AS current_price
+    $sql = "SELECT lots.id, lots.image_url, lots.name, categories.name AS category, lots.end_date, COUNT(rates.lot_id) as rate_qty, IFNULL(MAX(rates.sum), price) AS current_price
     FROM lots
     JOIN categories ON lots.category_id = categories.id
     LEFT JOIN rates ON lots.id = rates.lot_id

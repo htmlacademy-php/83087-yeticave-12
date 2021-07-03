@@ -42,7 +42,7 @@ if (checkSession()) {
 
             $mimetype = mime_content_type($fileTemporaryName);
 
-            if (in_array($mimetype, array('image/jpeg', 'image/png'))) {
+            if (in_array($mimetype, ['image/jpeg', 'image/png'])) {
                 move_uploaded_file($fileTemporaryName, $filePath . $fileNameOriginal);
             } else {
                 $errors['file'] = 'Загрузите изображение в формате png/jpg/jpeg';
