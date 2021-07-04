@@ -1,7 +1,7 @@
 <div class="container">
     <section class="lots">
         <h2>Результаты поиска по запросу «<span><?= stripTags($_GET['search']); ?></span>»</h2>
-        <?php if ($lots) : ?>
+        <?php if (isset($lots)) : ?>
             <ul class="lots__list">
                 <?php foreach ($lots as $lot) : ?>
                     <li class="lots__item lot">
@@ -34,7 +34,7 @@
         <?php endif; ?>
     </section>
 
-    <?php if ($totalPages > 1) : ?>
+    <?php if (isset($totalPages) > 1) : ?>
         <ul class="pagination-list">
             <?php if ($currentSearchPage > 1) : ?>
                 <li class="pagination-item pagination-item-prev"><a href="/search.php?search=<?= $searchedWord; ?>&page=<?= $currentSearchPage - 1 ?>">Назад</a></li>

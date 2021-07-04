@@ -136,7 +136,8 @@ function getLots(object $connection, string $category = null)
 	FROM lots
     INNER JOIN categories ON lots.category_id = categories.id
     LEFT JOIN rates ON lots.id = rates.lot_id
-    WHERE lots.category_id = categories.id";
+    WHERE lots.category_id = categories.id
+    AND lots.end_date > CURRENT_DATE()";
 
     if (!empty($category)) {
         $sql .= " AND categories.code = '$category'";
@@ -434,6 +435,7 @@ function getLotsByCategory(object $connection, int $category, int $page)
     JOIN categories ON lots.category_id = categories.id
     LEFT JOIN rates ON lots.id = rates.lot_id
     WHERE lots.category_id = $category
+    AND lots.end_date > CURRENT_DATE()
     GROUP BY lots.id
     ORDER BY lots.create_date DESC
     LIMIT " . LOTS_PER_PAGE . " OFFSET " . LOTS_PER_PAGE * ($page - 1);

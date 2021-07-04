@@ -26,7 +26,7 @@
 
                 <nav class="user-menu">
 
-                    <?php if ($isAuth === 1) : ?>
+                    <?php if (isset($isAuth) && $isAuth === 1) : ?>
                         <div class="user-menu__logged">
                             <p><?= $userName; ?></p>
                             <a class="user-menu__bets" href="/my-bets.php">Мои ставки</a>
@@ -46,13 +46,13 @@
             </div>
         </header>
 
-        <main <?= ($mainpage === true) ? 'class="container"' : ''; ?>>
+        <main <?= (isset($mainpage) === true) ? 'class="container"' : ''; ?>>
             <?php
-            if (!isset($mainpage) && $mainpage !== true) { ?>
+            if (!isset($mainpage)) { ?>
                 <nav class="nav">
                     <ul class="nav__list container">
                         <?php foreach ($categories as $category) : ?>
-                            <li class="nav__item <?= ($categoryId === $category['id']) ? 'nav__item--current' : ''; ?>">
+                            <li class="nav__item <?= (isset($categoryId) && $categoryId === $category['id']) ? 'nav__item--current' : ''; ?>">
                                 <a href="/category.php?id=<?= stripTags($category['id']); ?>"><?= stripTags($category['name']); ?></a>
                             </li>
                         <?php endforeach; ?>
@@ -69,7 +69,7 @@
         <nav class="nav">
             <ul class="nav__list container">
                 <?php foreach ($categories as $category) : ?>
-                    <li class="nav__item <?= ($categoryId === $category['id']) ? 'nav__item--current' : ''; ?>">
+                    <li class="nav__item <?= (isset($categoryId) && $categoryId === $category['id']) ? 'nav__item--current' : ''; ?>">
                         <a href="/category.php?id=<?= stripTags($category['id']); ?>"><?= stripTags($category['name']); ?></a>
                     </li>
                 <?php endforeach; ?>
