@@ -31,6 +31,8 @@ $layoutСontent = include_template(
         'isAuth' => checkSession(),
 
         'userName' => $_SESSION['userName'] ?? '',
+
+        'mainpage' => true,
     ]
 );
 
