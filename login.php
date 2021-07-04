@@ -8,9 +8,9 @@ $dbConnection = getConnection($config);
 
 $allCategories = getCategories($dbConnection);
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $errors = [];
+$errors = [];
 
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $userEmail = validate('email', $errors, 'Введите e-mail', FILTER_VALIDATE_EMAIL);
     $userPassword = validate('password', $errors, 'Введите пароль', FILTER_DEFAULT);
 
