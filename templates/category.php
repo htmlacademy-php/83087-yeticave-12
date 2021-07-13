@@ -5,26 +5,15 @@
             <?php foreach ($lots as $lot) : ?>
                 <li class="lots__item lot">
                     <div class="lot__image">
-                        <img src="<?= stripTags($lot['image_url']); ?>" width="350" height="260" alt="<?= stripTags($lot['name']); ?>">
+                        <img src="<?= strip_tags($lot['image_url']); ?>" width="350" height="260" alt="<?= strip_tags($lot['name']); ?>">
                     </div>
                     <div class="lot__info">
-                        <span class="lot__category"><?= stripTags($lot['category']); ?></span>
-                        <h3 class="lot__title"><a class="text-link" href="/lot.php?id=<?= stripTags($lot['id']); ?>"><?= stripTags($lot['name']); ?></a></h3>
+                        <span class="lot__category"><?= strip_tags($lot['category']); ?></span>
+                        <h3 class="lot__title"><a class="text-link" href="/lot.php?id=<?= strip_tags($lot['id']); ?>"><?= strip_tags($lot['name']); ?></a></h3>
                         <div class="lot__state">
                             <div class="lot__rate">
-                                <span class="lot__amount">
-                                    <?php
-                                    $rateQty = $lot['rate_qty'];
-                                    if ($rateQty > 0) {
-                                        echo "{$rateQty} " . get_noun_plural_form($rateQty, 'ставка', 'ставки', 'ставок');
-                                    } else {
-                                        echo 'Стартовая цена';
-                                    }
-                                    ?>
-                                </span>
-                                <span class="lot__cost">
-                                    <?= formatPrice(stripTags($lot['current_price'])); ?>
-                                </span>
+                                <span class="lot__amount">Стартовая цена</span>
+                                <span class="lot__cost"><?= formatPrice(strip_tags($lot['current_price'])); ?></span>
                             </div>
                             <?php
                             $data = getDifferenceTime($lot['end_date']);

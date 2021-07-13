@@ -11,7 +11,11 @@ $allCategories = getCategories($dbConnection);
 $errors = [];
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+
     $userEmail = validate('email', $errors, 'Введите e-mail', FILTER_VALIDATE_EMAIL);
+    if (strlen($userEmail) > NAME_LENGTH_LIMIT) {
+        $errors['email'] = "Длина E-mail превышает допустимый размер";
+    }
     $userPassword = validate('password', $errors, 'Введите пароль', FILTER_DEFAULT);
 
     $emailCheck = mysqli_real_escape_string($dbConnection, $userEmail);

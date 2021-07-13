@@ -12,17 +12,17 @@
                                     } ?>">
                 <td class="rates__info">
                     <div class="rates__img">
-                        <img src="<?= stripTags($lot['image_url']); ?>" width="54" height="40" alt="<?= stripTags($lot['name']); ?>">
+                        <img src="<?= strip_tags($lot['image_url']); ?>" width="54" height="40" alt="<?= strip_tags($lot['name']); ?>">
                     </div>
                     <div>
-                        <h3 class="rates__title"><a href="lot.php?id=<?= stripTags($lot['id']); ?>"><?= stripTags($lot['name']); ?></a></h3>
+                        <h3 class="rates__title"><a href="lot.php?id=<?= strip_tags($lot['id']); ?>"><?= strip_tags($lot['name']); ?></a></h3>
                         <?php if (isset($lot['winner_id']) && $lot['winner_id'] == $userId && $lot['sum'] == currentRate($connection, $lot['id'])) : ?>
                             <p><?= userContacts($connection, $lot['id']); ?></p>
                         <?php endif; ?>
                     </div>
                 </td>
                 <td class="rates__category">
-                    <?= stripTags($lot['category']); ?>
+                    <?= strip_tags($lot['category']); ?>
                 </td>
                 <td class="rates__timer">
                     <?php if ($data[0] <= 0) : ?>
@@ -46,7 +46,7 @@
                     <?php endif; ?>
                 </td>
                 <td class="rates__price">
-                    <?= formatPrice(stripTags($lot['sum'])); ?>
+                    <?= formatPrice(strip_tags($lot['sum'])); ?>
                 </td>
                 <td class="rates__time">
                     <?= lotRateDatePassed($lot['rate_date']); ?>

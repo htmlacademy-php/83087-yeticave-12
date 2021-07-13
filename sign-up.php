@@ -8,16 +8,25 @@ $dbConnection = getConnection($config);
 
 $allCategories = getCategories($dbConnection);
 
+$errors = [];
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $errors = [];
 
     $userEmail = validate('email', $errors, 'Введите e-mail', FILTER_VALIDATE_EMAIL);
     $userPassword = validate('password', $errors, 'Введите пароль', FILTER_DEFAULT);
     $userName = validate('name', $errors, 'Введите имя', FILTER_SANITIZE_SPECIAL_CHARS);
+    if (mb_strlen($userName) > NAME_LENGTH_LIMIT) {
+        $errors['name'] = "Имя слишком длинное";
+    }
     $userContact = validate('message', $errors, 'Напишите как с вами связаться', FILTER_SANITIZE_SPECIAL_CHARS);
+    if (mb_strlen($userContact) > TEXT_LENGTH_LIMIT) {
+        $errors['name'] = "Вы превысили допустимую длину текста";
+    }
 
     if ($userEmail === false) {
         $errors['email'] = "Данный E-mail адрес не валидный";
+    } elseif (strlen($userEmail) > NAME_LENGTH_LIMIT) {
+        $errors['email'] = "Длина E-mail превышает допустимый размер";
     } else {
         $emailCheck = mysqli_real_escape_string($dbConnection, $userEmail);
         $sqlEmailCheck = "SELECT id FROM users WHERE email = '$emailCheck'";
