@@ -47,31 +47,32 @@
         </header>
 
         <main <?= (isset($mainpage) === true) ? 'class="container"' : ''; ?>>
-            <?php
-            if (!isset($mainpage)) { ?>
+            <?php if (!isset($mainpage)) : ?>
                 <nav class="nav">
                     <ul class="nav__list container">
                         <?php foreach ($categories as $category) : ?>
-                            <li class="nav__item <?= (isset($categoryId) && $categoryId === $category['id']) ? 'nav__item--current' : ''; ?>">
-                                <a href="/category.php?id=<?= stripTags($category['id']); ?>"><?= stripTags($category['name']); ?></a>
-                            </li>
+                            <?php if (isset($category['id']) && isset($category['name'])) : ?>
+                                <li class="nav__item <?= (isset($categoryId) && $categoryId === $category['id']) ? 'nav__item--current' : ''; ?>">
+                                    <a href="/category.php?id=<?= $category['id']; ?>"><?= strip_tags($category['name']); ?></a>
+                                </li>
+                            <?php endif; ?>
                         <?php endforeach; ?>
                     </ul>
                 </nav>
-            <?php }
-            ?>
+            <?php endif; ?>
             <?= $content; ?>
         </main>
-
     </div>
 
     <footer class="main-footer">
         <nav class="nav">
             <ul class="nav__list container">
                 <?php foreach ($categories as $category) : ?>
-                    <li class="nav__item <?= (isset($categoryId) && $categoryId === $category['id']) ? 'nav__item--current' : ''; ?>">
-                        <a href="/category.php?id=<?= stripTags($category['id']); ?>"><?= stripTags($category['name']); ?></a>
-                    </li>
+                    <?php if (isset($category['id']) && isset($category['name'])) : ?>
+                        <li class="nav__item <?= (isset($categoryId) && $categoryId === $category['id']) ? 'nav__item--current' : ''; ?>">
+                            <a href="/category.php?id=<?= $category['id']; ?>"><?= strip_tags($category['name']); ?></a>
+                        </li>
+                    <?php endif; ?>
                 <?php endforeach; ?>
             </ul>
         </nav>

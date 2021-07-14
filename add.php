@@ -11,15 +11,27 @@ $allCategories = getCategories($dbConnection);
 $userId = $_SESSION['userId'] ?? '';
 
 if (checkSession()) {
-    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errors = [];
 
-        $lotName        = validate('lot-name', $errors, 'Введите наименование лота', FILTER_SANITIZE_SPECIAL_CHARS);
-        $lotCategory    = validate('category', $errors, 'Выберите категорию', FILTER_VALIDATE_INT);
+        $lotName = validate('lot-name', $errors, 'Введите наименование лота', FILTER_SANITIZE_SPECIAL_CHARS);
+        if (mb_strlen($lotName) > NAME_LENGTH_LIMIT) {
+            $errors['lot-name'] = "Имя лота слишком длинное";
+        }
+        $lotCategory = validate('category', $errors, 'Выберите категорию', FILTER_VALIDATE_INT);
         $lotDescription = validate('message', $errors, 'Напишите описание лота', FILTER_SANITIZE_SPECIAL_CHARS);
-        $lotRate        = validateFloatNumber('lot-rate', $errors, 'Введите начальную цену', 'Число должно быть больше 0');
-        $lotStep        = validateIntNumber('lot-step', $errors, 'Введите шаг ставки', 'Число должно быть больше 0');
-        $lotDate        = validateDate('lot-date', $errors, 'Введите дату завершения торгов', 'Дата должна быть больше текущей даты, хотя бы на один день');
+        if (mb_strlen($lotDescription) > TEXT_LENGTH_LIMIT) {
+            $errors['message'] = "Вы превысили допустимую длину описания лота";
+        }
+        $lotRate = validateFloatNumber('lot-rate', $errors, 'Введите начальную цену', 'Число должно быть больше 0');
+        if (mb_strlen($lotRate) > LOT_PRICE_LIMIT) {
+            $errors['lot-rate'] = 'Начальная цена лота слишком большая';
+        }
+        $lotStep = validateIntNumber('lot-step', $errors, 'Введите шаг ставки', 'Число должно быть больше 0');
+        if ($lotStep > LOT_RATE_LIMIT) {
+            $errors['lot-step'] = 'Шаг ставки лота слишком большой';
+        }
+        $lotDate = validateDate('lot-date', $errors, 'Введите дату завершения торгов', 'Дата должна быть больше текущей даты, хотя бы на один день');
 
         $fields = [
             'user_id' => $userId,

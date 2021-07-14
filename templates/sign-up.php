@@ -43,7 +43,7 @@ $classname = isset($errors) ? "form--invalid" : "";
             <span class="form__error"><?= $errors['message']; ?></span>
         <?php endif; ?>
     </div>
-    <?php if (isset($errors)) : ?>
+    <?php if (!empty($errors)) : ?>
         <span class="form__error form__error--bottom">Пожалуйста, исправьте ошибки в форме.</span>
     <?php endif; ?>
     <button type="submit" class="button">Зарегистрироваться</button>

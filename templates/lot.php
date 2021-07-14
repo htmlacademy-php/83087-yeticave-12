@@ -3,13 +3,12 @@
     <div class="lot-item__content">
         <div class="lot-item__left">
             <div class="lot-item__image">
-                <img src="<?= stripTags($lots[0]['image_url']); ?>" width="730" height="548" alt="<?= $lots[0]['name']; ?>">
+                <img src="<?= strip_tags($lots[0]['image_url']); ?>" width="730" height="548" alt="<?= $lots[0]['name']; ?>">
             </div>
-            <p class="lot-item__category">Категория: <span><?= stripTags($lots[0]['category']); ?></span></p>
-            <p class="lot-item__description"><?= stripTags($lots[0]['description']); ?></p>
+            <p class="lot-item__category">Категория: <span><?= strip_tags($lots[0]['category']); ?></span></p>
+            <p class="lot-item__description"><?= strip_tags($lots[0]['description']); ?></p>
         </div>
         <div class="lot-item__right">
-
             <div class="lot-item__state">
                 <?php
                 $data = getDifferenceTime($lots[0]['end_date']);
@@ -23,11 +22,11 @@
                     <div class="lot-item__rate">
                         <span class="lot-item__amount">Текущая цена</span>
                         <span class="lot-item__cost">
-                            <?php echo formatPrice(stripTags($lots[0]['current_price'])); ?>
+                            <?= formatPrice(strip_tags($lots[0]['current_price'])); ?>
                         </span>
                     </div>
                     <div class="lot-item__min-cost">
-                        Мин. ставка <span><?= formatPrice(stripTags(lotMinRate($connection, $id))); ?></span>
+                        Мин. ставка <span><?= formatPrice(strip_tags(lotMinRate($connection, $id))); ?></span>
                     </div>
                 </div>
                 <?php
@@ -49,16 +48,15 @@
                     </form>
                 <?php endif; ?>
             </div>
-
             <div class="history">
-                <h3>История ставок (<span><?= stripTags($lotRateQty); ?></span>)</h3>
+                <h3>История ставок (<span><?= strip_tags($lotRateQty); ?></span>)</h3>
                 <?php if ($lotRateQty >= 1) : ?>
                     <table class="history__list">
                         <?php
                         foreach ($lotRates as $lotRate) : ?>
                             <tr class="history__item">
-                                <td class="history__name"><?= stripTags($lotRate['name']); ?></td>
-                                <td class="history__price"><?= formatPrice(stripTags($lotRate['sum'])); ?></td>
+                                <td class="history__name"><?= strip_tags($lotRate['name']); ?></td>
+                                <td class="history__price"><?= formatPrice(strip_tags($lotRate['sum'])); ?></td>
                                 <td class="history__time">
                                     <?php
                                     lotRateDatePassed($lotRate['rate_date']);

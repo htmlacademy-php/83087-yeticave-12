@@ -1,20 +1,20 @@
 <div class="container">
     <section class="lots">
-        <h2>Результаты поиска по запросу «<span><?= stripTags($_GET['search']); ?></span>»</h2>
+        <h2>Результаты поиска по запросу «<span><?= strip_tags($_GET['search']); ?></span>»</h2>
         <?php if (isset($lots)) : ?>
             <ul class="lots__list">
                 <?php foreach ($lots as $lot) : ?>
                     <li class="lots__item lot">
                         <div class="lot__image">
-                            <img src="<?= stripTags($lot['image_url']); ?>" width="350" height="260" alt="<?= stripTags($lot['name']); ?>">
+                            <img src="<?= strip_tags($lot['image_url']); ?>" width="350" height="260" alt="<?= strip_tags($lot['name']); ?>">
                         </div>
                         <div class="lot__info">
                             <span class="lot__category"><?= $lot['category']; ?></span>
-                            <h3 class="lot__title"><a class="text-link" href="/lot.php?id=<?= $lot['id']; ?>"><?= stripTags($lot['name']); ?></a></h3>
+                            <h3 class="lot__title"><a class="text-link" href="/lot.php?id=<?= $lot['id']; ?>"><?= strip_tags($lot['name']); ?></a></h3>
                             <div class="lot__state">
                                 <div class="lot__rate">
                                     <span class="lot__amount">Стартовая цена</span>
-                                    <span class="lot__cost"><?= formatPrice(stripTags($lot['price'])); ?></span>
+                                    <span class="lot__cost"><?= formatPrice(strip_tags($lot['price'])); ?></span>
                                 </div>
                                 <?php
                                 $data = getDifferenceTime($lot['end_date']);
@@ -33,8 +33,7 @@
             <p><?= $errors; ?></p>
         <?php endif; ?>
     </section>
-
-    <?php if (isset($totalPages) > 1) : ?>
+    <?php if (isset($totalPages) && $totalPages > 1) : ?>
         <ul class="pagination-list">
             <?php if ($currentSearchPage > 1) : ?>
                 <li class="pagination-item pagination-item-prev"><a href="/search.php?search=<?= $searchedWord; ?>&page=<?= $currentSearchPage - 1 ?>">Назад</a></li>

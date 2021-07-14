@@ -17,18 +17,6 @@ function formatPrice(int $sum)
 }
 
 /**
- * Функция для вывода текста, которая удаляет теги HTML и PHP из строки
- * @param string $str текст
- * @return string Отформатированный текст
- */
-function stripTags(string $str)
-{
-    $text = strip_tags($str);
-
-    return $text;
-}
-
-/**
  * Функция возврата оставшегося времени лота в формате ЧЧ:ММ
  * @param string $lotDate дата вида - ГГГГ-ММ-ДД
  * @param bool $showSeconds вывести секунды
@@ -197,8 +185,8 @@ function getPostVal($name)
  * @param string $field поле ввода
  * @param array $errors ошибки
  * @param string $errorText текст ошибки
- * @param array|int $filter тип фильтра поля ввода
- * @return string возвращает значение поля
+ * @param mixed $filter тип фильтра поля ввода
+ * @return string возвращает валидорованную строку ввода
  */
 function validate($field, &$errors, $errorText, $filter)
 {
@@ -213,14 +201,14 @@ function validate($field, &$errors, $errorText, $filter)
 }
 
 /**
- * Функция валидации чисел с плавающей точкой
- * @param int $field поле ввода числа
+ * Функция валидации чисел с плавающей точкой чисел
+ * @param string $field поле ввода числа
  * @param array $errors ошибки
  * @param string $errorText текст ошибки
  * @param string $errorValidateText текст ошибки валидации
- * @param int $minRate минимальное число
+ * @param string $minRate минимальное число
  * @param string $errorMinRateValidateText текст ошибки минимального числа
- * @return int возвращает значение поля
+ * @return string возвращает валидорованную строку ввода
  */
 function validateFloatNumber($field, &$errors, $errorText, $errorValidateText, $minRate = null, $errorMinRateValidateText = null)
 {
@@ -249,11 +237,11 @@ function validateFloatNumber($field, &$errors, $errorText, $errorValidateText, $
 
 /**
  * Функция валидации целых чисел
- * @param int $field поле ввода числа
+ * @param string $field поле ввода числа
  * @param array $errors ошибки
  * @param string $errorText текст ошибки
  * @param string $errorValidateText текст ошибки валидации
- * @return int возвращает значение поля
+ * @return string возвращает валидорованную строку ввода
  */
 function validateIntNumber($field, &$errors, string $errorText, string $errorValidateText)
 {
@@ -279,7 +267,7 @@ function validateIntNumber($field, &$errors, string $errorText, string $errorVal
  * @param array $errors ошибки
  * @param string $errorText текст ошибки
  * @param string $errorValidateText текст ошибки валидации
- * @return string возвращает значение поля
+ * @return string возвращает валидированную дату
  */
 function validateDate($date, &$errors, string $errorText, string $errorValidateText)
 {
@@ -307,7 +295,7 @@ function validateDate($date, &$errors, string $errorText, string $errorValidateT
 
 /**
  * Функция, которая проверяет запущена ли сессия
- * @return bool возвращает 1 или 0, проверив, запущена ли сессия
+ * @return bool возвращает булевое значение, запущена ли сессия или нет, в формате 1/0
  */
 function checkSession()
 {
@@ -322,7 +310,7 @@ function checkSession()
  * Функция подсчета количества лотов по поиску
  * @param object $connection соединение с базой данных
  * @param string $searchText текст поиска
- * @return string количество лотов
+ * @return string возвращает количество лотов по поиску
  */
 function getLotsQtyBySearch(object $connection, string $searchText)
 {
@@ -350,7 +338,7 @@ function getLotsQtyBySearch(object $connection, string $searchText)
 function searchLot(object $connection, string $searchText, int $page)
 {
     $searchText = mysqli_real_escape_string($connection, $searchText);
-    $sql =  "SELECT lots.image_url, lots.name, categories.name AS category, lots.price, lots.end_date FROM lots
+    $sql =  "SELECT lots.id, lots.image_url, lots.name, categories.name AS category, lots.price, lots.end_date FROM lots
     JOIN categories
     ON lots.category_id = categories.id
     WHERE MATCH(lots.name,lots.description) AGAINST('$searchText') LIMIT " . LOTS_PER_PAGE . " OFFSET " . LOTS_PER_PAGE * ($page - 1);
@@ -505,7 +493,7 @@ function startingPrice(object $connection, int $lotId)
  * Функция возврата значения текущей ставки
  * @param object $connection соединение с базой данных
  * @param int $lotId id лота
- * @return string возвращает текущую ставку
+ * @return int возвращает значение текущей ставки
  */
 function currentRate(object $connection, int $lotId)
 {
@@ -519,7 +507,7 @@ function currentRate(object $connection, int $lotId)
 
     $rate = mysqli_fetch_assoc($sqlResult);
 
-    return $rate['sum'];
+    return (int)($rate['sum'] ?? '');
 }
 
 /**
@@ -677,7 +665,7 @@ function lotRateDatePassed(string $date)
                 'минуты',
                 'минут'
             ) . " назад";
-    } elseif ($rateDatePassed[0] == 1) {
+    } elseif ($rateDatePassed[0] === 1) {
         echo "Час назад";
     } elseif ($rateDatePassed[0] > 1 && $rateDatePassed[0] < 24) {
         echo "{$rateDatePassed[0]} " .
@@ -690,7 +678,7 @@ function lotRateDatePassed(string $date)
     } elseif ($rateDatePassed[0] >= 24 && $rateDatePassed[0] < 48) {
         echo "Вчера, в " . $dateFormatTommorow;
     } else {
-        echo stripTags($dateFormat);
+        echo strip_tags($dateFormat);
     }
 }
 
@@ -797,4 +785,30 @@ function updateWinner(object $connection, int $lotId, int $userId)
     $update = mysqli_fetch_all($sqlResult, MYSQLI_ASSOC);
 
     return $update;
+}
+
+/**
+ * Функция отображения кол-ва ставок
+ * @param object $connection - соединение с базой данных
+ * @param int $lotId - id лота
+ */
+function rateQty($connection, $lotId)
+{
+    $sql = "SELECT COUNT(lot_id) as rate_qty FROM rates WHERE lot_id = $lotId";
+    $sqlResult = mysqli_query($connection, $sql);
+
+    if (!$sqlResult) {
+        $error = mysqli_error($connection);
+        print("Ошибка MySQL: " . $error);
+    }
+
+    $rateQtyResult = mysqli_fetch_all($sqlResult, MYSQLI_ASSOC);
+
+    $rateQty = $rateQtyResult[0]['rate_qty'];
+
+    if ($rateQty > 0) {
+        echo "{$rateQty} " . get_noun_plural_form($rateQty, 'ставка', 'ставки', 'ставок');
+    } else {
+        echo 'Стартовая цена';
+    }
 }
