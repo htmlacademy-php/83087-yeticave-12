@@ -38,7 +38,9 @@ $classname = isset($errors) ? "form--invalid" : "";
     ?>
     <div class="form__item <?= $classname; ?>">
         <label for="message">Контактные данные <sup>*</sup></label>
-        <textarea id="message" name="message" placeholder="Напишите как с вами связаться" required=""><?= getPostVal('message'); ?></textarea>
+        <textarea id="message" name="message" placeholder="Напишите как с вами связаться" required="">
+            <?= getPostVal('message'); ?>
+        </textarea>
         <?php if (isset($errors['message'])) : ?>
             <span class="form__error"><?= $errors['message']; ?></span>
         <?php endif; ?>

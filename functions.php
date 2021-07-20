@@ -1,4 +1,19 @@
 <?php
+if (!defined('LOTS_PER_PAGE')) {
+    define('LOTS_PER_PAGE', 9);
+}
+if (!defined('NAME_LENGTH_LIMIT')) {
+    define('NAME_LENGTH_LIMIT', 128);
+}
+if (!defined('TEXT_LENGTH_LIMIT')) {
+    define('TEXT_LENGTH_LIMIT', 65535);
+}
+if (!defined('LOT_PRICE_LIMIT')) {
+    define('LOT_PRICE_LIMIT', 65);
+}
+if (!defined('LOT_RATE_LIMIT')) {
+    define('LOT_RATE_LIMIT', 2147483647);
+}
 
 /**
  * Функция для форматирования суммы и добавления к ней знака рубля
@@ -98,13 +113,17 @@ function getCategories(object $connection)
 function getCategoryName(object $connection, int $id)
 {
     $sql = "SELECT name FROM categories
-    WHERE categories.id = '$id'";
+    WHERE categories.id = $id";
 
     $sqlResult = mysqli_query($connection, $sql);
 
     if (!$sqlResult) {
         $error = mysqli_error($connection);
         print("Ошибка MySQL: " . $error);
+    }
+
+    if (mysqli_num_rows($sqlResult) <= 0) {
+        return null;
     }
 
     $categoryName = mysqli_fetch_all($sqlResult, MYSQLI_ASSOC);
@@ -120,7 +139,9 @@ function getCategoryName(object $connection, int $id)
  */
 function getLots(object $connection, string $category = null)
 {
-    $sql = "SELECT lots.name, lots.id, categories.name as category, image_url, end_date, COUNT(rates.lot_id) as rate_qty, create_date, IFNULL(MAX(rates.sum), price) AS current_price
+    $sql = "SELECT lots.name, lots.id, categories.name as category, image_url, end_date,
+    COUNT(rates.lot_id) as rate_qty, create_date,
+    IFNULL(MAX(rates.sum), price) AS current_price
 	FROM lots
     INNER JOIN categories ON lots.category_id = categories.id
     LEFT JOIN rates ON lots.id = rates.lot_id
@@ -154,7 +175,8 @@ function getLots(object $connection, string $category = null)
  */
 function getLot(object $connection, int $lotId)
 {
-    $sql = "SELECT lots.name, description, lots.id, lots.user_id, categories.name as category, image_url, end_date, IFNULL(MAX(rates.sum), price) AS current_price
+    $sql = "SELECT lots.name, description, lots.id, lots.user_id, categories.name as category, image_url, end_date,
+    IFNULL(MAX(rates.sum), price) AS current_price
     FROM lots JOIN categories
     LEFT JOIN rates ON lots.id = rates.lot_id
     WHERE lots.category_id = categories.id AND lots.id = $lotId
@@ -210,8 +232,14 @@ function validate($field, &$errors, $errorText, $filter)
  * @param string $errorMinRateValidateText текст ошибки минимального числа
  * @return string возвращает валидорованную строку ввода
  */
-function validateFloatNumber($field, &$errors, $errorText, $errorValidateText, $minRate = null, $errorMinRateValidateText = null)
-{
+function validateFloatNumber(
+    $field,
+    &$errors,
+    $errorText,
+    $errorValidateText,
+    $minRate = null,
+    $errorMinRateValidateText = null
+) {
     if (!isset($_POST[$field]) || $_POST[$field] === "") {
         $errors[$field] = $errorText;
 
@@ -341,7 +369,8 @@ function searchLot(object $connection, string $searchText, int $page)
     $sql =  "SELECT lots.id, lots.image_url, lots.name, categories.name AS category, lots.price, lots.end_date FROM lots
     JOIN categories
     ON lots.category_id = categories.id
-    WHERE MATCH(lots.name,lots.description) AGAINST('$searchText') LIMIT " . LOTS_PER_PAGE . " OFFSET " . LOTS_PER_PAGE * ($page - 1);
+    WHERE MATCH(lots.name,lots.description) AGAINST('$searchText')
+    LIMIT " . LOTS_PER_PAGE . " OFFSET " . LOTS_PER_PAGE * ($page - 1);
     $sqlResult = mysqli_query($connection, $sql);
 
     if (!$sqlResult) {
@@ -361,7 +390,9 @@ function searchLot(object $connection, string $searchText, int $page)
  */
 function addLot(object $connection, array $fields)
 {
-    $sql = "INSERT INTO lots (create_date, user_id, name, category_id, description, price, price_step, end_date, image_url) VALUES (NOW(), ?, ?, ?, ?, ?, ?, ?, ?)";
+    $sql = "INSERT
+    INTO lots (create_date, user_id, name, category_id, description, price, price_step, end_date, image_url)
+    VALUES (NOW(), ?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt = db_get_prepare_stmt($connection, $sql, $fields);
     $res = mysqli_stmt_execute($stmt);
 
@@ -418,7 +449,8 @@ function getLotsQtyByCategory(object $connection, int $category)
  */
 function getLotsByCategory(object $connection, int $category, int $page)
 {
-    $sql = "SELECT lots.id, lots.image_url, lots.name, categories.name AS category, lots.end_date, COUNT(rates.lot_id) as rate_qty, IFNULL(MAX(rates.sum), price) AS current_price
+    $sql = "SELECT lots.id, lots.image_url, lots.name, categories.name AS category, lots.end_date,
+    COUNT(rates.lot_id) as rate_qty, IFNULL(MAX(rates.sum), price) AS current_price
     FROM lots
     JOIN categories ON lots.category_id = categories.id
     LEFT JOIN rates ON lots.id = rates.lot_id
@@ -548,7 +580,8 @@ function lotMinRate(object $connection, int $lotId)
  */
 function getLotsRates(object $connection, int $userId)
 {
-    $sql = "SELECT lots.image_url, lots.name, lots.id, categories.name as category, lots.end_date, lots.winner_id, rates.rate_date, rates.sum
+    $sql = "SELECT lots.image_url, lots.name, lots.id, categories.name as category, lots.end_date,
+    lots.winner_id, rates.rate_date, rates.sum
     FROM users
     JOIN rates
     ON users.id = rates.user_id

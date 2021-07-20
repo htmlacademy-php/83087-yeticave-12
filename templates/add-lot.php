@@ -22,7 +22,9 @@ $classname = isset($errors) ? "form--invalid" : "";
             <select id="category" name="category" required="">
                 <option value="">Выберите категорию</option>
                 <?php foreach ($categories as $category) : ?>
-                    <option value="<?= $category['id']; ?>" <?php if ($category['id'] == getPostVal('category')) : ?>selected<?php endif; ?>><?= strip_tags($category['name']); ?></option>
+                    <option value="<?= $category['id']; ?>" <?= ($category['id'] == getPostVal('category')) ? 'selected' : ''; ?>>
+                        <?= strip_tags($category['name']); ?>
+                    </option>
                 <?php endforeach; ?>
             </select>
             <?php if (isset($errors['category'])) : ?>
@@ -35,7 +37,9 @@ $classname = isset($errors) ? "form--invalid" : "";
     ?>
     <div class="form__item form__item--wide <?= $classname; ?>">
         <label for="message">Описание <sup>*</sup></label>
-        <textarea id="message" name="message" placeholder="Напишите описание лота" required=""><?= getPostVal('message'); ?></textarea>
+        <textarea id="message" name="message" placeholder="Напишите описание лота" required="">
+            <?= getPostVal('message'); ?>
+        </textarea>
         <?php if (isset($errors['message'])) : ?>
             <span class="form__error"><?= $errors['message']; ?></span>
         <?php endif; ?>

@@ -1,1 +1,10 @@
-Подключение к серверам и окружению
+<?php
+
+return [
+    'db' => [
+        'host' => 'localhost',
+        'user' => 'root',
+        'password' => 'root',
+        'database' => 'yeticave',
+    ]
+];
