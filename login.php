@@ -1,4 +1,5 @@
 <?php
+session_start();
 require_once('helpers.php');
 require_once('functions.php');
 
@@ -10,8 +11,11 @@ $allCategories = getCategories($dbConnection);
 
 $errors = [];
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+if (checkSession()) {
+    header("Location: /");
+}
 
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $userEmail = validate('email', $errors, 'Введите e-mail', FILTER_VALIDATE_EMAIL);
     if (strlen($userEmail) > NAME_LENGTH_LIMIT) {
         $errors['email'] = "Длина E-mail превышает допустимый размер";
@@ -26,7 +30,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     if (!count($errors) and $user) {
         if (password_verify($userPassword, $user['password'])) {
-
             $_SESSION['userName'] = $user['name'];
 
             $_SESSION['userId'] = $user['id'];

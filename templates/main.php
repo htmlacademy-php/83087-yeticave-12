@@ -4,7 +4,9 @@
     <ul class="promo__list">
         <?php foreach ($categories as $category) : ?>
             <li class="promo__item promo__item--<?= strip_tags($category['code']); ?>">
-                <a class="promo__link" href="/category.php?id=<?= strip_tags($category['id']); ?>&page=1"><?= strip_tags($category['name']); ?></a>
+                <a class="promo__link" href="/category.php?id=<?= strip_tags($category['id']); ?>&page=1">
+                    <?= strip_tags($category['name']); ?>
+                </a>
             </li>
         <?php endforeach; ?>
     </ul>
@@ -21,7 +23,11 @@
                 </div>
                 <div class="lot__info">
                     <span class="lot__category"><?= strip_tags($lot['category']); ?></span>
-                    <h3 class="lot__title"><a class="text-link" href="/lot.php?id=<?= strip_tags($lot['id']); ?>"><?= strip_tags($lot['name']); ?></a></h3>
+                    <h3 class="lot__title">
+                        <a class="text-link" href="/lot.php?id=<?= strip_tags($lot['id']); ?>">
+                            <?= strip_tags($lot['name']); ?>
+                        </a>
+                    </h3>
                     <div class="lot__state">
                         <div class="lot__rate">
                             <span class="lot__amount">

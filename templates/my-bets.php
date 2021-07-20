@@ -5,11 +5,16 @@
             <?php
             $data = getDifferenceTime($lot['end_date'], true);
             ?>
-            <tr class="rates__item <?php if (isset($lot['winner_id']) && $lot['winner_id'] == $userId && $lot['sum'] == currentRate($connection, $lot['id'])) {
-                                        echo 'rates__item--win';
-                                    } elseif ($data[0] <= 0) {
-                                        echo 'rates__item--end';
-                                    } ?>">
+            <tr class="rates__item
+            <?php if (
+                isset($lot['winner_id'])
+                && $lot['winner_id'] == $userId
+                && $lot['sum'] == currentRate($connection, $lot['id'])
+            ) {
+                echo 'rates__item--win';
+            } elseif ($data[0] <= 0) {
+                echo 'rates__item--end';
+            } ?>">
                 <td class="rates__info">
                     <div class="rates__img">
                         <img src="<?= strip_tags($lot['image_url']); ?>" width="54" height="40" alt="<?= strip_tags($lot['name']); ?>">

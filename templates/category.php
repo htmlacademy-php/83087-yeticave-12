@@ -9,7 +9,11 @@
                     </div>
                     <div class="lot__info">
                         <span class="lot__category"><?= strip_tags($lot['category']); ?></span>
-                        <h3 class="lot__title"><a class="text-link" href="/lot.php?id=<?= strip_tags($lot['id']); ?>"><?= strip_tags($lot['name']); ?></a></h3>
+                        <h3 class="lot__title">
+                            <a class="text-link" href="/lot.php?id=<?= strip_tags($lot['id']); ?>">
+                                <?= strip_tags($lot['name']); ?>
+                            </a>
+                        </h3>
                         <div class="lot__state">
                             <div class="lot__rate">
                                 <span class="lot__amount">Стартовая цена</span>
@@ -32,7 +36,9 @@
     <?php if ($totalPages > 1) : ?>
         <ul class="pagination-list">
             <?php if ($currentCategoryPage > 1) : ?>
-                <li class="pagination-item pagination-item-prev"><a href="/category.php?id=<?= $categoryId; ?>&page=<?= $currentCategoryPage - 1 ?>">Назад</a></li>
+                <li class="pagination-item pagination-item-prev">
+                    <a href="/category.php?id=<?= $categoryId; ?>&page=<?= $currentCategoryPage - 1 ?>">Назад</a>
+                </li>
             <?php else : ?>
                 <li class="pagination-item pagination-item-prev">Назад</li>
             <?php endif; ?>
@@ -42,7 +48,9 @@
                 </li>
             <?php endfor; ?>
             <?php if ($totalPages > $currentCategoryPage) : ?>
-                <li class="pagination-item pagination-item-next"><a href="/category.php?id=<?= $categoryId; ?>&page=<?= $currentCategoryPage + 1 ?>">Вперед</a></li>
+                <li class="pagination-item pagination-item-next">
+                    <a href="/category.php?id=<?= $categoryId; ?>&page=<?= $currentCategoryPage + 1 ?>">Вперед</a>
+                </li>
             <?php else : ?>
                 <li class="pagination-item pagination-item-next">Вперед</li>
             <?php endif; ?>

@@ -1,4 +1,5 @@
 <?php
+session_start();
 require_once('helpers.php');
 require_once('functions.php');
 
@@ -55,7 +56,14 @@ if (checkSession()) {
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $errors = [];
 
-        $lotCost = validateFloatNumber('cost', $errors, 'Поле не может быть пустым', 'Введите минимальную ставку', lotMinRate($dbConnection, $trid), 'Ставка не может быть ниже минимальной');
+        $lotCost = validateFloatNumber(
+            'cost',
+            $errors,
+            'Поле не может быть пустым',
+            'Введите минимальную ставку',
+            lotMinRate($dbConnection, $trid),
+            'Ставка не может быть ниже минимальной'
+        );
 
         if (count($errors)) {
             $pageСontent = include_template(

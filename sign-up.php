@@ -10,8 +10,11 @@ $allCategories = getCategories($dbConnection);
 
 $errors = [];
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+if (checkSession()) {
+    header("Location: /");
+}
 
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $userEmail = validate('email', $errors, 'Введите e-mail', FILTER_VALIDATE_EMAIL);
     $userPassword = validate('password', $errors, 'Введите пароль', FILTER_DEFAULT);
     $userName = validate('name', $errors, 'Введите имя', FILTER_SANITIZE_SPECIAL_CHARS);
@@ -49,7 +52,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     } else {
         $userPasswordHash = password_hash($userPassword, PASSWORD_DEFAULT);
 
-        $sql = "INSERT INTO users (reg_date, email, name, password, contact) VALUES (NOW(), '$userEmail', '$userName', '$userPasswordHash', '$userContact')";
+        $sql = "INSERT INTO users (reg_date, email, name, password, contact)
+        VALUES (NOW(), '$userEmail', '$userName', '$userPasswordHash', '$userContact')";
 
         if (mysqli_query($dbConnection, $sql)) {
             header("Location: login.php");

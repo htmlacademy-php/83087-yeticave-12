@@ -1,4 +1,6 @@
 <?php
+session_start();
+
 require_once('helpers.php');
 require_once('functions.php');
 
@@ -19,6 +21,10 @@ if (checkSession()) {
             $errors['lot-name'] = "Имя лота слишком длинное";
         }
         $lotCategory = validate('category', $errors, 'Выберите категорию', FILTER_VALIDATE_INT);
+        $checkCategory = getCategoryName($dbConnection, $lotCategory);
+        if (empty($checkCategory)) {
+            $errors['category'] = 'Неверная категория';
+        }
         $lotDescription = validate('message', $errors, 'Напишите описание лота', FILTER_SANITIZE_SPECIAL_CHARS);
         if (mb_strlen($lotDescription) > TEXT_LENGTH_LIMIT) {
             $errors['message'] = "Вы превысили допустимую длину описания лота";
@@ -31,7 +37,12 @@ if (checkSession()) {
         if ($lotStep > LOT_RATE_LIMIT) {
             $errors['lot-step'] = 'Шаг ставки лота слишком большой';
         }
-        $lotDate = validateDate('lot-date', $errors, 'Введите дату завершения торгов', 'Дата должна быть больше текущей даты, хотя бы на один день');
+        $lotDate = validateDate(
+            'lot-date',
+            $errors,
+            'Введите дату завершения торгов',
+            'Дата должна быть больше текущей даты, хотя бы на один день'
+        );
 
         $fields = [
             'user_id' => $userId,
