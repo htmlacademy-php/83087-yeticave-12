@@ -14,7 +14,7 @@ if (checkSession()) {
     header("Location: /");
 }
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $userEmail = validate('email', $errors, 'Введите e-mail', FILTER_VALIDATE_EMAIL);
     $userPassword = validate('password', $errors, 'Введите пароль', FILTER_DEFAULT);
     $userName = validate('name', $errors, 'Введите имя', FILTER_SANITIZE_SPECIAL_CHARS);
