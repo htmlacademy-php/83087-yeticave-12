@@ -15,7 +15,7 @@ if (checkSession()) {
     header("Location: /");
 }
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $userEmail = validate('email', $errors, 'Введите e-mail', FILTER_VALIDATE_EMAIL);
     if (strlen($userEmail) > NAME_LENGTH_LIMIT) {
         $errors['email'] = "Длина E-mail превышает допустимый размер";
