@@ -18,7 +18,7 @@ CREATE TABLE lots (
   description TEXT,
   category_id INT,
   image_url VARCHAR(128),
-  price DECIMAL,
+  price INT,
   end_date DATE,
   price_step INT,
   winner_id INT
@@ -27,7 +27,7 @@ CREATE TABLE lots (
 CREATE TABLE rates (
   id INT AUTO_INCREMENT PRIMARY KEY,
   rate_date DATETIME,
-  sum DECIMAL,
+  sum INT,
   user_id INT,
   lot_id INT
 );

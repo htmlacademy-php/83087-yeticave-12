@@ -223,7 +223,8 @@ function validateFloatNumber(
     $errorText,
     $errorValidateText,
     $minRate = null,
-    $errorMinRateValidateText = null
+    $errorMinRateValidateText = null,
+    $errorMaxRateValidateText = null
 ) {
     if (!isset($_POST[$field]) || $_POST[$field] === "") {
         $errors[$field] = $errorText;
@@ -241,6 +242,12 @@ function validateFloatNumber(
 
     if ($fieldValue < $minRate) {
         $errors[$field] = $errorMinRateValidateText;
+
+        return false;
+    }
+
+    if ($fieldValue > LOT_RATE_LIMIT) {
+        $errors[$field] = $errorMaxRateValidateText;
 
         return false;
     }

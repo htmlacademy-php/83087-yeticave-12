@@ -1,4 +1,5 @@
 <?php
+session_start();
 require_once('helpers.php');
 require_once('functions.php');
 
@@ -44,8 +45,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $pageСontent = include_template(
             'sign-up.php',
             [
-                'categories' => $allCategories,
-
                 'errors' => $errors,
             ]
         );
@@ -67,8 +66,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $pageСontent = include_template(
     'sign-up.php',
     [
-        'categories' => $allCategories,
-
         'errors' => $errors,
     ]
 );

@@ -22,8 +22,6 @@ if (!empty($searchedLots)) {
     $pageСontent = include_template(
         'search.php',
         [
-            'categories' => $allCategories,
-
             'lots' => $searchedLots,
 
             'searchedWord' => $_GET['search'],
@@ -37,8 +35,6 @@ if (!empty($searchedLots)) {
     $pageСontent = include_template(
         'search.php',
         [
-            'categories' => $allCategories,
-
             'errors' => 'Ничего не найдено по вашему запросу',
         ]
     );

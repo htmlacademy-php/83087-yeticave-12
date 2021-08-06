@@ -30,7 +30,7 @@ if (checkSession()) {
             $errors['message'] = "Вы превысили допустимую длину описания лота";
         }
         $lotRate = validateFloatNumber('lot-rate', $errors, 'Введите начальную цену', 'Число должно быть больше 0');
-        if (mb_strlen($lotRate) > LOT_PRICE_LIMIT) {
+        if ($lotRate > LOT_PRICE_LIMIT) {
             $errors['lot-rate'] = 'Начальная цена лота слишком большая';
         }
         $lotStep = validateIntNumber('lot-step', $errors, 'Введите шаг ставки', 'Число должно быть больше 0');
@@ -75,7 +75,7 @@ if (checkSession()) {
         }
 
         if (count($errors)) {
-            $pageСontent = include_template(
+            $pageContent = include_template(
                 'add-lot.php',
                 [
                     'categories' => $allCategories,
@@ -87,7 +87,7 @@ if (checkSession()) {
             addLot($dbConnection, $fields);
         }
     } else {
-        $pageСontent = include_template(
+        $pageContent = include_template(
             'add-lot.php',
             [
                 'categories' => $allCategories,
@@ -103,7 +103,7 @@ $layoutСontent = include_template(
     [
         'categories' => $allCategories,
 
-        'content' => $pageСontent,
+        'content' => $pageContent,
 
         'title' => 'Добавление нового лота',
 

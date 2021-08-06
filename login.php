@@ -46,8 +46,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $pageСontent = include_template(
             'login.php',
             [
-                'categories' => $allCategories,
-
                 'errors' => $errors,
             ]
         );
@@ -57,8 +55,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $pageСontent = include_template(
     'login.php',
     [
-        'categories' => $allCategories,
-
         'errors' => $errors,
     ]
 );

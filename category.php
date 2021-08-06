@@ -12,6 +12,10 @@ $allCategories = getCategories($dbConnection);
 
 $categoryName = getCategoryName($dbConnection, $currentCategory);
 
+if ($categoryName === null) {
+    redirect('404.php');
+}
+
 $lotsQtyByCategory = getLotsQtyByCategory($dbConnection, $currentCategory);
 
 $currentCategoryPage = intval($_GET['page'] ?? 1);
@@ -22,20 +26,28 @@ $totalPages = ceil($pages);
 
 $lotsByCategory = getLotsByCategory($dbConnection, $currentCategory, $currentCategoryPage);
 
-$pageContent = include_template(
-    'category.php',
-    [
-        'categories' => $allCategories,
+if (!empty($lotsByCategory)) {
+    $pageContent = include_template(
+        'category.php',
+        [
+            'lots' => $lotsByCategory,
 
-        'lots' => $lotsByCategory,
+            'categoryName' => $categoryName,
 
-        'categoryName' => $categoryName,
+            'totalPages' => $totalPages,
 
-        'totalPages' => $totalPages,
+            'currentCategoryPage' => $currentCategoryPage,
+        ]
+    );
+} else {
+    $pageContent = include_template(
+        'category-empty.php',
+        [
+            'categoryName' => $categoryName,
+        ]
+    );
+}
 
-        'currentCategoryPage' => $currentCategoryPage,
-    ]
-);
 
 $layoutСontent = include_template(
     'layout.php',

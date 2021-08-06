@@ -14,6 +14,10 @@ $allCategories = getCategories($dbConnection);
 
 $lots = getLot($dbConnection, $trid);
 
+if ($lots[0]['id'] === null) {
+    redirect('404.php');
+}
+
 $lotRates = lotRates($dbConnection, $trid);
 
 $userId = $_SESSION['userId'] ?? '';
@@ -23,8 +27,6 @@ if (!empty($lots)) {
         'lot.php',
         [
             'id' => $trid,
-
-            'categories' => $allCategories,
 
             'lots' => $lots,
 
@@ -44,9 +46,6 @@ if (!empty($lots)) {
 
     $pageСontent = include_template(
         '404.php',
-        [
-            'categories' => $allCategories,
-        ]
     );
 
     $title = 'Ошибка';
@@ -62,7 +61,8 @@ if (checkSession()) {
             'Поле не может быть пустым',
             'Введите минимальную ставку',
             lotMinRate($dbConnection, $trid),
-            'Ставка не может быть ниже минимальной'
+            'Ставка не может быть ниже минимальной',
+            'Ставка не может быть больше ' . LOT_RATE_LIMIT,
         );
 
         if (count($errors)) {
@@ -70,8 +70,6 @@ if (checkSession()) {
                 "lot.php",
                 [
                     'id' => $trid,
-
-                    'categories' => $allCategories,
 
                     'lots' => $lots,
 

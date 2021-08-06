@@ -9,17 +9,8 @@ $dbConnection = getConnection($config);
 
 $allCategories = getCategories($dbConnection);
 
-$userId = $_SESSION['userId'];
-
-$pageСontent = include_template(
-    'my-bets.php',
-    [
-        'lots' => getLotsRates($dbConnection, $userId),
-
-        'connection' => $dbConnection,
-
-        'userId' => $userId,
-    ]
+$pageContent = include_template(
+    '404.php'
 );
 
 $layoutСontent = include_template(
@@ -27,13 +18,13 @@ $layoutСontent = include_template(
     [
         'categories' => $allCategories,
 
-        'content' => $pageСontent,
+        'content' => $pageContent,
 
-        'title' => 'Мои ставки',
+        'title' => 'Страница не найдена',
 
         'isAuth' => checkSession(),
 
-        'userName' => $_SESSION['userName'],
+        'userName' => $_SESSION['userName'] ?? '',
     ]
 );
 

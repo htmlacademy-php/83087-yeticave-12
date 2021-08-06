@@ -11,7 +11,7 @@
         <div class="lot-item__right">
             <div class="lot-item__state">
                 <?php
-                $data = getDifferenceTime($lots[0]['end_date']);
+                $data = getDifferenceTime($lots[0]['end_date'], true);
                 ?>
                 <div class="lot-item__timer timer <?php echo ($data[0] <= 0) ? 'timer--finishing' : ''; ?>">
                     <?php
@@ -32,14 +32,19 @@
                 <?php
                 $lastRateUserId = getWinnerId($connection, $id);
                 ?>
-                <?php if (checkSession() && ($data[0] > 0 && $data[1] > 0) && $lots[0]['user_id'] != $userId && $lastRateUserId['user_id'] !== $userId) : ?>
+                <?php if (
+                    checkSession()
+                    && ($data[0] > 0 || $data[1] > 0 || $data[2] > 0)
+                    && $lots[0]['user_id'] != $userId
+                    && $lastRateUserId['user_id'] !== $userId
+                ) : ?>
                     <form class="lot-item__form" action="lot.php?id=<?= $id; ?>" method="post" autocomplete="off">
                         <?php
                         $classname = isset($errors['cost']) ? "form__item--invalid" : "";
                         ?>
                         <p class="lot-item__form-item form__item <?= $classname; ?>">
                             <label for="cost">Ваша ставка</label>
-                            <input id="cost" type="text" name="cost" placeholder="12 000" value="<?= getPostVal('cost'); ?>">
+                            <input id="cost" type="text" name="cost" placeholder="<?= formatPrice(strip_tags(lotMinRate($connection, $id))); ?>" value="<?= getPostVal('cost'); ?>">
                             <?php if (isset($errors['cost'])) : ?>
                                 <span class="form__error"><?= $errors['cost']; ?></span>
                             <?php endif; ?>
