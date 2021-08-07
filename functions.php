@@ -767,7 +767,7 @@ function getWinnerId(object $connection, int $lotId)
 
     $userId = mysqli_fetch_assoc($sqlResult);
 
-    return $userId;
+    return intval($userId['user_id']);
 }
 
 /**

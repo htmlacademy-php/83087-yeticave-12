@@ -32,12 +32,7 @@
                 <?php
                 $lastRateUserId = getWinnerId($connection, $id);
                 ?>
-                <?php if (
-                    checkSession()
-                    && ($data[0] > 0 || $data[1] > 0 || $data[2] > 0)
-                    && $lots[0]['user_id'] != $userId
-                    && $lastRateUserId['user_id'] !== $userId
-                ) : ?>
+                <?php if (checkSession() && ($data[0] > 0 || $data[1] > 0 || $data[2] > 0) && $lots[0]['user_id'] != $userId && $lastRateUserId !== $userId) : ?>
                     <form class="lot-item__form" action="lot.php?id=<?= $id; ?>" method="post" autocomplete="off">
                         <?php
                         $classname = isset($errors['cost']) ? "form__item--invalid" : "";

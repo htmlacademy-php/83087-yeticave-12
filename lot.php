@@ -36,7 +36,7 @@ if (!empty($lots)) {
 
             'connection' => $dbConnection,
 
-            'userId' => $userId,
+            'userId' => intval($userId),
         ]
     );
 
