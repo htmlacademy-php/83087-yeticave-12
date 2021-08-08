@@ -223,8 +223,7 @@ function validateFloatNumber(
     $errorText,
     $errorValidateText,
     $minRate = null,
-    $errorMinRateValidateText = null,
-    $errorMaxRateValidateText = null
+    $errorMinRateValidateText = null
 ) {
     if (!isset($_POST[$field]) || $_POST[$field] === "") {
         $errors[$field] = $errorText;
@@ -242,12 +241,6 @@ function validateFloatNumber(
 
     if ($fieldValue < $minRate) {
         $errors[$field] = $errorMinRateValidateText;
-
-        return false;
-    }
-
-    if ($fieldValue > LOT_RATE_LIMIT) {
-        $errors[$field] = $errorMaxRateValidateText;
 
         return false;
     }
@@ -805,11 +798,10 @@ function updateWinner(object $connection, int $lotId, int $userId)
     if (!$sqlResult) {
         $error = mysqli_error($connection);
         print("Ошибка MySQL: " . $error);
+        return false;
     }
 
-    $update = mysqli_fetch_all($sqlResult, MYSQLI_ASSOC);
-
-    return $update;
+    return $sqlResult;
 }
 
 /**

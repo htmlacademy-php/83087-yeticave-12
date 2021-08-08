@@ -17,13 +17,13 @@ if (checkSession()) {
         $errors = [];
 
         $lotName = validate('lot-name', $errors, 'Введите наименование лота', FILTER_SANITIZE_SPECIAL_CHARS);
-        if (mb_strlen($lotName) > NAME_LENGTH_LIMIT) {
+        if (mb_strlen($lotName) > DEFAULT_LENGTH_LIMIT) {
             $errors['lot-name'] = "Имя лота слишком длинное";
         }
         $lotCategory = validate('category', $errors, 'Выберите категорию', FILTER_VALIDATE_INT);
         $checkCategory = getCategoryName($dbConnection, $lotCategory);
         if (empty($checkCategory)) {
-            $errors['category'] = 'Неверная категория';
+            $errors['category'] = "Неверная категория";
         }
         $lotDescription = validate('message', $errors, 'Напишите описание лота', FILTER_SANITIZE_SPECIAL_CHARS);
         if (mb_strlen($lotDescription) > TEXT_LENGTH_LIMIT) {
@@ -31,11 +31,11 @@ if (checkSession()) {
         }
         $lotRate = validateFloatNumber('lot-rate', $errors, 'Введите начальную цену', 'Число должно быть больше 0');
         if ($lotRate > LOT_PRICE_LIMIT) {
-            $errors['lot-rate'] = 'Начальная цена лота слишком большая';
+            $errors['lot-rate'] = "Начальная цена лота слишком большая";
         }
         $lotStep = validateIntNumber('lot-step', $errors, 'Введите шаг ставки', 'Число должно быть больше 0');
         if ($lotStep > LOT_RATE_LIMIT) {
-            $errors['lot-step'] = 'Шаг ставки лота слишком большой';
+            $errors['lot-step'] = "Шаг ставки лота слишком большой";
         }
         $lotDate = validateDate(
             'lot-date',

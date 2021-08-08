@@ -1,7 +1,7 @@
 <?php
 $classname = isset($errors) ? "form--invalid" : "";
 ?>
-<form class="form form--add-lot container <?= $classname; ?>" action="add.php" method="POST" enctype="multipart/form-data">
+<form class="form form--add-lot container <?= $classname; ?>" action="add-lot.php" method="POST" enctype="multipart/form-data">
     <h2>Добавление лота</h2>
     <div class="form__container-two">
         <?php

@@ -4,7 +4,7 @@ require_once('helpers.php');
 require_once('functions.php');
 
 $config = require 'config.php';
-$currentCategory = $_GET['id'];
+$currentCategory = intval($_GET['id']);
 
 $dbConnection = getConnection($config);
 
@@ -37,6 +37,8 @@ if (!empty($lotsByCategory)) {
             'totalPages' => $totalPages,
 
             'currentCategoryPage' => $currentCategoryPage,
+
+            'categoryId' => $currentCategory,
         ]
     );
 } else {

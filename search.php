@@ -16,7 +16,7 @@ if (isset($_GET['page'])) {
 }
 $pages = $searchedLotsQty / LOTS_PER_PAGE;
 $totalPages = ceil($pages);
-$searchedLots = searchLot($dbConnection, $_GET['search'], $currentSearchPage);
+$searchedLots = searchLot($dbConnection, trim($_GET['search']), $currentSearchPage);
 
 if (!empty($searchedLots)) {
     $pageСontent = include_template(

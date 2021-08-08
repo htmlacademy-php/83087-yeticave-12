@@ -62,8 +62,11 @@ if (checkSession()) {
             'Введите минимальную ставку',
             lotMinRate($dbConnection, $trid),
             'Ставка не может быть ниже минимальной',
-            'Ставка не может быть больше ' . LOT_RATE_LIMIT,
         );
+
+        if ($lotCost > LOT_PRICE_LIMIT) {
+            $errors['cost'] = 'Ставка не может быть больше ' . LOT_PRICE_LIMIT;
+        }
 
         if (count($errors)) {
             $pageСontent = include_template(

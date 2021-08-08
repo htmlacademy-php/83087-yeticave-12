@@ -2,6 +2,9 @@
 $classname = isset($errors) ? "form--invalid" : "";
 ?>
 <form class="form container <?= $classname; ?>" action="login.php" method="post">
+    <?php if (!empty($errors)) : ?>
+        <span class="form__error form__error--bottom">Вы ввели неверный email/пароль</span>
+    <?php endif; ?>
     <h2>Вход</h2>
     <?php
     $classname = isset($errors['email']) ? "form__item--invalid" : "";
