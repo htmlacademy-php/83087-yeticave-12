@@ -65,7 +65,7 @@ if (checkSession()) {
         );
 
         if ($lotCost > LOT_PRICE_LIMIT) {
-            $errors['cost'] = 'Ставка не может быть больше ' . LOT_PRICE_LIMIT;
+            $errors['cost'] = 'Ставка не может быть равна или больше ' . LOT_PRICE_LIMIT;
         }
 
         if (count($errors)) {

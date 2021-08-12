@@ -160,7 +160,7 @@ function getLots(object $connection, string $category = null)
  */
 function getLot(object $connection, int $lotId)
 {
-    $sql = "SELECT lots.name, description, lots.id, lots.user_id, categories.name as category, image_url, end_date,
+    $sql = "SELECT lots.name, description, lots.id, lots.user_id, categories.name as category, image_url, end_date, price_step,
     IFNULL(MAX(rates.sum), price) AS current_price
     FROM lots JOIN categories
     LEFT JOIN rates ON lots.id = rates.lot_id
@@ -760,7 +760,11 @@ function getWinnerId(object $connection, int $lotId)
 
     $userId = mysqli_fetch_assoc($sqlResult);
 
-    return intval($userId['user_id']);
+    if ($userId === null) {
+        return null;
+    } else {
+        return intval($userId['user_id']);
+    }
 }
 
 /**
@@ -790,8 +794,12 @@ function getUserData(object $connection, int $userId)
  * @param int $lotId - id лота
  * @param int $userId - id победителя
  */
-function updateWinner(object $connection, int $lotId, int $userId)
+function updateWinner(object $connection, int $lotId, int $userId = null)
 {
+    if ($userId === null) {
+        $userId = 0;
+    }
+
     $sql = "UPDATE lots SET winner_id = $userId WHERE id = $lotId";
     $sqlResult = mysqli_query($connection, $sql);
 

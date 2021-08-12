@@ -10,10 +10,10 @@ if (!defined('TEXT_LENGTH_LIMIT')) {
     define('TEXT_LENGTH_LIMIT', 65535);
 }
 if (!defined('LOT_PRICE_LIMIT')) {
-    define('LOT_PRICE_LIMIT', 100000000);
+    define('LOT_PRICE_LIMIT', 2147483647);
 }
 if (!defined('LOT_RATE_LIMIT')) {
-    define('LOT_RATE_LIMIT', 5000000);
+    define('LOT_RATE_LIMIT', 16777215);
 }
 
 /**

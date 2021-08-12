@@ -20,7 +20,7 @@ CREATE TABLE lots (
   image_url VARCHAR(128),
   price INT,
   end_date DATE,
-  price_step INT,
+  price_step MEDIUMINT,
   winner_id INT
 );
 

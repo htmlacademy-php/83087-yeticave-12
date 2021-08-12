@@ -25,21 +25,20 @@
                             <?= formatPrice(strip_tags($lots[0]['current_price'])); ?>
                         </span>
                     </div>
-                    <div class="lot-item__min-cost">
-                        Мин. ставка <span><?= formatPrice(strip_tags(lotMinRate($connection, $id))); ?></span>
-                    </div>
+                    <?php if ((intval($lots[0]['current_price']) < LOT_PRICE_LIMIT) && ($data[0] > 0 && $data[1] > 0 && $data[2] > 0) && (intval($lots[0]['current_price']) + intval($lots[0]['price_step']) < LOT_PRICE_LIMIT)) : ?>
+                        <div class="lot-item__min-cost">
+                            Мин. ставка <span><?= formatPrice(strip_tags(lotMinRate($connection, $id))); ?></span>
+                        </div>
+                    <?php endif; ?>
                 </div>
                 <?php
                 $lastRateUserId = getWinnerId($connection, $id);
-                ?>
-                <?php
-                if (
-                    checkSession()
-                    && ($data[0] > 0 || $data[1] > 0 || $data[2] > 0)
-                    && $lots[0]['user_id'] != $userId
-                    && $lastRateUserId !== $userId
-                ) :
-                ?>
+
+                if (intval($lots[0]['current_price']) === LOT_PRICE_LIMIT || intval($lots[0]['current_price']) + intval($lots[0]['price_step']) >= LOT_PRICE_LIMIT) : ?>
+                    <p>Лот достиг максимальной цены.</p>
+                <?php elseif ($data[0] < 0 || $data[1] < 0 || $data[2] < 0) : ?>
+                    <p>Лот закончился.</p>
+                <?php elseif (checkSession() && ($data[0] > 0 || $data[1] > 0 || $data[2] > 0) && $lots[0]['user_id'] != $userId && $lastRateUserId !== $userId) : ?>
                     <form class="lot-item__form" action="lot.php?id=<?= $id; ?>" method="post" autocomplete="off">
                         <?php
                         $classname = isset($errors['cost']) ? "form__item--invalid" : "";
