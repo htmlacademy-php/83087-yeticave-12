@@ -708,7 +708,7 @@ function lotRateDatePassed(string $date)
 function lotsWithoutWinner(object $connection)
 {
     $currentDate = date('Y-m-d');
-    $sql = "SELECT id FROM lots WHERE winner_id IS NULL AND end_date <= '$currentDate'";
+    $sql = "SELECT id FROM lots WHERE EXISTS (SELECT 1 FROM rates WHERE rates.lot_id = lots.id) AND lots.end_date <= '$currentDate'";
     $sqlResult = mysqli_query($connection, $sql);
 
     if (!$sqlResult) {
@@ -794,12 +794,8 @@ function getUserData(object $connection, int $userId)
  * @param int $lotId - id лота
  * @param int $userId - id победителя
  */
-function updateWinner(object $connection, int $lotId, int $userId = null)
+function updateWinner(object $connection, int $lotId, int $userId)
 {
-    if ($userId === null) {
-        $userId = 0;
-    }
-
     $sql = "UPDATE lots SET winner_id = $userId WHERE id = $lotId";
     $sqlResult = mysqli_query($connection, $sql);
 

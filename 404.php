@@ -13,7 +13,7 @@ $pageContent = include_template(
     '404.php'
 );
 
-$layoutСontent = include_template(
+$layoutContent = include_template(
     'layout.php',
     [
         'categories' => $allCategories,
@@ -28,4 +28,4 @@ $layoutСontent = include_template(
     ]
 );
 
-print($layoutСontent);
+print($layoutContent);

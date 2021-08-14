@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if (count($errors)) {
-        $pageСontent = include_template(
+        $pageContent = include_template(
             'login.php',
             [
                 'errors' => $errors,
@@ -55,22 +55,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-$pageСontent = include_template(
+$pageContent = include_template(
     'login.php',
     [
         'errors' => $errors,
     ]
 );
 
-$layoutСontent = include_template(
+$layoutContent = include_template(
     'layout.php',
     [
         'categories' => $allCategories,
 
-        'content' => $pageСontent,
+        'content' => $pageContent,
 
         'title' => 'Вход',
     ]
 );
 
-print($layoutСontent);
+print($layoutContent);

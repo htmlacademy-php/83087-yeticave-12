@@ -11,7 +11,7 @@ $allCategories = getCategories($dbConnection);
 
 $userId = $_SESSION['userId'];
 
-$pageСontent = include_template(
+$pageContent = include_template(
     'my-bets.php',
     [
         'lots' => getLotsRates($dbConnection, $userId),
@@ -22,12 +22,12 @@ $pageСontent = include_template(
     ]
 );
 
-$layoutСontent = include_template(
+$layoutContent = include_template(
     'layout.php',
     [
         'categories' => $allCategories,
 
-        'content' => $pageСontent,
+        'content' => $pageContent,
 
         'title' => 'Мои ставки',
 
@@ -37,4 +37,4 @@ $layoutСontent = include_template(
     ]
 );
 
-print($layoutСontent);
+print($layoutContent);

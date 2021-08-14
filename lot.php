@@ -23,7 +23,7 @@ $lotRates = lotRates($dbConnection, $trid);
 $userId = $_SESSION['userId'] ?? '';
 
 if (!empty($lots)) {
-    $pageСontent = include_template(
+    $pageContent = include_template(
         'lot.php',
         [
             'id' => $trid,
@@ -44,7 +44,7 @@ if (!empty($lots)) {
 } else {
     http_response_code(404);
 
-    $pageСontent = include_template(
+    $pageContent = include_template(
         '404.php',
     );
 
@@ -69,7 +69,7 @@ if (checkSession()) {
         }
 
         if (count($errors)) {
-            $pageСontent = include_template(
+            $pageContent = include_template(
                 "lot.php",
                 [
                     'id' => $trid,
@@ -93,12 +93,12 @@ if (checkSession()) {
     }
 }
 
-$layoutСontent = include_template(
+$layoutContent = include_template(
     'layout.php',
     [
         'categories' => $allCategories,
 
-        'content' => $pageСontent,
+        'content' => $pageContent,
 
         'title' => $title,
 
@@ -108,4 +108,4 @@ $layoutСontent = include_template(
     ]
 );
 
-print($layoutСontent);
+print($layoutContent);

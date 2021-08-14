@@ -98,7 +98,7 @@ if (checkSession()) {
     http_response_code(403);
 }
 
-$layoutСontent = include_template(
+$layoutContent = include_template(
     'layout.php',
     [
         'categories' => $allCategories,
@@ -113,4 +113,4 @@ $layoutСontent = include_template(
     ]
 );
 
-print($layoutСontent);
+print($layoutContent);

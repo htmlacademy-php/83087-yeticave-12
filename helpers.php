@@ -13,7 +13,7 @@ if (!defined('LOT_PRICE_LIMIT')) {
     define('LOT_PRICE_LIMIT', 2147483647);
 }
 if (!defined('LOT_RATE_LIMIT')) {
-    define('LOT_RATE_LIMIT', 16777215);
+    define('LOT_RATE_LIMIT', 8388607);
 }
 
 /**
