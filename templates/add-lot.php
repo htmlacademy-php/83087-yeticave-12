@@ -1,7 +1,7 @@
 <?php
 $classname = isset($errors) ? "form--invalid" : "";
 ?>
-<form class="form form--add-lot container <?= $classname; ?>" action="add.php" method="POST" enctype="multipart/form-data">
+<form class="form form--add-lot container <?= $classname; ?>" action="add-lot.php" method="POST" enctype="multipart/form-data">
     <h2>Добавление лота</h2>
     <div class="form__container-two">
         <?php
@@ -22,7 +22,7 @@ $classname = isset($errors) ? "form--invalid" : "";
             <select id="category" name="category" required="">
                 <option value="">Выберите категорию</option>
                 <?php foreach ($categories as $category) : ?>
-                    <option value="<?= $category['id']; ?>" <?= ($category['id'] == getPostVal('category')) ? 'selected' : ''; ?>>
+                    <option value="<?= $category['id']; ?>" <?= ($category['id'] === getPostVal('category')) ? 'selected' : ''; ?>>
                         <?= strip_tags($category['name']); ?>
                     </option>
                 <?php endforeach; ?>
@@ -37,9 +37,7 @@ $classname = isset($errors) ? "form--invalid" : "";
     ?>
     <div class="form__item form__item--wide <?= $classname; ?>">
         <label for="message">Описание <sup>*</sup></label>
-        <textarea id="message" name="message" placeholder="Напишите описание лота" required="">
-            <?= getPostVal('message'); ?>
-        </textarea>
+        <textarea id="message" name="message" placeholder="Напишите описание лота" required=""><?= getPostVal('message'); ?></textarea>
         <?php if (isset($errors['message'])) : ?>
             <span class="form__error"><?= $errors['message']; ?></span>
         <?php endif; ?>

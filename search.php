@@ -16,14 +16,12 @@ if (isset($_GET['page'])) {
 }
 $pages = $searchedLotsQty / LOTS_PER_PAGE;
 $totalPages = ceil($pages);
-$searchedLots = searchLot($dbConnection, $_GET['search'], $currentSearchPage);
+$searchedLots = searchLot($dbConnection, trim($_GET['search']), $currentSearchPage);
 
 if (!empty($searchedLots)) {
-    $pageСontent = include_template(
+    $pageContent = include_template(
         'search.php',
         [
-            'categories' => $allCategories,
-
             'lots' => $searchedLots,
 
             'searchedWord' => $_GET['search'],
@@ -34,22 +32,20 @@ if (!empty($searchedLots)) {
         ]
     );
 } else {
-    $pageСontent = include_template(
+    $pageContent = include_template(
         'search.php',
         [
-            'categories' => $allCategories,
-
             'errors' => 'Ничего не найдено по вашему запросу',
         ]
     );
 }
 
-$layoutСontent = include_template(
+$layoutContent = include_template(
     'layout.php',
     [
         'categories' => $allCategories,
 
-        'content' => $pageСontent,
+        'content' => $pageContent,
 
         'title' => 'Поиск',
 
@@ -59,4 +55,4 @@ $layoutСontent = include_template(
     ]
 );
 
-print($layoutСontent);
+print($layoutContent);

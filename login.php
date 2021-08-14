@@ -12,15 +12,18 @@ $allCategories = getCategories($dbConnection);
 $errors = [];
 
 if (checkSession()) {
-    header("Location: /");
+    redirect('/');
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $userEmail = validate('email', $errors, 'Введите e-mail', FILTER_VALIDATE_EMAIL);
-    if (strlen($userEmail) > NAME_LENGTH_LIMIT) {
+    if (mb_strlen($userEmail) > DEFAULT_LENGTH_LIMIT) {
         $errors['email'] = "Длина E-mail превышает допустимый размер";
     }
     $userPassword = validate('password', $errors, 'Введите пароль', FILTER_DEFAULT);
+    if (mb_strlen($userPassword) > DEFAULT_LENGTH_LIMIT) {
+        $errors['password'] = "Пароль не может быть длинее 128 символов";
+    }
 
     $emailCheck = mysqli_real_escape_string($dbConnection, $userEmail);
     $sqlEmailCheck = "SELECT * FROM users WHERE email = '$emailCheck'";
@@ -34,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $_SESSION['userId'] = $user['id'];
 
-            header("Location: /");
+            redirect('/');
         } else {
             $errors['password'] = 'Вы ввели неверный пароль';
         }
@@ -43,35 +46,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if (count($errors)) {
-        $pageСontent = include_template(
+        $pageContent = include_template(
             'login.php',
             [
-                'categories' => $allCategories,
-
                 'errors' => $errors,
             ]
         );
     }
 }
 
-$pageСontent = include_template(
+$pageContent = include_template(
     'login.php',
     [
-        'categories' => $allCategories,
-
         'errors' => $errors,
     ]
 );
 
-$layoutСontent = include_template(
+$layoutContent = include_template(
     'layout.php',
     [
         'categories' => $allCategories,
 
-        'content' => $pageСontent,
+        'content' => $pageContent,
 
         'title' => 'Вход',
     ]
 );
 
-print($layoutСontent);
+print($layoutContent);

@@ -19,10 +19,10 @@
                     <img src="../img/logo.svg" width="160" height="39" alt="Логотип компании YetiCave">
                 </a>
                 <form class="main-header__search" method="get" action="search.php" autocomplete="off">
-                    <input type="search" name="search" placeholder="Поиск лота" value="<?= (isset($_GET['search']) ? $_GET['search'] : ''); ?>">
+                    <input type="search" name="search" placeholder="Поиск лота" value="<?= (isset($_GET['search']) ? $_GET['search'] : ''); ?>" required>
                     <input class="main-header__search-btn" type="submit" name="find" value="Найти">
                 </form>
-                <a class="main-header__add-lot button" href="/add.php">Добавить лот</a>
+                <a class="main-header__add-lot button" href="/add-lot.php">Добавить лот</a>
 
                 <nav class="user-menu">
 
@@ -52,7 +52,7 @@
                     <ul class="nav__list container">
                         <?php foreach ($categories as $category) : ?>
                             <?php if (isset($category['id']) && isset($category['name'])) : ?>
-                                <li class="nav__item <?= (isset($categoryId) && $categoryId === $category['id']) ? 'nav__item--current' : ''; ?>">
+                                <li class="nav__item <?= (isset($categoryId) && $categoryId === intval($category['id'])) ? 'nav__item--current' : ''; ?>">
                                     <a href="/category.php?id=<?= $category['id']; ?>"><?= strip_tags($category['name']); ?></a>
                                 </li>
                             <?php endif; ?>
@@ -69,7 +69,7 @@
             <ul class="nav__list container">
                 <?php foreach ($categories as $category) : ?>
                     <?php if (isset($category['id']) && isset($category['name'])) : ?>
-                        <li class="nav__item <?= (isset($categoryId) && $categoryId === $category['id']) ? 'nav__item--current' : ''; ?>">
+                        <li class="nav__item <?= (isset($categoryId) && $categoryId === intval($category['id'])) ? 'nav__item--current' : ''; ?>">
                             <a href="/category.php?id=<?= $category['id']; ?>"><?= strip_tags($category['name']); ?></a>
                         </li>
                     <?php endif; ?>
@@ -115,7 +115,7 @@
                     </svg>
                 </a>
             </div>
-            <a class="main-footer__add-lot button" href="/add.php">Добавить лот</a>
+            <a class="main-footer__add-lot button" href="/add-lot.php">Добавить лот</a>
             <div class="main-footer__developed-by">
                 <span class="visually-hidden">Разработано:</span>
                 <a class="logo-academy" href="https://htmlacademy.ru/intensive/php">

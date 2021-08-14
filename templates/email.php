@@ -9,8 +9,8 @@
 
 <body>
     <h1>Поздравляем с победой</h1>
-    <p>Здравствуйте, <?php echo $userName['name']; ?></p>
-    <p>Ваша ставка для лота <a href="http://yeticave/lot.php?id=<?php echo $lotId; ?>"><?php echo $lotName['name']; ?></a> победила.</p>
+    <p>Здравствуйте, <?php echo $userName; ?></p>
+    <p>Ваша ставка для лота <a href="http://yeticave/lot.php?id=<?php echo $lotId; ?>"><?php echo $lotName; ?></a> победила.</p>
     <p>Перейдите по ссылке <a href="http://yeticave/my-bets.php">мои ставки</a>,
         чтобы связаться с автором объявления</p>
     <small>Интернет-Аукцион "YetiCave"</small>

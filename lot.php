@@ -14,17 +14,19 @@ $allCategories = getCategories($dbConnection);
 
 $lots = getLot($dbConnection, $trid);
 
+if ($lots[0]['id'] === null) {
+    redirect('404.php');
+}
+
 $lotRates = lotRates($dbConnection, $trid);
 
 $userId = $_SESSION['userId'] ?? '';
 
 if (!empty($lots)) {
-    $pageСontent = include_template(
+    $pageContent = include_template(
         'lot.php',
         [
             'id' => $trid,
-
-            'categories' => $allCategories,
 
             'lots' => $lots,
 
@@ -34,7 +36,7 @@ if (!empty($lots)) {
 
             'connection' => $dbConnection,
 
-            'userId' => $userId,
+            'userId' => intval($userId),
         ]
     );
 
@@ -42,11 +44,8 @@ if (!empty($lots)) {
 } else {
     http_response_code(404);
 
-    $pageСontent = include_template(
+    $pageContent = include_template(
         '404.php',
-        [
-            'categories' => $allCategories,
-        ]
     );
 
     $title = 'Ошибка';
@@ -62,16 +61,18 @@ if (checkSession()) {
             'Поле не может быть пустым',
             'Введите минимальную ставку',
             lotMinRate($dbConnection, $trid),
-            'Ставка не может быть ниже минимальной'
+            'Ставка не может быть ниже минимальной',
         );
 
+        if ($lotCost > LOT_PRICE_LIMIT) {
+            $errors['cost'] = 'Ставка не может быть равна или больше ' . LOT_PRICE_LIMIT;
+        }
+
         if (count($errors)) {
-            $pageСontent = include_template(
+            $pageContent = include_template(
                 "lot.php",
                 [
                     'id' => $trid,
-
-                    'categories' => $allCategories,
 
                     'lots' => $lots,
 
@@ -92,12 +93,12 @@ if (checkSession()) {
     }
 }
 
-$layoutСontent = include_template(
+$layoutContent = include_template(
     'layout.php',
     [
         'categories' => $allCategories,
 
-        'content' => $pageСontent,
+        'content' => $pageContent,
 
         'title' => $title,
 
@@ -107,4 +108,4 @@ $layoutСontent = include_template(
     ]
 );
 
-print($layoutСontent);
+print($layoutContent);

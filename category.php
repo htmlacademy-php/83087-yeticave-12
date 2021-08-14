@@ -4,13 +4,17 @@ require_once('helpers.php');
 require_once('functions.php');
 
 $config = require 'config.php';
-$currentCategory = $_GET['id'];
+$currentCategory = intval($_GET['id']);
 
 $dbConnection = getConnection($config);
 
 $allCategories = getCategories($dbConnection);
 
 $categoryName = getCategoryName($dbConnection, $currentCategory);
+
+if ($categoryName === null) {
+    redirect('404.php');
+}
 
 $lotsQtyByCategory = getLotsQtyByCategory($dbConnection, $currentCategory);
 
@@ -22,22 +26,32 @@ $totalPages = ceil($pages);
 
 $lotsByCategory = getLotsByCategory($dbConnection, $currentCategory, $currentCategoryPage);
 
-$pageContent = include_template(
-    'category.php',
-    [
-        'categories' => $allCategories,
+if (!empty($lotsByCategory)) {
+    $pageContent = include_template(
+        'category.php',
+        [
+            'lots' => $lotsByCategory,
 
-        'lots' => $lotsByCategory,
+            'categoryName' => $categoryName,
 
-        'categoryName' => $categoryName,
+            'totalPages' => $totalPages,
 
-        'totalPages' => $totalPages,
+            'currentCategoryPage' => $currentCategoryPage,
 
-        'currentCategoryPage' => $currentCategoryPage,
-    ]
-);
+            'categoryId' => $currentCategory,
+        ]
+    );
+} else {
+    $pageContent = include_template(
+        'category-empty.php',
+        [
+            'categoryName' => $categoryName,
+        ]
+    );
+}
 
-$layoutСontent = include_template(
+
+$layoutContent = include_template(
     'layout.php',
     [
         'categories' => $allCategories,
@@ -54,4 +68,4 @@ $layoutСontent = include_template(
     ]
 );
 
-print($layoutСontent);
+print($layoutContent);

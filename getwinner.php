@@ -1,5 +1,4 @@
 <?php
-session_start();
 require_once('vendor/autoload.php');
 require_once('functions.php');
 
@@ -10,7 +9,7 @@ $lotsWithoutWinner = lotsWithoutWinner($dbConnection);
 
 foreach ($lotsWithoutWinner as $lotWithoutWinner) {
     $lotId = $lotWithoutWinner['id'];
-    $userId = intval(getWinnerId($dbConnection, $lotId));
+    $userId = getWinnerId($dbConnection, $lotId);
     updateWinner($dbConnection, $lotId, $userId);
 
     $userData = getUserData($dbConnection, $userId);

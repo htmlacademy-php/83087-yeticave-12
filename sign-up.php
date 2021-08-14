@@ -1,4 +1,5 @@
 <?php
+session_start();
 require_once('helpers.php');
 require_once('functions.php');
 
@@ -11,24 +12,27 @@ $allCategories = getCategories($dbConnection);
 $errors = [];
 
 if (checkSession()) {
-    header("Location: /");
+    redirect('/');
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $userEmail = validate('email', $errors, 'Введите e-mail', FILTER_VALIDATE_EMAIL);
     $userPassword = validate('password', $errors, 'Введите пароль', FILTER_DEFAULT);
+    if (mb_strlen($userPassword) > DEFAULT_LENGTH_LIMIT) {
+        $errors['password'] = "Пароль не может быть длинее 128 символов";
+    }
     $userName = validate('name', $errors, 'Введите имя', FILTER_SANITIZE_SPECIAL_CHARS);
-    if (mb_strlen($userName) > NAME_LENGTH_LIMIT) {
+    if (mb_strlen($userName) > DEFAULT_LENGTH_LIMIT) {
         $errors['name'] = "Имя слишком длинное";
     }
     $userContact = validate('message', $errors, 'Напишите как с вами связаться', FILTER_SANITIZE_SPECIAL_CHARS);
     if (mb_strlen($userContact) > TEXT_LENGTH_LIMIT) {
-        $errors['name'] = "Вы превысили допустимую длину текста";
+        $errors['message'] = "Вы превысили допустимую длину текста";
     }
 
     if ($userEmail === false) {
         $errors['email'] = "Данный E-mail адрес не валидный";
-    } elseif (strlen($userEmail) > NAME_LENGTH_LIMIT) {
+    } elseif (mb_strlen($userEmail) > DEFAULT_LENGTH_LIMIT) {
         $errors['email'] = "Длина E-mail превышает допустимый размер";
     } else {
         $emailCheck = mysqli_real_escape_string($dbConnection, $userEmail);
@@ -41,11 +45,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if (count($errors)) {
-        $pageСontent = include_template(
+        $pageContent = include_template(
             'sign-up.php',
             [
-                'categories' => $allCategories,
-
                 'errors' => $errors,
             ]
         );
@@ -56,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         VALUES (NOW(), '$userEmail', '$userName', '$userPasswordHash', '$userContact')";
 
         if (mysqli_query($dbConnection, $sql)) {
-            header("Location: login.php");
+            redirect('login.php');
         } else {
             echo "Error: " . $sql . "<br>" . mysqli_error($dbConnection);
         }
@@ -64,24 +66,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-$pageСontent = include_template(
+$pageContent = include_template(
     'sign-up.php',
     [
-        'categories' => $allCategories,
-
         'errors' => $errors,
     ]
 );
 
-$layoutСontent = include_template(
+$layoutContent = include_template(
     'layout.php',
     [
         'categories' => $allCategories,
 
-        'content' => $pageСontent,
+        'content' => $pageContent,
 
         'title' => 'Регистрация',
     ]
 );
 
-print($layoutСontent);
+print($layoutContent);

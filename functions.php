@@ -160,7 +160,7 @@ function getLots(object $connection, string $category = null)
  */
 function getLot(object $connection, int $lotId)
 {
-    $sql = "SELECT lots.name, description, lots.id, lots.user_id, categories.name as category, image_url, end_date,
+    $sql = "SELECT lots.name, description, lots.id, lots.user_id, categories.name as category, image_url, end_date, price_step,
     IFNULL(MAX(rates.sum), price) AS current_price
     FROM lots JOIN categories
     LEFT JOIN rates ON lots.id = rates.lot_id
@@ -708,7 +708,7 @@ function lotRateDatePassed(string $date)
 function lotsWithoutWinner(object $connection)
 {
     $currentDate = date('Y-m-d');
-    $sql = "SELECT id FROM lots WHERE winner_id IS NULL AND end_date <= '$currentDate'";
+    $sql = "SELECT id FROM lots WHERE EXISTS (SELECT 1 FROM rates WHERE rates.lot_id = lots.id) AND lots.end_date <= '$currentDate'";
     $sqlResult = mysqli_query($connection, $sql);
 
     if (!$sqlResult) {
@@ -760,7 +760,11 @@ function getWinnerId(object $connection, int $lotId)
 
     $userId = mysqli_fetch_assoc($sqlResult);
 
-    return $userId;
+    if ($userId === null) {
+        return null;
+    } else {
+        return intval($userId['user_id']);
+    }
 }
 
 /**
@@ -798,11 +802,10 @@ function updateWinner(object $connection, int $lotId, int $userId)
     if (!$sqlResult) {
         $error = mysqli_error($connection);
         print("Ошибка MySQL: " . $error);
+        return false;
     }
 
-    $update = mysqli_fetch_all($sqlResult, MYSQLI_ASSOC);
-
-    return $update;
+    return $sqlResult;
 }
 
 /**

@@ -9,7 +9,7 @@ $config = require 'config.php';
 $dbConnection = getConnection($config);
 $allCategories = getCategories($dbConnection);
 
-$pageСontent = include_template(
+$pageContent = include_template(
     'main.php',
     [
         'categories' => $allCategories,
@@ -20,12 +20,12 @@ $pageСontent = include_template(
     ]
 );
 
-$layoutСontent = include_template(
+$layoutContent = include_template(
     'layout.php',
     [
         'categories' => $allCategories,
 
-        'content' => $pageСontent,
+        'content' => $pageContent,
 
         'title' => 'Главная',
 
@@ -37,4 +37,4 @@ $layoutСontent = include_template(
     ]
 );
 
-print($layoutСontent);
+print($layoutContent);
