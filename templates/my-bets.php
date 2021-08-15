@@ -33,8 +33,7 @@
                 </td>
                 <td class="rates__timer">
                     <?php if ($data[0] <= 0) : ?>
-                        <?php
-                        if (isset($lot['winner_id']) && $lot['winner_id'] === $userId && intval($lot['sum']) === currentRate($connection, $lot['id'])) : ?>
+                        <?php if (isset($lot['winner_id']) && $lot['winner_id'] === $userId && intval($lot['sum']) === currentRate($connection, $lot['id'])) : ?>
                             <div class="timer timer--win">Ставка выиграла</div>
                         <?php else : ?>
                             <div class="timer timer--end">Торги окончены</div>
