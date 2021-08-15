@@ -708,7 +708,7 @@ function lotRateDatePassed(string $date)
 function lotsWithoutWinner(object $connection)
 {
     $currentDate = date('Y-m-d');
-    $sql = "SELECT id FROM lots WHERE EXISTS (SELECT 1 FROM rates WHERE rates.lot_id = lots.id) AND lots.end_date <= '$currentDate'";
+    $sql = "SELECT id FROM lots WHERE EXISTS (SELECT 1 FROM rates WHERE rates.lot_id = lots.id) AND lots.end_date <= '$currentDate' AND lots.winner_id IS NULL";
     $sqlResult = mysqli_query($connection, $sql);
 
     if (!$sqlResult) {
